@@ -1,0 +1,573 @@
+C51 COMPILER V9.00   MAIN                                                                  06/06/2019 08:04:34 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN ..\bin\main.obj
+COMPILER INVOKED BY: C:\Program Files\Keil\C51\BIN\C51.EXE ..\src\main.c BROWSE DEBUG OBJECTEXTEND PRINT(.\main.lst) OBJ
+                    -ECT(..\bin\main.obj)
+
+line level    source
+
+   1          #include <STC8.H>
+   2          #include "intrins.h"
+   3          #include "19296p1.c"
+   4          
+   5          #define  time_ms 400 
+   6          
+   7          //sbit LED1 = P3^6;
+   8          //sbit LED2 = P3^5;
+   9          //sbit Key1 = P3^2;
+  10          //sbit Key2 = P3^3;
+  11          
+  12          typedef struct{
+  13                  uint I_current;
+  14                  uchar I_Digit1;
+  15                  uchar I_Digit2;
+  16                  uchar I_Digit3;
+  17                  uchar I_Digit4;
+  18                  uchar I_Digit5;
+  19          //      uchar I_DotPosition;
+  20                          
+  21                  uint F_frequence;
+  22                  uchar F_Digit1;
+  23                  uchar F_Digit2;
+  24                  uchar F_Digit3;
+  25                  uchar F_Digit4;
+  26                  uchar F_Digit5;
+  27          //      uchar F_DotPosition;
+  28                  
+  29                  uint E_encoder;
+  30                  uchar E_Digit1;
+  31                  uchar E_Digit2;
+  32                  uchar E_Digit3;
+  33                  uchar E_Digit4;
+  34                  uchar E_Digit5;
+  35                  
+  36                  uchar Motor_Direction;
+  37                  uchar Motor_Direction_Set;
+  38                  
+  39                  uchar Up_Limit_Set;
+  40                  uchar Low_Limit_Set;
+  41          }Machine_Parameters_Def;
+  42          
+  43          Machine_Parameters_Def Motor_Parameter;
+  44          
+  45          void Display_Full_Line_Up(uchar x);
+  46          void Display_Full_Line_Down(uchar x);
+  47          void Display_Full_Line_Left(uchar x);
+  48          void Display_Full_Line_Right(uchar x);
+  49          void Disp_Page_00_00(void);
+  50          void Disp_Page_00_01(void);
+  51          void Disp_Page_00_02(void);
+  52          //void Disp_Page_00_03(void);
+  53          
+  54          void Disp_Page_01_00(void);
+C51 COMPILER V9.00   MAIN                                                                  06/06/2019 08:04:34 PAGE 2   
+
+  55          void Disp_Page_01_01(void);
+  56          void Disp_Page_01_02(void);
+  57          void Disp_Page_01_03(void);
+  58          
+  59          void Display_Page00_00_ParaArea(void);
+  60          
+  61          void Display_Encoder_Number(void);
+  62          void Display_I_current(void);
+  63          void Display_F_frequence(void);
+  64          
+  65          void BUTTON1_Display1_FanXiang(void);
+  66          void BUTTON1_Display1_ZhengXiang(void);
+  67          void BUTTON1_Display2_Fanhui(void);
+  68          void BUTTON2_Display1_QueRen(void);
+  69          void Display_Page00_00_MotorDirt(void);
+  70          void Display_Page00_01_LLStudy(void);
+  71          void Display_Encoder_Number(void);
+  72          
+  73          void Motor_Direction_Update(void);
+  74          
+  75          
+  76          //功能：延时子程序  参数：time  为多少ms。
+  77          void delay_ms(unsigned int time)
+  78          {
+  79   1               unsigned int  i;
+  80   1               unsigned int  j;
+  81   1               for(i=0;i<time;i++)
+  82   1                      for(j=0;j<1668;j++);
+  83   1      }
+  84          
+  85          //功能：IO初始化  参数：无
+  86          void IO_INIT()
+  87          {
+  88   1              //备注：I/O口各种不同的工作模式及配置介绍见 STC15 系列文档第400页       
+  89   1      //      P3M0 = 0XFF;
+  90   1      //      P3M1 = 0X00;                    //P3口配置为推挽输出(强上拉输出，可达20mA)
+  91   1      //  P3 = 0X00;                                                                          //上电后IO初始化为低电平        
+  92   1      //      P3M0 = 0x10;    //0001 0000
+  93   1      //      P3M1 = 0x00;    //0000 0000
+  94   1      //      P3PU |= 0x08;   //0000 1000
+  95   1      }
+  96          
+  97          void Display_Full_Line_Up(uchar x)
+  98          {
+  99   1              uchar i;
+ 100   1              if(x==1)
+ 101   1                      {
+ 102   2                              for(i=1;i<15;i++)
+ 103   2                                      {display_8x8((i-1)*8+1,x,Char0808_Up);}
+ 104   2                              display_8x8(185,x,Char0808_Up);
+ 105   2                      }
+ 106   1                      else
+ 107   1                              {
+ 108   2                                      for(i=1;i<25;i++)
+ 109   2                                      {display_8x8((i-1)*8+1,x,Char0808_Up);}
+ 110   2                              }
+ 111   1      }
+ 112          
+ 113          void Display_Full_Line_Down(uchar x)
+ 114          {
+ 115   1              uchar i;
+ 116   1              if(x==12)
+C51 COMPILER V9.00   MAIN                                                                  06/06/2019 08:04:34 PAGE 3   
+
+ 117   1                      {
+ 118   2                              //最下面一行
+ 119   2                              display_8x8(1,12,Char0808_Down);
+ 120   2                              for(i=2;i<6;i++)
+ 121   2                                      {display_8x8((i-1)*8+1,12,Char0808_UpDown);}
+ 122   2                              for(i=6;i<20;i++)
+ 123   2                                      {display_8x8((i-1)*8+1,12,Char0808_Down);}                      
+ 124   2                              for(i=20;i<24;i++)
+ 125   2                                      {display_8x8((i-1)*8+1,12,Char0808_UpDown);}
+ 126   2                              display_8x8(185,12,Char0808_Down);
+ 127   2                      }
+ 128   1                      else
+ 129   1                              {
+ 130   2                                      for(i=1;i<25;i++)
+ 131   2                                      {display_8x8((i-1)*8+1,x,Char0808_Down);}
+ 132   2                              }
+ 133   1      }
+ 134          
+ 135          void Display_Full_Line_Left(uchar x)
+ 136          {
+ 137   1              uchar i;
+ 138   1              
+ 139   1              for(i=1;i<13;i++)
+ 140   1                      {display_8x1(x,i,0xFF);}
+ 141   1      }
+ 142          
+ 143          void Display_Full_Line_Right(uchar x)
+ 144          {
+ 145   1              uchar i;
+ 146   1              for(i=1;i<13;i++)
+ 147   1                      {display_8x1(x,i,0xFF);}
+ 148   1      }
+ 149          
+ 150          void BUTTON1_Display1_FanXiang(void)            //反向
+ 151          {
+ 152   1              uchar i;
+ 153   1              for(i=2;i<6;i++)
+ 154   1              {display_8x8((i-1)*8+1,9,Char0808_Down);}
+ 155   1              Hanzi_Disp_16x16(9, 10, Hanzi_1616_XST_Fan1, 0x04);     //0000 0100
+ 156   1              Hanzi_Disp_16x16(25, 10, Hanzi_1616_XST_Xiang, 0x08); //00001000
+ 157   1              for(i=2;i<6;i++)
+ 158   1              {display_8x8((i-1)*8+1, 12,Char0808_Up);}
+ 159   1              Display_Full_Line_Down(12); 
+ 160   1              Display_Full_Line_Left(1);
+ 161   1              Display_Full_Line_Right(192); 
+ 162   1      }
+ 163          
+ 164          void BUTTON1_Display1_ZhengXiang(void)          //正向
+ 165          {
+ 166   1              uchar i;
+ 167   1              for(i=2;i<6;i++)
+ 168   1              {display_8x8((i-1)*8+1,9,Char0808_Down);}
+ 169   1              Hanzi_Disp_16x16(9, 10, Hanzi_1616_XST_Zheng, 0x04);    //0000 0100
+ 170   1              Hanzi_Disp_16x16(25, 10, Hanzi_1616_XST_Xiang, 0x08); //00001000
+ 171   1              for(i=2;i<6;i++)
+ 172   1              {display_8x8((i-1)*8+1, 12,Char0808_Up);}
+ 173   1              Display_Full_Line_Down(12);
+ 174   1              Display_Full_Line_Left(1);
+ 175   1              Display_Full_Line_Right(192);
+ 176   1              
+ 177   1      }
+ 178          
+C51 COMPILER V9.00   MAIN                                                                  06/06/2019 08:04:34 PAGE 4   
+
+ 179          void BUTTON1_Display2_Fanhui(void)              //返回
+ 180          {
+ 181   1              uchar i;
+ 182   1              for(i=2;i<6;i++)
+ 183   1              {display_8x8((i-1)*8+1,9,Char0808_Down);}
+ 184   1              Hanzi_Disp_16x16(9, 10, Hanzi_1616_XST_Fan, 0x04);      //0000 0100
+ 185   1              Hanzi_Disp_16x16(25, 10, Hanzi_1616_XST_Hui, 0x08); //00001000
+ 186   1              for(i=2;i<6;i++)
+ 187   1              {display_8x8((i-1)*8+1, 12,Char0808_Up);}
+ 188   1      }
+ 189          
+ 190          void BUTTON2_Display1_QueRen(void)              //确认
+ 191          {
+ 192   1              uchar i;
+ 193   1              for(i=20;i<24;i++)
+ 194   1              {display_8x8((i-1)*8+1,9,Char0808_Down);}
+ 195   1              Hanzi_Disp_16x16(153, 10, Hanzi_1616_XST_Que, 0x04);    //0000 0100
+ 196   1              Hanzi_Disp_16x16(169, 10, Hanzi_1616_XST_Ren, 0x08); //00001000
+ 197   1              for(i=20;i<24;i++)
+ 198   1              {display_8x8((i-1)*8+1, 12,Char0808_Up);}
+ 199   1      }
+ 200          
+ 201          void BUTTON2_Display2(void)
+ 202          {
+ 203   1              uchar i;
+ 204   1              for(i=2;i<6;i++)
+ 205   1              {display_8x8((i-1)*8+1,9,Char0808_Down);}
+ 206   1              Hanzi_Disp_16x16(9, 10, Hanzi_1616_XST_Fan, 0x04);      //0000 0100
+ 207   1              Hanzi_Disp_16x16(25, 10, Hanzi_1616_XST_Hui, 0x08); //00001000
+ 208   1              for(i=2;i<6;i++)
+ 209   1              {display_8x8((i-1)*8+1, 12,Char0808_Up);}
+ 210   1      }
+ 211          
+ 212          
+ 213          void Display_Encoder_Number(void)
+ 214          {
+ 215   1              uint encoder;
+ 216   1              encoder = Motor_Parameter.E_encoder;
+ 217   1              if(encoder>10000)
+ 218   1                      {Motor_Parameter.E_Digit1 = encoder/10000;}
+ 219   1                      else {Motor_Parameter.E_Digit1 = 0;}
+ 220   1              
+ 221   1                              
+ 222   1      }
+ 223          
+ 224          void Display_I_current(void)
+ 225          {
+ 226   1              
+ 227   1      }
+ 228          
+ 229          void Display_F_frequence(void)
+ 230          {
+ 231   1              
+ 232   1      }
+ 233          
+ 234          void Motor_Direction_Update(void)
+ 235          {
+ 236   1              if(Motor_Parameter.Motor_Direction == 1)
+ 237   1                      {
+ 238   2                              BUTTON1_Display1_ZhengXiang();
+ 239   2                      }
+ 240   1                      else
+C51 COMPILER V9.00   MAIN                                                                  06/06/2019 08:04:34 PAGE 5   
+
+ 241   1                              {
+ 242   2                                      BUTTON1_Display1_FanXiang();
+ 243   2                              }
+ 244   1      }
+ 245          
+ 246          void Display_Page00_00_ParaArea(void)
+ 247          {
+ 248   1              Hanzi_Disp_16x16(1, 2, Hanzi_1616_XST_Bian, 0x04);      //0000 0100
+ 249   1              Hanzi_Disp_16x16(17, 2, Hanzi_1616_XST_Ma, 0);  //0000 0100
+ 250   1              Hanzi_Disp_16x16(33, 2, Hanzi_1616_XST_Qi, 0);  //0000 0100
+ 251   1              CHAR_Display_16x8(49,2,char_cMaohao, 0);
+ 252   1              
+ 253   1      }
+ 254          void Display_Page00_01_ParaArea(void)
+ 255          {
+ 256   1              Hanzi_Disp_16x16(1, 2, Hanzi_1616_XST_Bian, 0x04);      //0000 0100
+ 257   1              Hanzi_Disp_16x16(17, 2, Hanzi_1616_XST_Ma, 0);  //0000 0100
+ 258   1              Hanzi_Disp_16x16(33, 2, Hanzi_1616_XST_Qi, 0);  //0000 0100
+ 259   1              CHAR_Display_16x8(49,2,char_cMaohao, 0);
+ 260   1      }
+ 261          
+ 262          void Display_Page00_00_MotorDirt(void)
+ 263          {
+ 264   1              disp_24x24(49,6,Hanzi_2424_HWZS_Dian);
+ 265   1              disp_24x24(73,6,Hanzi_2424_HWZS_Ji);
+ 266   1              disp_24x24(97,6,Hanzi_2424_HWZS_Fang);
+ 267   1              disp_24x24(121,6,Hanzi_2424_HWZS_Xiang);
+ 268   1      //      disp_96x24(49,6,Hanzi_9624_HWZS_DJFX);
+ 269   1      }
+ 270          
+ 271          void Display_Page00_01_LLStudy(void)
+ 272          {
+ 273   1              disp_24x24(33,6,Hanzi_2424_HWZS_Xia);
+ 274   1              disp_24x24(57,6,Hanzi_2424_HWZS_Xian);
+ 275   1              disp_24x24(81,6,Hanzi_2424_HWZS_Wei);
+ 276   1              disp_24x24(105,6,Hanzi_2424_HWZS_Xue);
+ 277   1              disp_24x24(129,6,Hanzi_2424_HWZS_Xi);
+ 278   1      //      disp_96x24(49,6,Hanzi_9624_HWZS_DJFX);
+ 279   1      }
+ 280          
+ 281          void Display_Page00_01_ULStudy(void)
+ 282          {
+ 283   1              disp_24x24(33,6,Hanzi_2424_HWZS_Shang);
+ 284   1              disp_24x24(57,6,Hanzi_2424_HWZS_Xian);
+ 285   1              disp_24x24(81,6,Hanzi_2424_HWZS_Wei);
+ 286   1              disp_24x24(105,6,Hanzi_2424_HWZS_Xue);
+ 287   1              disp_24x24(129,6,Hanzi_2424_HWZS_Xi);
+ 288   1      //      disp_96x24(49,6,Hanzi_9624_HWZS_DJFX);
+ 289   1      }
+ 290          
+ 291          void Display_Page01_00_ZDKJ(void)
+ 292          {
+ 293   1              disp_24x24(49,6,Hanzi_2424_HWZS_Zhi);
+ 294   1              disp_24x24(73,6,Hanzi_2424_HWZS_Dian);
+ 295   1              disp_24x24(97,6,Hanzi_2424_HWZS_Ke);
+ 296   1              disp_24x24(121,6,Hanzi_2424_HWZS_Ji1);
+ 297   1      //      disp_96x24(49,6,Hanzi_9624_HWZS_DJFX);
+ 298   1      }
+ 299          
+ 300          void Disp_Page_00_00(void)
+ 301          {
+ 302   1              Display_Full_Line_Up(1);
+C51 COMPILER V9.00   MAIN                                                                  06/06/2019 08:04:34 PAGE 6   
+
+ 303   1              Display_Full_Line_Up(5);
+ 304   1              
+ 305   1              Display_Page00_00_ParaArea();   //显示固定信息
+ 306   1              
+ 307   1      
+ 308   1              BUTTON1_Display1_FanXiang();            //显示“反向”
+ 309   1              BUTTON2_Display1_QueRen();              //显示“确认”
+ 310   1              Display_Full_Line_Down(12);
+ 311   1              Display_Full_Line_Left(1);
+ 312   1              
+ 313   1              Display_Page00_00_MotorDirt(); 
+ 314   1              
+ 315   1              Display_Full_Line_Right(192);
+ 316   1              
+ 317   1              Display_Encoder_Number();
+ 318   1              Display_I_current();
+ 319   1              Display_F_frequence();
+ 320   1      }
+ 321          
+ 322          void Disp_Page_00_01(void)
+ 323          {
+ 324   1              Display_Full_Line_Up(1);
+ 325   1              Display_Full_Line_Up(5);
+ 326   1              
+ 327   1              Display_Page00_01_ParaArea();   //显示固定信息
+ 328   1              
+ 329   1              BUTTON1_Display2_Fanhui();              //显示“返回”
+ 330   1              BUTTON2_Display1_QueRen();              //显示“确定”
+ 331   1              Display_Full_Line_Down(12);
+ 332   1              Display_Full_Line_Left(1);
+ 333   1              Display_Full_Line_Right(192);
+ 334   1              
+ 335   1              Display_Page00_01_LLStudy();
+ 336   1              
+ 337   1      }
+ 338          
+ 339          void Disp_Page_00_02(void)
+ 340          {
+ 341   1              Display_Full_Line_Up(1);
+ 342   1              Display_Full_Line_Up(5);
+ 343   1              
+ 344   1              Display_Page00_01_ParaArea();   //显示固定信息
+ 345   1              
+ 346   1              BUTTON1_Display2_Fanhui();              //显示“返回”
+ 347   1              BUTTON2_Display1_QueRen();              //显示“确定”
+ 348   1              Display_Full_Line_Down(12);
+ 349   1              Display_Full_Line_Left(1);
+ 350   1              Display_Full_Line_Right(192);
+ 351   1              
+ 352   1              Display_Page00_01_ULStudy();
+ 353   1              
+ 354   1      }
+ 355          
+ 356          void Disp_Page_01_00(void)
+ 357          {
+ 358   1              Display_Full_Line_Up(1);
+ 359   1              Display_Full_Line_Up(5);
+ 360   1              
+ 361   1              Display_Page00_01_ParaArea();   //显示固定信息
+ 362   1              
+ 363   1              BUTTON1_Display2_Fanhui();              //显示“返回”
+ 364   1              BUTTON2_Display1_QueRen();              //显示“确定”
+C51 COMPILER V9.00   MAIN                                                                  06/06/2019 08:04:34 PAGE 7   
+
+ 365   1              Display_Full_Line_Down(12);
+ 366   1              Display_Full_Line_Left(1);
+ 367   1              Display_Full_Line_Right(192);
+ 368   1              
+ 369   1              Display_Page01_00_ZDKJ();
+ 370   1              
+ 371   1      }
+ 372          
+ 373          void Disp_Page_01_01(void)
+ 374          {
+ 375   1              Display_Full_Line_Up(1);
+ 376   1              Display_Full_Line_Up(5);
+ 377   1              
+ 378   1              Display_Page00_01_ParaArea();   //显示固定信息
+ 379   1              
+ 380   1              BUTTON1_Display2_Fanhui();              //显示“返回”
+ 381   1              BUTTON2_Display1_QueRen();              //显示“确定”
+ 382   1              Display_Full_Line_Down(12);
+ 383   1              Display_Full_Line_Left(1);
+ 384   1              Display_Full_Line_Right(192);
+ 385   1              
+ 386   1              Display_Page01_00_ZDKJ();
+ 387   1              
+ 388   1      }
+ 389          
+ 390          void Disp_Page_01_02(void)
+ 391          {
+ 392   1              Display_Full_Line_Up(1);
+ 393   1              Display_Full_Line_Up(5);
+ 394   1              
+ 395   1              Display_Page00_01_ParaArea();   //显示固定信息
+ 396   1              
+ 397   1              BUTTON1_Display2_Fanhui();              //显示“返回”
+ 398   1              BUTTON2_Display1_QueRen();              //显示“确定”
+ 399   1              Display_Full_Line_Down(12);
+ 400   1              Display_Full_Line_Left(1);
+ 401   1              Display_Full_Line_Right(192);
+ 402   1              
+ 403   1              Display_Page01_00_ZDKJ();
+ 404   1              
+ 405   1      }
+ 406          
+ 407          void Disp_Page_01_03(void)
+ 408          {
+ 409   1              Display_Full_Line_Up(1);
+ 410   1              Display_Full_Line_Up(5);
+ 411   1              
+ 412   1              Display_Page00_01_ParaArea();   //显示固定信息
+ 413   1              
+ 414   1              BUTTON1_Display2_Fanhui();              //显示“返回”
+ 415   1              BUTTON2_Display1_QueRen();              //显示“确定”
+ 416   1              Display_Full_Line_Down(12);
+ 417   1              Display_Full_Line_Left(1);
+ 418   1              Display_Full_Line_Right(192);
+ 419   1              
+ 420   1              Display_Page01_00_ZDKJ();
+ 421   1              
+ 422   1      }
+ 423          
+ 424          void LCD_Diaplay_Page(uchar page, uchar level)
+ 425          {
+ 426   1              clear_screen();
+C51 COMPILER V9.00   MAIN                                                                  06/06/2019 08:04:34 PAGE 8   
+
+ 427   1              if(page == 0)
+ 428   1                      {
+ 429   2                              switch(level)
+ 430   2                              {
+ 431   3                                      case 0: Disp_Page_00_00();break;
+ 432   3                                      case 1: Disp_Page_00_01();break;
+ 433   3                                      case 2: Disp_Page_00_02();break;
+ 434   3      //                              case 3: Disp_Page_00_03();break;
+ 435   3                                      default: break;
+ 436   3                              }
+ 437   2                      }
+ 438   1                      else
+ 439   1                              {;}
+ 440   1              if(page == 1)
+ 441   1                      {
+ 442   2                              switch(level)
+ 443   2                              {
+ 444   3                                      case 0: Disp_Page_01_00();break;
+ 445   3                                      case 1: Disp_Page_01_01();break;
+ 446   3                                      case 2: Disp_Page_01_02();break;
+ 447   3                                      case 3: Disp_Page_01_03();break;
+ 448   3                                      default: break;
+ 449   3                              }
+ 450   2                      }
+ 451   1                      else
+ 452   1                              {;}
+ 453   1      }
+ 454          
+ 455          
+ 456          //void LCD_Test1(void)
+ 457          //{
+ 458          //      clear_screen();
+ 459          //      Display_Full_Line_Up(1);
+ 460          //      Display_Full_Line_Down(4);
+ 461          //      Display_Full_Line_Down(12);
+ 462          //      Display_Full_Line_Left(1);
+ 463          //      Display_Full_Line_Right(192);
+ 464          //}
+ 465          
+ 466          void UartInit(void)             //9600bps@24.000MHz
+ 467          {
+ 468   1              SCON    = 0x50;         //8位数据,可变波特率
+ 469   1              AUXR    |= 0x40;                //定时器1时钟为Fosc,即1T
+ 470   1              AUXR    &= 0xFE;                //串口1选择定时器1为波特率发生器
+ 471   1              TMOD    &= 0x0F;                //设定定时器1为16位自动重装方式
+ 472   1              TL1             = 0x8F;         //设定定时初值
+ 473   1              TH1             = 0xFD;         //设定定时初值
+ 474   1              ET1             = 0;            //禁止定时器1中断
+ 475   1              TR1             = 1;            //启动定时器1
+ 476   1              ES              = 1;                  /*打开串口中断*/
+ 477   1              EA              = 1;                  /*打开总中断*/
+ 478   1      }
+ 479          
+ 480          
+ 481          //主函数 参数：无
+ 482          void main()
+ 483          {
+ 484   1              IO_INIT();                                                                              //IO初始化
+ 485   1              UartInit();
+ 486   1              INIT_LCD();
+ 487   1              delay_ms(200);                                                          //上电延时100ms
+ 488   1              clear_screen();
+C51 COMPILER V9.00   MAIN                                                                  06/06/2019 08:04:34 PAGE 9   
+
+ 489   1      //      LED2 = 1;
+ 490   1      //      LCD_Test1();
+ 491   1      //      disp_32x32(1,1,Hanzi_3232_XST_Xiang);
+ 492   1      //      disp_16x16(1,4,Hanzi_1616_XST_Ding);
+ 493   1      //      LCD_Diaplay_Page(0,1);
+ 494   1      //      LCD_Test();
+ 495   1              
+ 496   1              while(1)                                                                                        //大循环
+ 497   1              {;}
+ 498   1      }
+ 499          
+ 500          void UART_SER (void) interrupt 4 //串行中断服务程序
+ 501          {
+ 502   1          unsigned char Temp, temp2;          //定义临时变量 
+ 503   1         
+ 504   1         if(RI)                        //判断是接收中断产生
+ 505   1          {
+ 506   2                      RI=0;                      //标志位清零
+ 507   2                      Temp = SBUF;                 //读入缓冲区的值
+ 508   2      
+ 509   2                      if((Temp & 0xF0) == 0x30)               //0011 0000
+ 510   2                              {
+ 511   3                        temp2 = (Temp & 0x0F);
+ 512   3                        LCD_Diaplay_Page(0,temp2);
+ 513   3                              }          
+ 514   2                      if((Temp & 0xF0) == 0x40)               //0100 0000
+ 515   2                              {
+ 516   3                        temp2 = (Temp & 0x0F);
+ 517   3                        LCD_Diaplay_Page(1,temp2);
+ 518   3                              }          
+ 519   2                              if(Temp == 0x50)
+ 520   2                                      {
+ 521   3                                              Motor_Parameter.Motor_Direction = 0;
+ 522   3                                              Motor_Direction_Update();
+ 523   3                                      }
+ 524   2                              if(Temp == 0x51)
+ 525   2                                      {
+ 526   3                                              Motor_Parameter.Motor_Direction = 1;
+ 527   3                                              Motor_Direction_Update();
+ 528   3                                      }
+ 529   2      
+ 530   2               }
+ 531   1         if(TI)                        //如果是发送标志位，清零
+ 532   1           TI=0;
+ 533   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   3227    ----
+   CONSTANT SIZE    =   1696    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     25     114
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,38 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+\\Mac\Home\Documents\work\otherProject\soTech\485Lcd\design\sw\prj\doorScreen.uvproj
+Project File Date:  06/06/2019
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling 19296p1.C...
+..\SRC\19296P1.C(25): error C202: 'P3': undefined identifier
+..\SRC\19296P1.C(26): error C202: 'P3': undefined identifier
+..\SRC\19296P1.C(27): error C202: 'P3': undefined identifier
+..\SRC\19296P1.C(28): error C202: 'P3': undefined identifier
+..\SRC\19296P1.C(29): error C202: 'P0': undefined identifier
+..\SRC\19296P1.C(66): error C202: 'LCD19296_CS1': undefined identifier
+..\SRC\19296P1.C(67): error C202: 'LCD19296_RS': undefined identifier
+..\SRC\19296P1.C(69): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\19296P1.C(71): error C202: 'LCD19296_WR': undefined identifier
+..\SRC\19296P1.C(72): error C202: 'P2': undefined identifier
+..\SRC\19296P1.C(73): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\19296P1.C(75): error C202: 'LCD19296_CS1': undefined identifier
+..\SRC\19296P1.C(76): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\19296P1.C(82): error C202: 'LCD19296_CS1': undefined identifier
+..\SRC\19296P1.C(83): error C202: 'LCD19296_RS': undefined identifier
+..\SRC\19296P1.C(84): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\19296P1.C(86): error C202: 'LCD19296_WR': undefined identifier
+..\SRC\19296P1.C(87): error C202: 'P2': undefined identifier
+..\SRC\19296P1.C(88): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\19296P1.C(90): error C202: 'LCD19296_CS1': undefined identifier
+..\SRC\19296P1.C(91): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\19296P1.C(96): error C202: 'LCD19296_RST': undefined identifier
+..\SRC\19296P1.C(98): error C202: 'LCD19296_RST': undefined identifier
+compiling main.c...
+assembling STARTUP.A51...
+compiling UART.C...
+Target not created
