@@ -4,6 +4,136 @@
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
 \\Mac\Home\Documents\work\otherProject\soTech\485Lcd\design\sw\prj\doorScreen.uvproj
-Project File Date:  06/08/2019
+Project File Date:  06/12/2019
 
 <h2>Output:</h2>
+Build target 'Target 1'
+compiling 19296p1.C...
+..\SRC\DRV\19296P1.C(32): error C202: 'P4': undefined identifier
+..\SRC\DRV\19296P1.C(33): error C202: 'P3': undefined identifier
+..\SRC\DRV\19296P1.C(34): error C202: 'P2': undefined identifier
+..\SRC\DRV\19296P1.C(35): error C202: 'P3': undefined identifier
+..\SRC\DRV\19296P1.C(36): error C202: 'P5': undefined identifier
+..\SRC\DRV\19296P1.C(37): error C202: 'P5': undefined identifier
+..\SRC\DRV\19296P1.C(85): error C202: 'P35': undefined identifier
+..\SRC\DRV\19296P1.C(87): error C202: 'P35': undefined identifier
+..\SRC\DRV\19296P1.C(89): error C202: 'P27': undefined identifier
+..\SRC\DRV\19296P1.C(91): error C202: 'P27': undefined identifier
+..\SRC\DRV\19296P1.C(93): error C202: 'P26': undefined identifier
+..\SRC\DRV\19296P1.C(95): error C202: 'P26': undefined identifier
+..\SRC\DRV\19296P1.C(97): error C202: 'P25': undefined identifier
+..\SRC\DRV\19296P1.C(99): error C202: 'P25': undefined identifier
+..\SRC\DRV\19296P1.C(101): error C202: 'P24': undefined identifier
+..\SRC\DRV\19296P1.C(103): error C202: 'P24': undefined identifier
+..\SRC\DRV\19296P1.C(105): error C202: 'P23': undefined identifier
+..\SRC\DRV\19296P1.C(107): error C202: 'P23': undefined identifier
+..\SRC\DRV\19296P1.C(109): error C202: 'P22': undefined identifier
+..\SRC\DRV\19296P1.C(111): error C202: 'P22': undefined identifier
+..\SRC\DRV\19296P1.C(113): error C202: 'P21': undefined identifier
+..\SRC\DRV\19296P1.C(115): error C202: 'P21': undefined identifier
+..\SRC\DRV\19296P1.C(124): error C202: 'LCD19296_CS1': undefined identifier
+..\SRC\DRV\19296P1.C(125): error C202: 'LCD19296_RS': undefined identifier
+..\SRC\DRV\19296P1.C(127): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\DRV\19296P1.C(129): error C202: 'LCD19296_WR': undefined identifier
+..\SRC\DRV\19296P1.C(132): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\DRV\19296P1.C(134): error C202: 'LCD19296_CS1': undefined identifier
+..\SRC\DRV\19296P1.C(135): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\DRV\19296P1.C(141): error C202: 'LCD19296_CS1': undefined identifier
+..\SRC\DRV\19296P1.C(142): error C202: 'LCD19296_RS': undefined identifier
+..\SRC\DRV\19296P1.C(143): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\DRV\19296P1.C(145): error C202: 'LCD19296_WR': undefined identifier
+..\SRC\DRV\19296P1.C(148): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\DRV\19296P1.C(150): error C202: 'LCD19296_CS1': undefined identifier
+..\SRC\DRV\19296P1.C(151): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\DRV\19296P1.C(156): error C202: 'LCD19296_IF0': undefined identifier
+..\SRC\DRV\19296P1.C(157): error C202: 'LCD19296_RST': undefined identifier
+..\SRC\DRV\19296P1.C(159): error C202: 'LCD19296_RST': undefined identifier
+compiling isr.c...
+compiling uartDrv.c...
+..\SRC\DRV\UARTDRV.H(5): warning C318: can't open file 'fifo.h'
+..\SRC\DRV\UARTDRV.H(24): error C141: syntax error near ','
+..\SRC\DRV\UARTDRV.H(25): error C141: syntax error near ','
+..\SRC\DRV\UARTDRV.C(23): error C129: missing ';' before 'uartTxFifo_Obj'
+assembling STARTUP.A51...
+compiling fifo.c...
+..\SRC\SRV\FIFO.C(27): error C241: '_fifoInit': auto segment too large
+..\SRC\SRV\FIFO.C(35): error C141: syntax error near 'unsigned'
+..\SRC\SRV\FIFO.C(35): error C202: 'emptyData': undefined identifier
+compiling uartNetwork.c...
+..\SRC\SRV\../DRV/UARTDRV.H(24): error C141: syntax error near ','
+..\SRC\SRV\../DRV/UARTDRV.H(25): error C141: syntax error near ','
+..\SRC\SRV\UARTNETWORK.H(20): error C141: syntax error near '['
+..\SRC\SRV\UARTNETWORK.H(20): error C141: syntax error near '['
+..\SRC\SRV\UARTNETWORK.H(22): error C141: syntax error near '}'
+..\SRC\SRV\UARTNETWORK.H(25): error C141: syntax error near 'msg_type'
+..\SRC\SRV\UARTNETWORK.H(25): error C129: missing ';' before 'msg'
+Target not created
+Build target 'Target 1'
+compiling 19296p1.C...
+..\SRC\DRV\19296P1.C(32): error C202: 'P4': undefined identifier
+..\SRC\DRV\19296P1.C(33): error C202: 'P3': undefined identifier
+..\SRC\DRV\19296P1.C(34): error C202: 'P2': undefined identifier
+..\SRC\DRV\19296P1.C(35): error C202: 'P3': undefined identifier
+..\SRC\DRV\19296P1.C(36): error C202: 'P5': undefined identifier
+..\SRC\DRV\19296P1.C(37): error C202: 'P5': undefined identifier
+..\SRC\DRV\19296P1.C(85): error C202: 'P35': undefined identifier
+..\SRC\DRV\19296P1.C(87): error C202: 'P35': undefined identifier
+..\SRC\DRV\19296P1.C(89): error C202: 'P27': undefined identifier
+..\SRC\DRV\19296P1.C(91): error C202: 'P27': undefined identifier
+..\SRC\DRV\19296P1.C(93): error C202: 'P26': undefined identifier
+..\SRC\DRV\19296P1.C(95): error C202: 'P26': undefined identifier
+..\SRC\DRV\19296P1.C(97): error C202: 'P25': undefined identifier
+..\SRC\DRV\19296P1.C(99): error C202: 'P25': undefined identifier
+..\SRC\DRV\19296P1.C(101): error C202: 'P24': undefined identifier
+..\SRC\DRV\19296P1.C(103): error C202: 'P24': undefined identifier
+..\SRC\DRV\19296P1.C(105): error C202: 'P23': undefined identifier
+..\SRC\DRV\19296P1.C(107): error C202: 'P23': undefined identifier
+..\SRC\DRV\19296P1.C(109): error C202: 'P22': undefined identifier
+..\SRC\DRV\19296P1.C(111): error C202: 'P22': undefined identifier
+..\SRC\DRV\19296P1.C(113): error C202: 'P21': undefined identifier
+..\SRC\DRV\19296P1.C(115): error C202: 'P21': undefined identifier
+..\SRC\DRV\19296P1.C(124): error C202: 'LCD19296_CS1': undefined identifier
+..\SRC\DRV\19296P1.C(125): error C202: 'LCD19296_RS': undefined identifier
+..\SRC\DRV\19296P1.C(127): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\DRV\19296P1.C(129): error C202: 'LCD19296_WR': undefined identifier
+..\SRC\DRV\19296P1.C(132): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\DRV\19296P1.C(134): error C202: 'LCD19296_CS1': undefined identifier
+..\SRC\DRV\19296P1.C(135): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\DRV\19296P1.C(141): error C202: 'LCD19296_CS1': undefined identifier
+..\SRC\DRV\19296P1.C(142): error C202: 'LCD19296_RS': undefined identifier
+..\SRC\DRV\19296P1.C(143): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\DRV\19296P1.C(145): error C202: 'LCD19296_WR': undefined identifier
+..\SRC\DRV\19296P1.C(148): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\DRV\19296P1.C(150): error C202: 'LCD19296_CS1': undefined identifier
+..\SRC\DRV\19296P1.C(151): error C202: 'LCD19296_RD': undefined identifier
+..\SRC\DRV\19296P1.C(156): error C202: 'LCD19296_IF0': undefined identifier
+..\SRC\DRV\19296P1.C(157): error C202: 'LCD19296_RST': undefined identifier
+..\SRC\DRV\19296P1.C(159): error C202: 'LCD19296_RST': undefined identifier
+compiling isr.c...
+compiling uartDrv.c...
+..\SRC\DRV\UARTDRV.H(24): error C141: syntax error near ','
+..\SRC\DRV\UARTDRV.H(25): error C141: syntax error near ','
+..\SRC\DRV\UARTDRV.C(32): error C141: syntax error near ';'
+..\SRC\DRV\UARTDRV.C(33): error C141: syntax error near 'networkChannel_type'
+..\SRC\DRV\UARTDRV.C(33): error C202: 'i': undefined identifier
+..\SRC\DRV\UARTDRV.C(34): error C202: 'i': undefined identifier
+..\SRC\DRV\UARTDRV.C(36): error C202: 'i': undefined identifier
+..\SRC\DRV\UARTDRV.C(44): error C202: 'i': undefined identifier
+..\SRC\DRV\UARTDRV.C(44): error C141: syntax error near 'data'
+..\SRC\DRV\UARTDRV.C(45): error C141: syntax error near 'data'
+..\SRC\DRV\UARTDRV.C(69): error C141: syntax error near ','
+..\SRC\DRV\UARTDRV.C(75): error C141: syntax error near 'data'
+assembling STARTUP.A51...
+compiling fifo.c...
+..\SRC\SRV\FIFO.C(27): error C241: '_fifoInit': auto segment too large
+..\SRC\SRV\FIFO.C(35): error C141: syntax error near 'unsigned'
+..\SRC\SRV\FIFO.C(35): error C202: 'emptyData': undefined identifier
+compiling uartNetwork.c...
+..\SRC\SRV\../DRV/UARTDRV.H(24): error C141: syntax error near ','
+..\SRC\SRV\../DRV/UARTDRV.H(25): error C141: syntax error near ','
+..\SRC\SRV\UARTNETWORK.H(20): error C141: syntax error near '['
+..\SRC\SRV\UARTNETWORK.H(20): error C141: syntax error near '['
+..\SRC\SRV\UARTNETWORK.H(22): error C141: syntax error near '}'
+..\SRC\SRV\UARTNETWORK.H(25): error C141: syntax error near 'msg_type'
+..\SRC\SRV\UARTNETWORK.H(25): error C129: missing ';' before 'msg'
+Target not created

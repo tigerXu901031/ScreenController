@@ -344,37 +344,70 @@
       </TargetOption>
       <Groups>
         <Group>
-          <GroupName>src</GroupName>
+          <GroupName>drv</GroupName>
           <Files>
             <File>
               <FileName>19296p1.C</FileName>
               <FileType>1</FileType>
-              <FilePath>..\src\19296p1.C</FilePath>
+              <FilePath>..\src\drv\19296p1.C</FilePath>
             </File>
             <File>
-              <FileName>main.c</FileName>
+              <FileName>isr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\src\main.c</FilePath>
+              <FilePath>..\src\drv\isr.c</FilePath>
+            </File>
+            <File>
+              <FileName>uartDrv.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\drv\uartDrv.c</FilePath>
+            </File>
+            <File>
+              <FileName>isr.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\src\drv\isr.h</FilePath>
             </File>
             <File>
               <FileName>STARTUP.A51</FileName>
               <FileType>2</FileType>
-              <FilePath>..\src\STARTUP.A51</FilePath>
+              <FilePath>..\src\drv\STARTUP.A51</FilePath>
             </File>
             <File>
               <FileName>STC8.H</FileName>
               <FileType>5</FileType>
-              <FilePath>..\src\STC8.H</FilePath>
+              <FilePath>..\src\drv\STC8.H</FilePath>
             </File>
             <File>
-              <FileName>UART.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\src\UART.C</FilePath>
-            </File>
-            <File>
-              <FileName>UART.H</FileName>
+              <FileName>uartDrv.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\src\UART.H</FilePath>
+              <FilePath>..\src\drv\uartDrv.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>app</GroupName>
+        </Group>
+        <Group>
+          <GroupName>srv</GroupName>
+          <Files>
+            <File>
+              <FileName>fifo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\srv\fifo.c</FilePath>
+            </File>
+            <File>
+              <FileName>uartNetwork.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\srv\uartNetwork.c</FilePath>
+            </File>
+            <File>
+              <FileName>fifo.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\src\srv\fifo.h</FilePath>
+            </File>
+            <File>
+              <FileName>uartNetwork.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\src\srv\uartNetwork.h</FilePath>
             </File>
           </Files>
         </Group>

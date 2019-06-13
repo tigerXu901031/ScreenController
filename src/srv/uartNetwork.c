@@ -36,7 +36,64 @@ static void cmdConstruct(msg_type *msgObj, unsigned int newData, unsigned int *d
 
 static void readOpMsgConstruct(msg_type *msgObj, unsigned int newData, unsigned int *dataByteCnt)
 {
-    /*  */
+    /* Default read message length is 2 byte
+       except for the higher register address
+       byte was 0x30 
+     */
+    static unsigned int dataLen = 2;
+    unsigned int crc[2];
+
+    /* increment the data byte counter */
+    *dataByteCnt ++;
+    
+    /* in this switch case the data counter start from the 3rd byte
+       end to the start of */
+    switch(*dataByteCnt)
+    {
+        case 3:
+            /* higher byte of the 16-bit address */
+            msgObj->regAdd[0] = newData;
+            
+            break;
+        case 4:
+            /* lower byte of the 16-bit address */
+            msgObj->regAdd[1] = newData;
+            if(msgObj->regAdd[1] == 0x30)
+            {
+                dataLen = msgObj->regAdd[1];
+            }
+            else{
+                /* NOP */
+            }
+            break;
+        case 5:
+            /* higher byte of the 1st 16-bit data */
+            msgObj->data[0] = newData;
+            break;
+        case 6:
+            /* lower byte of the 1st 16-bit data */
+            msgObj->data[1] = newData;
+            break;
+        case 7:
+            /* higher byte of the 1st 16-bit data */
+            msgObj->data[2] = newData;
+            break;
+
+    }
+
+    /* if the current byte counter equals to the last data
+       then do the crc calculation and set the new data
+       available
+     */
+    if(dataByteCnt - 4 == dataLen)
+    {
+        
+        crc16(msgObj, *dataByteCnt, &crc);
+        msgObj->crc[0] = crc[0];
+        msgObj->crc[1] = crc[1];
+        msgObj->newMsgAvailable = 1;
+        *dataByteCnt = 0;
+    }
 }
 
 static void readFailMsgConstruct(msg_type *msgObj, unsigned int newData,unsigned int *dataByteCnt)
@@ -87,18 +144,20 @@ void networkInit()
 void networkUpdate()
 {
     networkGateway();
+
+    uartDrvUpdate();
 }
 
-void setTxMsgAndDisassemble()
+void setTxMsgAndDisassemble(msg_type *msgObj)
 {
     
 }
 
-void getRxMsgAndAssemble()
+void getRxMsgAndAssemble(msg_type *MsgObj)
 {
     static unsigned int dataByteCnt = 0;
     static unsigned int newDatBuf = 0;
-    static msgBuf_type msgBuf;
+    static msgBuf_type msgBuf[2];
 
     networkChannel_type i = 0;
     for(i = 0; i < max_networkChannel; i ++)
@@ -111,40 +170,40 @@ void getRxMsgAndAssemble()
             if(dataByteCnt == 0)
             {
                 /* node index byte */
-                nodeIdConstruct(&msgBuf.msg, newDatBuf, &dataByteCnt);
+                nodeIdConstruct(&msgBuf[i].msg, newDatBuf, &dataByteCnt);
             }
             else if(dataByteCnt == 1)
             {
                 /* command byte */
-                cmdConstruct(&msgBuf.msg, newDatBuf, &dataByteCnt);
+                cmdConstruct(&msgBuf[i].msg, newDatBuf, &dataByteCnt);
                 }
-                else
+            else
             {
                 /* consecutive byte */
-                switch(msgBuf.msg.cmd)
+                switch(msgBuf[i].msg.cmd)
                 {
                     case msgClass_readOp:
-                        readOpMsgConstruct(&msgBuf.msg, newDatBuf, &dataByteCnt);
+                        readOpMsgConstruct(&msgBuf[i].msg, newDatBuf, &dataByteCnt);
                     break;
 
                     case msgClass_readFail:
-                        readFailMsgConstruct(&msgBuf.msg, newDatBuf, &dataByteCnt);
+                        readFailMsgConstruct(&msgBuf[i].msg, newDatBuf, &dataByteCnt);
                     break;
 
                     case msgClass_writeOp:
-                        writeOpMsgConstruct(&msgBuf.msg, newDatBuf, &dataByteCnt);
+                        writeOpMsgConstruct(&msgBuf[i].msg, newDatBuf, &dataByteCnt);
                     break;
 
                     case msgClass_writeFail:
-                        writeFailMsgConstruct(&msgBuf.msg, newDatBuf, &dataByteCnt);
+                        writeFailMsgConstruct(&msgBuf[i].msg, newDatBuf, &dataByteCnt);
                     break;
 
                     case msgClass_dataMonitor:
-                        dataMonitorMsgConstruct(&msgBuf.msg, newDatBuf, &dataByteCnt);
+                        dataMonitorMsgConstruct(&msgBuf[i].msg, newDatBuf, &dataByteCnt);
                     break;
 
                     case msgClass_heartBeat:
-                        dataMonitorMsgConstruct(&msgBuf.msg, newDatBuf, &dataByteCnt);
+                        dataMonitorMsgConstruct(&msgBuf[i].msg, newDatBuf, &dataByteCnt);
                     break;
 
                     default:
@@ -152,6 +211,22 @@ void getRxMsgAndAssemble()
                            is match */
                     break;
                 }
+            }
+            /* Check if the new message is assembled finished and available,
+               if available then output the read buffer
+             */
+            if(msgBuf[i].msg.newMsgAvailable == 1)
+            {
+                memcpy(MsgObj, &msgBuf[i].msg, sizeof(MsgObj));
+                /* after copy the data into the read buffer, clear the local
+                   static new message available
+                 */
+                msgBuf[i].msg.newMsgAvailable = 0;
+            }
+            /* If new message not available then clear  */
+            else
+            {
+                MsgObj->newMsgAvailable = 0;
             }
         }
         else
@@ -162,7 +237,7 @@ void getRxMsgAndAssemble()
 
 }
 
-void crc16()
+void crc16(unsigned int *dataField, unsigned int len, unsigned int *crcField)
 {
 
 }

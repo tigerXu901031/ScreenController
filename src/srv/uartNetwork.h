@@ -17,13 +17,13 @@ typedef struct{
     unsigned int nodeId;
     msgClass_type cmd;
     unsigned int regAdd[2];
-    unsigned int data[10];
+    unsigned int data[16];
     unsigned int crc[2];
 }msg_type;
 
 typedef union{
     msg_type msg;
-    unsigned int msgFull[10];
+    unsigned int msgFull[23];
 }msgBuf_type;
 
 #endif

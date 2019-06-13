@@ -63,7 +63,7 @@ void uartDrvInit()
 
 void uartDrvUpdate()
 {
-
+    sendDataCyclic();
 }
 
 uartSts_type setUartSendBuf(unsigned int *data, networkChannel_type nwChn)

@@ -2,7 +2,7 @@
 #define __UARTDRV_H_+
 
 #include "STC8.h"
-#include "fifo.h"
+#include "../srv/fifo.h"
 
 #define UART_DATA_LEN_IN_BYTE   1
 
@@ -21,6 +21,7 @@ typedef enum{
 }networkChannel_type;
 
 extern void uartInit();
+extern void uartDrvUpdate();
 extern uartSts_type setUartSendBuf(unsigned int *data, networkChannel_type nwChn);
 extern uartSts_type getUartReceiveBuf(unsigned int *data, networkChannel_type nwChn);
 extern unsigned char isUartNewDataAvailable(networkChannel_type nwChn);
