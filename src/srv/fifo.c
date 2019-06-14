@@ -32,6 +32,7 @@ fifoSts_type getFifoData(fifo_type *fifoObj, void *newData)
     
     newData = (unsigned int)newData;
 
+    /* TODO: need to reconsider */
     unsigned int emptyData[fifoObj->unitLen];
     
     /* If the current data pointer is higher than 0

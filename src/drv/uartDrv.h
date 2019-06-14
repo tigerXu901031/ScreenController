@@ -15,15 +15,15 @@ typedef enum uartSts{
 }uartSts_type;
 
 typedef enum{
-    public_networkChannel = 0,
-    private_networkChannel,
-    max_networkChannel,
-}networkChannel_type;
+    busIdx_public = 0,
+    busIdx_private,
+    busIdx_max,
+}busIdx_type;
 
 extern void uartInit();
 extern void uartDrvUpdate();
-extern uartSts_type setUartSendBuf(unsigned int *data, networkChannel_type nwChn);
-extern uartSts_type getUartReceiveBuf(unsigned int *data, networkChannel_type nwChn);
-extern unsigned char isUartNewDataAvailable(networkChannel_type nwChn);
+extern uartSts_type setUartSendBuf(unsigned int *data, busIdx_type nwChn);
+extern uartSts_type getUartReceiveBuf(unsigned int *data, busIdx_type nwChn);
+extern unsigned char isUartNewDataAvailable(busIdx_type nwChn);
 
 #endif

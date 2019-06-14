@@ -12,26 +12,29 @@
         ...
     
    Description:
-        Use one level fifo buffer when receive and transmit data in byte
-        level
+        - Use one level fifo buffer when receive and transmit data in byte
+          level
+        - Baud rate: 9600bps
+        - one start bit, one stop bit, 8 data bit
+        
    -----------------------------------------------------------------------
 */
 
 #include "uartDrv.h"
 
 uartSts_type uartGlobalSts;
-fifo_type uartTxFifo_Obj[max_networkChannel];
-fifo_type uartRxFifo_Obj[max_networkChannel];
+fifo_type uartTxFifo_Obj[busIdx_max];
+fifo_type uartRxFifo_Obj[busIdx_max];
 
-/* This function should be called cyclic in TODO: ??? ms
-   and should be invoke in a faster scheduling rate than
-   setUartSendBuf
+/* This function should be called cyclic in TODO: 1 ms
+   (Not final decided yet) and will be called in a timer
+   interrupt
  */
 static void sendDataCyclic()
 {
     unsigned int data;
-    networkChannel_type i = 0;
-    for(i = 0; i < max_networkChannel; i ++)
+    busIdx_type i = 0;
+    for(i = 0; i < busIdx_max; i ++)
     {
         if(uartTxFifo_Obj[i].curPtr > 0)
         {
@@ -55,7 +58,7 @@ void uartDrvInit()
 
 
     /* Create an FIFO object buffer uart data */
-    for(i = 0; i < max_networkChannel; i ++)
+    for(i = 0; i < busIdx_max; i ++)
     {
         uartTxFifo_Obj[i] = fifoInit(UART_DATA_LEN_IN_BYTE);
     }
@@ -66,7 +69,7 @@ void uartDrvUpdate()
     sendDataCyclic();
 }
 
-uartSts_type setUartSendBuf(unsigned int *data, networkChannel_type nwChn)
+uartSts_type setUartSendBuf(unsigned int *data, busIdx_type nwChn)
 {
     fifoSts_type writeOpsts;
     uartSts_type returnVal;
@@ -83,7 +86,7 @@ uartSts_type setUartSendBuf(unsigned int *data, networkChannel_type nwChn)
     return returnVal;
 }
 
-uartSts_type getUartReceiveBuf(unsigned int *data, networkChannel_type nwChn)
+uartSts_type getUartReceiveBuf(unsigned int *data, busIdx_type nwChn)
 {
     fifoSts_type readOpsts;
     uartSts_type returnVal;
@@ -120,7 +123,7 @@ void uartInterruptService()
     }
 }
 
-unsigned char isUartNewDataAvailable(networkChannel_type nwChn)
+unsigned char isUartNewDataAvailable(busIdx_type nwChn)
 {
     if(uartRxFifo_Obj[nwChn].curPtr > 0)
     {

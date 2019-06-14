@@ -26,4 +26,7 @@ typedef union{
     unsigned int msgFull[23];
 }msgBuf_type;
 
+extern void networkInit();
+extern void networkUpdate();
+
 #endif
