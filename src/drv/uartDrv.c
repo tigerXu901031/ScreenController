@@ -47,6 +47,9 @@ static void sendDataCyclic()
                 getFifoData(&uartTxFifo_Obj[i], &data);
                 SBUF = data;
             }
+            else{
+                /* do nothing */
+            }
         }
     }
 }
@@ -54,8 +57,18 @@ static void sendDataCyclic()
 void uartDrvInit()
 {
     unsigned char i;
-    /* TODO: Configure the uart register */
 
+    /* 9600bps @ 24Mhz */
+    SCON	= 0x50;         // uart 1 mode 1		
+	AUXR	|= 0x40;		// choose timer 1, Fosc 1T
+	AUXR	&= 0xFE;		// uart 1 choose timer 1 as baud rate generator
+	TMOD	&= 0x0F;		// set timer1 as auto-reload
+	TL1		= 0x8F;		    // initial value for timer 1
+	TH1		= 0xFD;		    // initial value for timer 1
+	ET1		= 0;		    // inhibit interrupt for timer
+	TR1		= 1;		    // start timer 1
+	ES		= 1;            // enable uart interrupt
+	EA		= 1;            // enable global interrupt
 
     /* Create an FIFO object buffer uart data */
     for(i = 0; i < busIdx_max; i ++)
@@ -104,7 +117,7 @@ uartSts_type getUartReceiveBuf(unsigned int *data, busIdx_type nwChn)
     return returnVal;
 }
 
-void uartInterruptService()
+void uartInterruptService() //interrupt 4
 {
     /* TODO this interrupt shoud be copy for two channel */
     unsigned char data;

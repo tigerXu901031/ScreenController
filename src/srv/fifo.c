@@ -17,6 +17,16 @@
 */
 #include "fifo.h"
 
+void clearDataBlock(unsigned int *startAdd, unsigned int length)
+{
+    unsigned int i = 0;
+    for(i = 0; i < length; i ++)
+    {
+        *startAdd = 0x00;
+        *startAdd ++;
+    }
+}
+
 fifo_type fifoInit(unsigned int unitLen)
 {
     fifo_type fifoObj;
@@ -31,9 +41,6 @@ fifoSts_type getFifoData(fifo_type *fifoObj, void *newData)
     fifoSts_type returnVal = readFail;
     
     newData = (unsigned int)newData;
-
-    /* TODO: need to reconsider */
-    unsigned int emptyData[fifoObj->unitLen];
     
     /* If the current data pointer is higher than 0
        it means there has valid data to output */
@@ -43,13 +50,13 @@ fifoSts_type getFifoData(fifo_type *fifoObj, void *newData)
         memcpy(newData, &fifoObj->fifoData[0], fifoObj->unitLen);
         
         /* Clear the first item content */
-        memcpy(&fifoObj->fifoData[0], &emptyData, fifoObj->unitLen);
+        clearDataBlock(&fifoObj->fifoData[0], fifoObj->unitLen);
 
         /* Move all the existing items to the one position forward */
         memcpy(&fifoObj->fifoData[0], &fifoObj->fifoData[1],fifoObj->curPtr - 1);
 
         /* Clear the last valid item content */
-        memcpy(&fifoObj->fifoData[fifoObj->curPtr], &emptyData, fifoObj->unitLen);
+        clearDataBlock(&fifoObj->fifoData[fifoObj->curPtr], fifoObj->unitLen);
 
         /* Move the current pointer of the FIFO */
         fifoObj->curPtr --;
@@ -59,7 +66,7 @@ fifoSts_type getFifoData(fifo_type *fifoObj, void *newData)
     /* If the FIFO is empty then return all zero and
     with the readFail state */
     else{
-        memcpy(newData, &emptyData, fifoObj->unitLen);
+        clearDataBlock(newData, fifoObj->unitLen);
         returnVal = readFail;
     }
     return returnVal;
