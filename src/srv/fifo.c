@@ -23,7 +23,18 @@ void clearDataBlock(unsigned int *startAdd, unsigned int length)
     for(i = 0; i < length; i ++)
     {
         *startAdd = 0x00;
-        *startAdd ++;
+        startAdd ++;
+    }
+}
+
+void memcpy(unsigned int *destAdd,unsigned int *sourceAdd, unsigned int length)
+{
+    unsigned int i = 0;
+    for(i = 0; i < length; i ++)
+    {
+        *destAdd = *sourceAdd;
+        destAdd ++;
+        sourceAdd ++;
     }
 }
 
@@ -40,14 +51,14 @@ fifoSts_type getFifoData(fifo_type *fifoObj, void *newData)
 {
     fifoSts_type returnVal = readFail;
     
-    newData = (unsigned int)newData;
+    unsigned int* newDataAdd = (unsigned int*)newData;
     
     /* If the current data pointer is higher than 0
        it means there has valid data to output */
     if(fifoObj->curPtr > 0)
     {
         /* Output the first item in FIFO */
-        memcpy(newData, &fifoObj->fifoData[0], fifoObj->unitLen);
+        memcpy(newDataAdd, &fifoObj->fifoData[0], fifoObj->unitLen);
         
         /* Clear the first item content */
         clearDataBlock(&fifoObj->fifoData[0], fifoObj->unitLen);
@@ -66,7 +77,7 @@ fifoSts_type getFifoData(fifo_type *fifoObj, void *newData)
     /* If the FIFO is empty then return all zero and
     with the readFail state */
     else{
-        clearDataBlock(newData, fifoObj->unitLen);
+        clearDataBlock(newDataAdd, fifoObj->unitLen);
         returnVal = readFail;
     }
     return returnVal;
@@ -76,13 +87,13 @@ fifoSts_type setFifoData(fifo_type *fifoObj, void *newData)
 {
     fifoSts_type returnVal = writeFail;
 
-    newData = (unsigned int)newData;
+    unsigned int* newDataAdd = (unsigned int*)newData;
 
     /* Check whether the FIFO has the spare space to write 
        into the new data */
     if((FIFO_MAX_LENGTH - (fifoObj->unitLen * fifoObj->curPtr)) >= fifoObj->unitLen)
     {
-        memcpy(&fifoObj->fifoData[fifoObj->curPtr], newData, fifoObj->unitLen);
+        memcpy(&fifoObj->fifoData[fifoObj->curPtr], newDataAdd, fifoObj->unitLen);
         fifoObj->curPtr ++;
         returnVal = writeSuccess;
     }

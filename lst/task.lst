@@ -1,0 +1,65 @@
+C51 COMPILER V9.00   TASK                                                                  06/15/2019 19:35:38 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE TASK
+OBJECT MODULE PLACED IN ..\bin\task.obj
+COMPILER INVOKED BY: C:\Program Files\Keil4\C51\BIN\C51.EXE ..\src\main\task.c LARGE BROWSE DEBUG OBJECTEXTEND PRINT(..\
+                    -lst\task.lst) OBJECT(..\bin\task.obj)
+
+line level    source
+
+   1          #include "task.h"
+   2          
+   3          unsigned char testRecByte = 0;
+   4          
+   5          void taskInit()
+   6          {
+   7   1          // IO_INIT();
+   8   1      
+   9   1          // delay_ms(200);
+  10   1      
+  11   1          // INIT_LCD();
+  12   1      
+  13   1          // clear_screen();
+  14   1      
+  15   1          /* need to consider to use cyclic task or not */
+  16   1      
+  17   1          P52 = 0;
+  18   1          networkInit();
+  19   1      
+  20   1          // timerInit();
+  21   1      
+  22   1          
+  23   1          // timer10ms_Enable();
+  24   1      
+  25   1          // timer1ms_Enable();
+  26   1      }
+  27          
+  28          void task1ms()
+  29          {
+  30   1          uartDrvUpdate();
+  31   1      }
+  32          
+  33          void task10ms()
+  34          {
+  35   1      
+  36   1          getUartReceiveBuf(&testRecByte,busIdx_private);
+*** WARNING C182 IN LINE 36 OF ..\SRC\MAIN\TASK.C: pointer to different objects
+  37   1      
+  38   1          setUartSendBuf(&testRecByte, busIdx_private);
+*** WARNING C182 IN LINE 38 OF ..\SRC\MAIN\TASK.C: pointer to different objects
+  39   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     30    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =      1    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)

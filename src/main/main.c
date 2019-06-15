@@ -1,6 +1,10 @@
-#include <STC8.H>
+#include "../drv/STC8.H"
+#include "../app/ParaDefine.H"
+
 #include "intrins.h"
-#include "19296p1.c"
+#include "../drv/19296p1.c"
+#include "../drv/uartDrv.h"
+#include "task.h"
 
 #define  time_ms 400 
 
@@ -50,6 +54,7 @@ typedef struct{
 Machine_Parameters_Def Motor_Parameter;
 uchar char_num[16];
 uchar count=0;
+uint Timer4_Count;
 
 
 void Display_Full_Line_Up(uchar x);
@@ -96,7 +101,7 @@ void Number_Lookup_Table(uchar number);
 void Display_Full_Vertical_Line(uchar line);
 
 
-//¹¦ÄÜ£ºÑÓÊ±×Ó³ÌÐò  ²ÎÊý£ºtime  Îª¶àÉÙms¡£
+//ï¿½ï¿½ï¿½Ü£ï¿½ï¿½ï¿½Ê±ï¿½Ó³ï¿½ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½time  Îªï¿½ï¿½ï¿½ï¿½msï¿½ï¿½
 void delay_ms(unsigned int time)
 {
 	 unsigned int  i;
@@ -105,13 +110,13 @@ void delay_ms(unsigned int time)
 		for(j=0;j<1668;j++);
 }
 
-//¹¦ÄÜ£ºIO³õÊ¼»¯  ²ÎÊý£ºÎÞ
+//ï¿½ï¿½ï¿½Ü£ï¿½IOï¿½ï¿½Ê¼ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void IO_INIT()
 {
-	//±¸×¢£ºI/O¿Ú¸÷ÖÖ²»Í¬µÄ¹¤×÷Ä£Ê½¼°ÅäÖÃ½éÉÜ¼û STC15 ÏµÁÐÎÄµµµÚ400Ò³	
+	//ï¿½ï¿½×¢ï¿½ï¿½I/Oï¿½Ú¸ï¿½ï¿½Ö²ï¿½Í¬ï¿½Ä¹ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½Ã½ï¿½ï¿½Ü¼ï¿½ STC15 Ïµï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½400Ò³	
 //	P3M0 = 0XFF;
-//	P3M1 = 0X00;			//P3¿ÚÅäÖÃÎªÍÆÍìÊä³ö(Ç¿ÉÏÀ­Êä³ö£¬¿É´ï20mA)
-//  P3 = 0X00;										//ÉÏµçºóIO³õÊ¼»¯ÎªµÍµçÆ½	
+//	P3M1 = 0X00;			//P3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(Ç¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É´ï¿½20mA)
+//  P3 = 0X00;										//ï¿½Ïµï¿½ï¿½IOï¿½ï¿½Ê¼ï¿½ï¿½Îªï¿½Íµï¿½Æ½	
 //	P3M0 = 0x10;	//0001 0000
 //	P3M1 = 0x00;	//0000 0000
 //	P3PU |= 0x08;	//0000 1000
@@ -138,7 +143,7 @@ void Display_Full_Line_Down(uchar x)
 	uchar i;
 	if(x==12)
 		{
-			//×îÏÂÃæÒ»ÐÐ
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
 			display_8x8(1,12,Char0808_Down);
 			for(i=2;i<6;i++)
 				{display_8x8((i-1)*8+1,12,Char0808_UpDown);}
@@ -162,7 +167,7 @@ void Display_Full_Vertical_Line(uchar line)
 		{display_8x1(line,i,0xFF);}
 }
 
-void BUTTON1_Display1_FanXiang(void)		//·´Ïò
+void BUTTON1_Display1_FanXiang(void)		//ï¿½ï¿½ï¿½ï¿½
 {
 	uchar i;
 	for(i=2;i<6;i++)
@@ -176,7 +181,7 @@ void BUTTON1_Display1_FanXiang(void)		//·´Ïò
 	Display_Full_Vertical_Line(192); 
 }
 
-void BUTTON1_Display1_ZhengXiang(void)		//ÕýÏò
+void BUTTON1_Display1_ZhengXiang(void)		//ï¿½ï¿½ï¿½ï¿½
 {
 	uchar i;
 	for(i=2;i<6;i++)
@@ -190,7 +195,7 @@ void BUTTON1_Display1_ZhengXiang(void)		//ÕýÏò
 	Display_Full_Vertical_Line(192);
 }
 
-void BUTTON1_Display2_Fanhui(void)		//·µ»Ø
+void BUTTON1_Display2_Fanhui(void)		//ï¿½ï¿½ï¿½ï¿½
 {
 	uchar i;
 	for(i=2;i<6;i++)
@@ -204,7 +209,7 @@ void BUTTON1_Display2_Fanhui(void)		//·µ»Ø
 	Display_Full_Vertical_Line(192);
 }
 
-void BUTTON1_Display3_Caidan(void)		//²Ëµ¥
+void BUTTON1_Display3_Caidan(void)		//ï¿½Ëµï¿½
 {
 	uchar i;
 	for(i=2;i<6;i++)
@@ -218,7 +223,7 @@ void BUTTON1_Display3_Caidan(void)		//²Ëµ¥
 	Display_Full_Vertical_Line(192);
 }
 
-void BUTTON2_Display1_QueRen(void)		//È·ÈÏ
+void BUTTON2_Display1_QueRen(void)		//È·ï¿½ï¿½
 {
 	uchar i;
 	for(i=20;i<24;i++)
@@ -232,7 +237,7 @@ void BUTTON2_Display1_QueRen(void)		//È·ÈÏ
 	Display_Full_Vertical_Line(192);
 }
 
-void BUTTON2_Display2_Fanhui(void)		//·µ»Ø
+void BUTTON2_Display2_Fanhui(void)		//ï¿½ï¿½ï¿½ï¿½
 {
 	uchar i;
 	for(i=20;i<24;i++)
@@ -246,7 +251,7 @@ void BUTTON2_Display2_Fanhui(void)		//·µ»Ø
 	Display_Full_Vertical_Line(192);
 }
 
-void BUTTON2_Display3_Caidan(void)		//²Ëµ¥
+void BUTTON2_Display3_Caidan(void)		//ï¿½Ëµï¿½
 {
 	uchar i;
 	for(i=20;i<24;i++)
@@ -272,35 +277,35 @@ void Display_Encoder_Number(void)
 	uint encoder;
 	encoder = Motor_Parameter.E_encoder;
 	
-	if(encoder>10000)			//×î¸ßÎ»
+	if(encoder>10000)			//ï¿½ï¿½ï¿½Î»
 		{
 			Motor_Parameter.E_Digit1 = encoder/10000;
 			encoder %= 10000;	
 		}
 		else {Motor_Parameter.E_Digit1 = 0;}
 		
-	if(encoder>1000)		//µÚ2Î»
+	if(encoder>1000)		//ï¿½ï¿½2Î»
 		{
 			Motor_Parameter.E_Digit2 = encoder/1000;
 			encoder %= 1000;	
 		}
 		else {Motor_Parameter.E_Digit2 = 0;}
 		
-	if(encoder>100)		//µÚ3Î»
+	if(encoder>100)		//ï¿½ï¿½3Î»
 		{
 			Motor_Parameter.E_Digit3 = encoder/100;
 			encoder %= 100;	
 		}
 		else {Motor_Parameter.E_Digit3 = 0;}
 		
-	if(encoder>10)		//µÚ4Î»
+	if(encoder>10)		//ï¿½ï¿½4Î»
 		{
 			Motor_Parameter.E_Digit4 = encoder/10;
 			encoder %= 10;	
 		}
 		else {Motor_Parameter.E_Digit4 = 0;}
 			
-	Motor_Parameter.E_Digit5 = encoder;		//µÚ5Î»
+	Motor_Parameter.E_Digit5 = encoder;		//ï¿½ï¿½5Î»
 	
 	Number_Lookup_Table(Motor_Parameter.E_Digit1);
 	CHAR_Display_16x8(57, 2,char_num, 0); 
@@ -323,35 +328,35 @@ void Display_Encoder_Number1(void)
 	uint encoder;
 	encoder = Motor_Parameter.E_encoder;
 	
-	if(encoder>10000)			//×î¸ßÎ»
+	if(encoder>10000)			//ï¿½ï¿½ï¿½Î»
 		{
 			Motor_Parameter.E_Digit1 = encoder/10000;
 			encoder %= 10000;	
 		}
 		else {Motor_Parameter.E_Digit1 = 0;}
 		
-	if(encoder>1000)		//µÚ2Î»
+	if(encoder>1000)		//ï¿½ï¿½2Î»
 		{
 			Motor_Parameter.E_Digit2 = encoder/1000;
 			encoder %= 1000;	
 		}
 		else {Motor_Parameter.E_Digit2 = 0;}
 		
-	if(encoder>100)		//µÚ3Î»
+	if(encoder>100)		//ï¿½ï¿½3Î»
 		{
 			Motor_Parameter.E_Digit3 = encoder/100;
 			encoder %= 100;	
 		}
 		else {Motor_Parameter.E_Digit3 = 0;}
 		
-	if(encoder>10)		//µÚ4Î»
+	if(encoder>10)		//ï¿½ï¿½4Î»
 		{
 			Motor_Parameter.E_Digit4 = encoder/10;
 			encoder %= 10;	
 		}
 		else {Motor_Parameter.E_Digit4 = 0;}
 			
-	Motor_Parameter.E_Digit5 = encoder;		//µÚ5Î»
+	Motor_Parameter.E_Digit5 = encoder;		//ï¿½ï¿½5Î»
 	
 	Number_Lookup_Table(Motor_Parameter.E_Digit1);
 	CHAR_Display_16x8(57, 1,char_num, 1); 
@@ -375,35 +380,35 @@ void Display_RunTime(void)
 	uint runtime;
 	runtime = Motor_Parameter.RT_runtime;
 	
-	if(runtime>10000)			//×î¸ßÎ»
+	if(runtime>10000)			//ï¿½ï¿½ï¿½Î»
 		{
 			Motor_Parameter.RT_Digit1 = runtime/10000;
 			runtime %= 10000;	
 		}
 		else {Motor_Parameter.RT_Digit1 = 0;}
 		
-	if(runtime>1000)		//µÚ2Î»
+	if(runtime>1000)		//ï¿½ï¿½2Î»
 		{
 			Motor_Parameter.RT_Digit2 = runtime/1000;
 			runtime %= 1000;	
 		}
 		else {Motor_Parameter.RT_Digit2 = 0;}
 		
-	if(runtime>100)		//µÚ3Î»
+	if(runtime>100)		//ï¿½ï¿½3Î»
 		{
 			Motor_Parameter.RT_Digit3 = runtime/100;
 			runtime %= 100;	
 		}
 		else {Motor_Parameter.RT_Digit3 = 0;}
 		
-	if(runtime>10)		//µÚ4Î»
+	if(runtime>10)		//ï¿½ï¿½4Î»
 		{
 			Motor_Parameter.RT_Digit4 = runtime/10;
 			runtime %= 10;	
 		}
 		else {Motor_Parameter.RT_Digit4 = 0;}
 			
-	Motor_Parameter.RT_Digit5 = runtime;		//µÚ5Î»
+	Motor_Parameter.RT_Digit5 = runtime;		//ï¿½ï¿½5Î»
 	
 	Number_Lookup_Table(Motor_Parameter.RT_Digit1);
 	CHAR_Display_16x8(57, 3,char_num, 0); 
@@ -426,50 +431,50 @@ void Display_I_current(void)
 	uint current_data;
 	current_data = Motor_Parameter.I_current;
 
-	if(current_data>10000)			//×î¸ßÎ»
+	if(current_data>10000)			//ï¿½ï¿½ï¿½Î»
 		{
 			Motor_Parameter.I_Digit1 = current_data/10000;
 			current_data %= 10000;	
 		}
 		else {Motor_Parameter.I_Digit1 = 0;}
 		
-	if(current_data>1000)		//µÚ2Î»
+	if(current_data>1000)		//ï¿½ï¿½2Î»
 		{
 			Motor_Parameter.I_Digit2 = current_data/1000;
 			current_data %= 1000;	
 		}
 		else {Motor_Parameter.I_Digit2 = 0;}
 		
-	if(current_data>100)		//µÚ3Î»
+	if(current_data>100)		//ï¿½ï¿½3Î»
 		{
 			Motor_Parameter.I_Digit3 = current_data/100;
 			current_data %= 100;	
 		}
 		else {Motor_Parameter.I_Digit3 = 0;}
 		
-	if(current_data>10)		//µÚ4Î»
+	if(current_data>10)		//ï¿½ï¿½4Î»
 		{
 			Motor_Parameter.I_Digit4 = current_data/10;
 			current_data %= 10;	
 		}
 		else {Motor_Parameter.I_Digit4 = 0;}
 			
-	Motor_Parameter.I_Digit5 = current_data;		//µÚ5Î»
+	Motor_Parameter.I_Digit5 = current_data;		//ï¿½ï¿½5Î»
 	
 	Number_Lookup_Table(Motor_Parameter.I_Digit1);
-	CHAR_Display_16x8(129, 1,char_num, 1); 			//¼ÓÉÏºá
+	CHAR_Display_16x8(129, 1,char_num, 1); 			//ï¿½ï¿½ï¿½Ïºï¿½
 
 	Number_Lookup_Table(Motor_Parameter.I_Digit2);
-	CHAR_Display_16x8(137, 1,char_num, 1); 			//¼ÓÉÏºá 
+	CHAR_Display_16x8(137, 1,char_num, 1); 			//ï¿½ï¿½ï¿½Ïºï¿½ 
 
 	Number_Lookup_Table(Motor_Parameter.I_Digit3);
-	CHAR_Display_16x8(145, 1,char_num, 1); 			//¼ÓÉÏºá 
+	CHAR_Display_16x8(145, 1,char_num, 1); 			//ï¿½ï¿½ï¿½Ïºï¿½ 
 
 	Number_Lookup_Table(Motor_Parameter.I_Digit4);
-	CHAR_Display_16x8(161, 1,char_num, 1); 			//¼ÓÉÏºá 
+	CHAR_Display_16x8(161, 1,char_num, 1); 			//ï¿½ï¿½ï¿½Ïºï¿½ 
 
 	Number_Lookup_Table(Motor_Parameter.I_Digit5);
-	CHAR_Display_16x8(169, 1,char_num, 1); 			//¼ÓÉÏºá 
+	CHAR_Display_16x8(169, 1,char_num, 1); 			//ï¿½ï¿½ï¿½Ïºï¿½ 
 }
 
 void Display_F_frequency(void)
@@ -477,50 +482,50 @@ void Display_F_frequency(void)
 	uint frequency_data;
 	frequency_data = Motor_Parameter.F_frequency;
 
-	if(frequency_data>10000)			//×î¸ßÎ»
+	if(frequency_data>10000)			//ï¿½ï¿½ï¿½Î»
 		{
 			Motor_Parameter.F_Digit1 = frequency_data/10000;
 			frequency_data %= 10000;	
 		}
 		else {Motor_Parameter.F_Digit1 = 0;}
 		
-	if(frequency_data>1000)		//µÚ2Î»
+	if(frequency_data>1000)		//ï¿½ï¿½2Î»
 		{
 			Motor_Parameter.F_Digit2 = frequency_data/1000;
 			frequency_data %= 1000;	
 		}
 		else {Motor_Parameter.F_Digit2 = 0;}
 		
-	if(frequency_data>100)		//µÚ3Î»
+	if(frequency_data>100)		//ï¿½ï¿½3Î»
 		{
 			Motor_Parameter.F_Digit3 = frequency_data/100;
 			frequency_data %= 100;	
 		}
 		else {Motor_Parameter.F_Digit3 = 0;}
 		
-	if(frequency_data>10)		//µÚ4Î»
+	if(frequency_data>10)		//ï¿½ï¿½4Î»
 		{
 			Motor_Parameter.F_Digit4 = frequency_data/10;
 			frequency_data %= 10;	
 		}
 		else {Motor_Parameter.F_Digit4 = 0;}
 			
-	Motor_Parameter.F_Digit5 = frequency_data;		//µÚ5Î»
+	Motor_Parameter.F_Digit5 = frequency_data;		//ï¿½ï¿½5Î»
 	
 	Number_Lookup_Table(Motor_Parameter.F_Digit1);
-	CHAR_Display_16x8(129, 3,char_num, 0); 			//¼ÓÉÏºá
+	CHAR_Display_16x8(129, 3,char_num, 0); 			//ï¿½ï¿½ï¿½Ïºï¿½
 
 	Number_Lookup_Table(Motor_Parameter.F_Digit2);
-	CHAR_Display_16x8(137, 3,char_num, 0); 			//¼ÓÉÏºá 
+	CHAR_Display_16x8(137, 3,char_num, 0); 			//ï¿½ï¿½ï¿½Ïºï¿½ 
 
 	Number_Lookup_Table(Motor_Parameter.F_Digit3);
-	CHAR_Display_16x8(145, 3,char_num, 0); 			//¼ÓÉÏºá 
+	CHAR_Display_16x8(145, 3,char_num, 0); 			//ï¿½ï¿½ï¿½Ïºï¿½ 
 
 	Number_Lookup_Table(Motor_Parameter.F_Digit4);
-	CHAR_Display_16x8(161, 3,char_num, 0); 			//¼ÓÉÏºá 
+	CHAR_Display_16x8(161, 3,char_num, 0); 			//ï¿½ï¿½ï¿½Ïºï¿½ 
 
 	Number_Lookup_Table(Motor_Parameter.F_Digit5);
-	CHAR_Display_16x8(169, 3,char_num, 0); 			//¼ÓÉÏºá 
+	CHAR_Display_16x8(169, 3,char_num, 0); 			//ï¿½ï¿½ï¿½Ïºï¿½ 
 }
 
 void Motor_Direction_Update(void)
@@ -531,7 +536,7 @@ void Motor_Direction_Update(void)
 			{	BUTTON1_Display1_FanXiang();}
 }
 
-void Display_Page00_00_ParaArea(void)		//Page00_00½çÃæ²ÎÊýÇø
+void Display_Page00_00_ParaArea(void)		//Page00_00ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 {
 	Hanzi_Disp_16x16(1, 2, Hanzi_1616_XST_Bian, 0x04);	//0000 0100
 	Hanzi_Disp_16x16(17, 2, Hanzi_1616_XST_Ma, 0);	//0000 0100
@@ -540,7 +545,7 @@ void Display_Page00_00_ParaArea(void)		//Page00_00½çÃæ²ÎÊýÇø
 	Display_Encoder_Number();
 }
 
-void Display_Page00_01_ParaArea(void)		//Page00_01½çÃæ²ÎÊýÇø
+void Display_Page00_01_ParaArea(void)		//Page00_01ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 {
 	Display_Page00_00_ParaArea();
 	CHAR_Display_16x8(113,1,char_capital_I, 1);
@@ -556,7 +561,7 @@ void Display_Page00_01_ParaArea(void)		//Page00_01½çÃæ²ÎÊýÇø
 	Display_F_frequency();
 }
 
-void Display_Page00_03_ParaArea(void)	//ÏÔÊ¾¹Ì¶¨ÐÅÏ¢
+void Display_Page00_03_ParaArea(void)	//ï¿½ï¿½Ê¾ï¿½Ì¶ï¿½ï¿½ï¿½Ï¢
 {
 	Hanzi_Disp_16x16(1, 1, Hanzi_1616_XST_Bian, 1);	
 	Hanzi_Disp_16x16(17, 1, Hanzi_1616_XST_Ma, 1);	
@@ -583,7 +588,7 @@ void Display_Page00_03_ParaArea(void)	//ÏÔÊ¾¹Ì¶¨ÐÅÏ¢
 	Display_F_frequency();
 }
 
-void Display_Page00_00_MotorDirt(void)	//µç»ú·½Ïò
+void Display_Page00_00_MotorDirt(void)	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 {
 	disp_24x24(49,6,Hanzi_2424_HWZS_Dian);
 	disp_24x24(73,6,Hanzi_2424_HWZS_Ji);
@@ -592,7 +597,7 @@ void Display_Page00_00_MotorDirt(void)	//µç»ú·½Ïò
 //	disp_96x24(49,6,Hanzi_9624_HWZS_DJFX);
 }
 
-void Display_Page00_01_LLStudy(void)		//ÉÏÏÞÎ»Ñ§Ï°
+void Display_Page00_01_LLStudy(void)		//ï¿½ï¿½ï¿½ï¿½Î»Ñ§Ï°
 {
 	disp_24x24(33,6,Hanzi_2424_HWZS_Xia);
 	disp_24x24(57,6,Hanzi_2424_HWZS_Xian);
@@ -602,7 +607,7 @@ void Display_Page00_01_LLStudy(void)		//ÉÏÏÞÎ»Ñ§Ï°
 //	disp_96x24(49,6,Hanzi_9624_HWZS_DJFX);
 }
 
-void Display_Page00_01_ULStudy(void)		//ÏÂÏÞÎ»Ñ§Ï°
+void Display_Page00_01_ULStudy(void)		//ï¿½ï¿½ï¿½ï¿½Î»Ñ§Ï°
 {
 	disp_24x24(33,6,Hanzi_2424_HWZS_Shang);
 	disp_24x24(57,6,Hanzi_2424_HWZS_Xian);
@@ -612,7 +617,7 @@ void Display_Page00_01_ULStudy(void)		//ÏÂÏÞÎ»Ñ§Ï°
 //	disp_96x24(49,6,Hanzi_9624_HWZS_DJFX);
 }
 
-void Display_Page00_03_ZDKJ(void)			//ÖÂµç¿Æ¼¼
+void Display_Page00_03_ZDKJ(void)			//ï¿½Âµï¿½Æ¼ï¿½
 {
 	disp_24x24(49,6,Hanzi_2424_HWZS_Zhi);
 	disp_24x24(73,6,Hanzi_2424_HWZS_Dian);
@@ -621,17 +626,17 @@ void Display_Page00_03_ZDKJ(void)			//ÖÂµç¿Æ¼¼
 //	disp_96x24(49,6,Hanzi_9624_HWZS_DJFX);
 }
 
-void Disp_Page_00_00(void)		//µç»ú·½Ïò
+void Disp_Page_00_00(void)		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 {
 	Display_Full_Line_Up(1);
 	Display_Full_Line_Up(5);
 
 	Motor_Parameter.E_encoder = 00001;
-	Display_Page00_00_ParaArea();	//ÏÔÊ¾¹Ì¶¨ÐÅÏ¢
+	Display_Page00_00_ParaArea();	//ï¿½ï¿½Ê¾ï¿½Ì¶ï¿½ï¿½ï¿½Ï¢
 	
 
-	BUTTON1_Display1_FanXiang();		//ÏÔÊ¾¡°·´Ïò¡±
-	BUTTON2_Display1_QueRen();		//ÏÔÊ¾¡°È·ÈÏ¡±
+	BUTTON1_Display1_FanXiang();		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	BUTTON2_Display1_QueRen();		//ï¿½ï¿½Ê¾ï¿½ï¿½È·ï¿½Ï¡ï¿½
 	Display_Full_Line_Down(12);
 	Display_Full_Vertical_Line(1);
 	
@@ -640,7 +645,7 @@ void Disp_Page_00_00(void)		//µç»ú·½Ïò
 	Display_Full_Vertical_Line(192);
 }
 
-void Disp_Page_00_01(void)		//ÏÂÏÞÎ»Ñ§Ï°
+void Disp_Page_00_01(void)		//ï¿½ï¿½ï¿½ï¿½Î»Ñ§Ï°
 {
 	Display_Full_Line_Up(1);
 	Display_Full_Line_Up(5);
@@ -648,10 +653,10 @@ void Disp_Page_00_01(void)		//ÏÂÏÞÎ»Ñ§Ï°
 	Motor_Parameter.E_encoder = 11223;
 	Motor_Parameter.I_current = 12345;
 	Motor_Parameter.F_frequency = 62503;
-	Display_Page00_01_ParaArea();	//ÏÔÊ¾¹Ì¶¨ÐÅÏ¢
+	Display_Page00_01_ParaArea();	//ï¿½ï¿½Ê¾ï¿½Ì¶ï¿½ï¿½ï¿½Ï¢
 	
-	BUTTON1_Display2_Fanhui();		//ÏÔÊ¾¡°·µ»Ø¡±
-	BUTTON2_Display1_QueRen();		//ÏÔÊ¾¡°È·¶¨¡±
+	BUTTON1_Display2_Fanhui();		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½Ø¡ï¿½
+	BUTTON2_Display1_QueRen();		//ï¿½ï¿½Ê¾ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½
 	Display_Full_Line_Down(12);
 	Display_Full_Vertical_Line(1);
 	Display_Full_Vertical_Line(192);
@@ -660,17 +665,17 @@ void Disp_Page_00_01(void)		//ÏÂÏÞÎ»Ñ§Ï°
 	
 }
 
-void Disp_Page_00_02(void)		//ÉÏÏÞÎ»Ñ§Ï°
+void Disp_Page_00_02(void)		//ï¿½ï¿½ï¿½ï¿½Î»Ñ§Ï°
 {
 	Display_Full_Line_Up(1);
 	Display_Full_Line_Up(5);
 	Motor_Parameter.E_encoder = 11223;
 	Motor_Parameter.I_current = 12345;
 	Motor_Parameter.F_frequency = 25389;
-	Display_Page00_01_ParaArea();	//ÏÔÊ¾¹Ì¶¨ÐÅÏ¢
+	Display_Page00_01_ParaArea();	//ï¿½ï¿½Ê¾ï¿½Ì¶ï¿½ï¿½ï¿½Ï¢
 	
-	BUTTON1_Display2_Fanhui();		//ÏÔÊ¾¡°·µ»Ø¡±
-	BUTTON2_Display1_QueRen();		//ÏÔÊ¾¡°È·¶¨¡±
+	BUTTON1_Display2_Fanhui();		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½Ø¡ï¿½
+	BUTTON2_Display1_QueRen();		//ï¿½ï¿½Ê¾ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½
 	Display_Full_Line_Down(12);
 	Display_Full_Vertical_Line(1);
 	Display_Full_Vertical_Line(192);
@@ -687,13 +692,13 @@ void Disp_Page_00_03(void)
 	Motor_Parameter.F_frequency = 25389;
 	Motor_Parameter.RT_runtime = 00002;
 	
-	Display_Page00_03_ParaArea();	//ÏÔÊ¾¹Ì¶¨ÐÅÏ¢
+	Display_Page00_03_ParaArea();	//ï¿½ï¿½Ê¾ï¿½Ì¶ï¿½ï¿½ï¿½Ï¢
 	
-//	BUTTON1_Display3_Caidan();		//ÏÔÊ¾¡°²Ëµ¥¡±
-//	BUTTON2_Display2_Fanhui();		//ÏÔÊ¾¡°·µ»Ø¡±
+//	BUTTON1_Display3_Caidan();		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½
+//	BUTTON2_Display2_Fanhui();		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½Ø¡ï¿½
 
-	BUTTON1_Display2_Fanhui();		//ÏÔÊ¾¡°·µ»Ø¡±
-	BUTTON2_Display3_Caidan();		//ÏÔÊ¾¡°²Ëµ¥¡±
+	BUTTON1_Display2_Fanhui();		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½Ø¡ï¿½
+	BUTTON2_Display3_Caidan();		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½
 
 	Display_Full_Line_Down(12);
 	Display_Full_Vertical_Line(1);
@@ -707,10 +712,10 @@ void Disp_Page_01_00(void)
 	Display_Full_Line_Up(1);
 	Display_Full_Line_Up(5);
 	
-	Display_Page00_01_ParaArea();	//ÏÔÊ¾¹Ì¶¨ÐÅÏ¢
+	Display_Page00_01_ParaArea();	//ï¿½ï¿½Ê¾ï¿½Ì¶ï¿½ï¿½ï¿½Ï¢
 	
-	BUTTON1_Display2_Fanhui();		//ÏÔÊ¾¡°·µ»Ø¡±
-	BUTTON2_Display1_QueRen();		//ÏÔÊ¾¡°È·¶¨¡±
+	BUTTON1_Display2_Fanhui();		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½Ø¡ï¿½
+	BUTTON2_Display1_QueRen();		//ï¿½ï¿½Ê¾ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½
 	Display_Full_Line_Down(12);
 	Display_Full_Vertical_Line(1);
 	Display_Full_Vertical_Line(192);
@@ -724,10 +729,10 @@ void Disp_Page_01_01(void)
 	Display_Full_Line_Up(1);
 	Display_Full_Line_Up(5);
 	
-	Display_Page00_01_ParaArea();	//ÏÔÊ¾¹Ì¶¨ÐÅÏ¢
+	Display_Page00_01_ParaArea();	//ï¿½ï¿½Ê¾ï¿½Ì¶ï¿½ï¿½ï¿½Ï¢
 	
-	BUTTON1_Display2_Fanhui();		//ÏÔÊ¾¡°·µ»Ø¡±
-	BUTTON2_Display1_QueRen();		//ÏÔÊ¾¡°È·¶¨¡±
+	BUTTON1_Display2_Fanhui();		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½Ø¡ï¿½
+	BUTTON2_Display1_QueRen();		//ï¿½ï¿½Ê¾ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½
 	Display_Full_Line_Down(12);
 	Display_Full_Vertical_Line(1);
 	Display_Full_Vertical_Line(192);
@@ -740,10 +745,10 @@ void Disp_Page_01_02(void)
 	Display_Full_Line_Up(1);
 	Display_Full_Line_Up(5);
 	
-	Display_Page00_01_ParaArea();	//ÏÔÊ¾¹Ì¶¨ÐÅÏ¢
+	Display_Page00_01_ParaArea();	//ï¿½ï¿½Ê¾ï¿½Ì¶ï¿½ï¿½ï¿½Ï¢
 	
-	BUTTON1_Display2_Fanhui();		//ÏÔÊ¾¡°·µ»Ø¡±
-	BUTTON2_Display1_QueRen();		//ÏÔÊ¾¡°È·¶¨¡±
+	BUTTON1_Display2_Fanhui();		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½Ø¡ï¿½
+	BUTTON2_Display1_QueRen();		//ï¿½ï¿½Ê¾ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½
 	Display_Full_Line_Down(12);
 	Display_Full_Vertical_Line(1);
 	Display_Full_Vertical_Line(192);
@@ -757,10 +762,10 @@ void Disp_Page_01_03(void)
 	Display_Full_Line_Up(1);
 	Display_Full_Line_Up(5);
 	
-	Display_Page00_01_ParaArea();	//ÏÔÊ¾¹Ì¶¨ÐÅÏ¢
+	Display_Page00_01_ParaArea();	//ï¿½ï¿½Ê¾ï¿½Ì¶ï¿½ï¿½ï¿½Ï¢
 	
-	BUTTON1_Display2_Fanhui();		//ÏÔÊ¾¡°·µ»Ø¡±
-	BUTTON2_Display1_QueRen();		//ÏÔÊ¾¡°È·¶¨¡±
+	BUTTON1_Display2_Fanhui();		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½Ø¡ï¿½
+	BUTTON2_Display1_QueRen();		//ï¿½ï¿½Ê¾ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½
 	Display_Full_Line_Down(12);
 	Display_Full_Vertical_Line(1);
 	Display_Full_Vertical_Line(192);
@@ -799,76 +804,166 @@ void LCD_Diaplay_Page(uchar page, uchar level)
 			{;}
 }
 
-void UartInit(void)		//9600bps@24.000MHz
-{
-	SCON	= 0x50;		//8Î»Êý¾Ý,¿É±ä²¨ÌØÂÊ
-	AUXR	|= 0x40;		//¶¨Ê±Æ÷1Ê±ÖÓÎªFosc,¼´1T
-	AUXR	&= 0xFE;		//´®¿Ú1Ñ¡Ôñ¶¨Ê±Æ÷1Îª²¨ÌØÂÊ·¢ÉúÆ÷
-	TMOD	&= 0x0F;		//Éè¶¨¶¨Ê±Æ÷1Îª16Î»×Ô¶¯ÖØ×°·½Ê½
-	TL1		= 0x8F;		//Éè¶¨¶¨Ê±³õÖµ
-	TH1		= 0xFD;		//Éè¶¨¶¨Ê±³õÖµ
-	ET1		= 0;		//½ûÖ¹¶¨Ê±Æ÷1ÖÐ¶Ï
-	TR1		= 1;		//Æô¶¯¶¨Ê±Æ÷1
-	ES		= 1;                  /*´ò¿ª´®¿ÚÖÐ¶Ï*/
-	EA		= 1;                  /*´ò¿ª×ÜÖÐ¶Ï*/
-}
+// void UartInit(void)		//9600bps@24.000MHz
+// {
+// 	//UART 1
+// 	SCON	= 0x50;		//8Î»ï¿½ï¿½ï¿½ï¿½,ï¿½É±ä²¨ï¿½ï¿½ï¿½ï¿½
+// 	AUXR	|= 0x40;		//ï¿½ï¿½Ê±ï¿½ï¿½1Ê±ï¿½ï¿½ÎªFosc,ï¿½ï¿½1T
+// 	AUXR	&= 0xFE;		//ï¿½ï¿½ï¿½ï¿½1Ñ¡ï¿½ï¿½Ê±ï¿½ï¿½1Îªï¿½ï¿½ï¿½ï¿½ï¿½Ê·ï¿½ï¿½ï¿½ï¿½ï¿½
+// 	TMOD	&= 0x0F;		//ï¿½è¶¨ï¿½ï¿½Ê±ï¿½ï¿½1Îª16Î»ï¿½Ô¶ï¿½ï¿½ï¿½×°ï¿½ï¿½Ê½
+// 	TL1		= 0x8F;		//ï¿½è¶¨ï¿½ï¿½Ê±ï¿½ï¿½"background: #ffffff"Öµ
+// 	TH1		= 0xFD;		//ï¿½è¶¨ï¿½ï¿½Ê±ï¿½ï¿½Öµ
+// 	ET1		= 0;		//ï¿½ï¿½Ö¹ï¿½ï¿½Ê±ï¿½ï¿½1ï¿½Ð¶ï¿½
+// 	TR1		= 1;		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½1
+// 	ES		= 1;                  /*ï¿½ò¿ª´ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½*/
+	
+// 	//UART 2
+// 	//reserved
+	
+// 	//UART 3 Baud Rate:9600, using Timer3
+// 	S3CON = 	0x10;		//8Î»ï¿½ï¿½ï¿½ï¿½,ï¿½É±ä²¨ï¿½ï¿½ï¿½ï¿½
+// 	S3CON |= 	0x40;		//ï¿½ï¿½ï¿½ï¿½3Ñ¡ï¿½ï¿½Ê±ï¿½ï¿½3Îªï¿½ï¿½ï¿½ï¿½ï¿½Ê·ï¿½ï¿½ï¿½ï¿½ï¿½
+// 	T4T3M &= 	0xFD;		//ï¿½ï¿½Ê±ï¿½ï¿½3Ê±ï¿½ï¿½ÎªFosc/12,ï¿½ï¿½12T
+// 	T3L 	= 	0xCC;		//ï¿½è¶¨ï¿½ï¿½Ê±ï¿½ï¿½Öµ
+// 	T3H 	= 	0xFF;		//ï¿½è¶¨ï¿½ï¿½Ê±ï¿½ï¿½Öµ
+// 	T4T3M |= 	0x08;		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½3
+	
+// 	//UART 4					Baud Rate:9600, using Timer2
+// 	S4CON = 	0x10;		//8Î»ï¿½ï¿½ï¿½ï¿½,ï¿½É±ä²¨ï¿½ï¿½ï¿½ï¿½
+// 	S4CON &= 	0xBF;		//ï¿½ï¿½ï¿½ï¿½4Ñ¡ï¿½ï¿½Ê±ï¿½ï¿½2Îªï¿½ï¿½ï¿½ï¿½ï¿½Ê·ï¿½ï¿½ï¿½ï¿½ï¿½
+// 	AUXR 	&= 	0xFB;		//ï¿½ï¿½Ê±ï¿½ï¿½2Ê±ï¿½ï¿½ÎªFosc/12,ï¿½ï¿½12T
+// 	T2L 	= 	0xCC;		//ï¿½è¶¨ï¿½ï¿½Ê±ï¿½ï¿½Öµ
+// 	T2H 	= 	0xFF;		//ï¿½è¶¨ï¿½ï¿½Ê±ï¿½ï¿½Öµ
+// 	AUXR 	|= 	0x10;		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½2
+		
+// 	EA		= 1;                  /*ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½*/
+// }
+
+// void Timer7Init(void)		//10ï¿½ï¿½ï¿½ï¿½@24.000MHz
+// {
+// //	T4T3M &= 0xDF;		//ï¿½ï¿½Ê±ï¿½ï¿½Ê±ï¿½ï¿½12TÄ£Ê½ 0b11011111
+// 	T4T3M &= 0x0F;		//ï¿½ï¿½Ê±ï¿½ï¿½Ê±ï¿½ï¿½12TÄ£Ê½, ï¿½ï¿½Ê±ï¿½ï¿½Ä£Ê½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø±ï¿½ 0b00001111
+// 	T4L = 0xE0;		//ï¿½ï¿½ï¿½Ã¶ï¿½Ê±ï¿½ï¿½Öµ
+// 	T4H = 0xB1;		//ï¿½ï¿½ï¿½Ã¶ï¿½Ê±ï¿½ï¿½Öµ
+// //	T4T3M |= 0x80;		//ï¿½ï¿½Ê±ï¿½ï¿½4ï¿½ï¿½Ê¼ï¿½ï¿½Ê±
+// }
+
+// void Timer10ms_Enable(void)
+// {
+// 	T4T3M |= 0x80;		//ï¿½ï¿½Ê±ï¿½ï¿½4ï¿½ï¿½Ê¼ï¿½ï¿½Ê±
+// 	IE2		|= ET4;			//0b01000000
+// }
+
+// void Timer10ms_Disable(void)
+// {
+// 	T4T3M &= 0x7F;		//ï¿½ï¿½Ê±ï¿½ï¿½4Í£Ö¹ï¿½ï¿½Ê±
+// 	IE2		&= ~ET4;		//0b10111111
+// }
 
 
-//Ö÷º¯Êý ²ÎÊý£ºÎÞ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void main()
 {
-	IO_INIT();										//IO³õÊ¼»¯
-	UartInit();
+
+	IO_INIT();										//IOï¿½ï¿½Ê¼ï¿½ï¿½
+	// UartInit();
 	INIT_LCD();
-	delay_ms(200);								//ÉÏµçÑÓÊ±100ms
+	// Timer7Init();									//T4 timer initialization
+	delay_ms(200);								//ï¿½Ïµï¿½ï¿½ï¿½Ê±100ms
 	clear_screen();
+	// Timer10ms_Enable();
+//	Timer10ms_Disable();
+	taskInit();
 //	LED2 = 1;
-//	LCD_Test1();
 //	disp_32x32(1,1,Hanzi_3232_XST_Xiang);
 //	disp_16x16(1,4,Hanzi_1616_XST_Ding);
 //	LCD_Diaplay_Page(0,1);
-//	LCD_Test();
+	
 	Disp_Page_00_00();
 	
-	while(1)											//´óÑ­»·
-	{;}
+	
+	
+	while(1)											//ï¿½ï¿½Ñ­ï¿½ï¿½
+	{
+		delay_ms(200);
+		uartDrvUpdate();
+	}
 }
 
-void UART_SER (void) interrupt 4 //´®ÐÐÖÐ¶Ï·þÎñ³ÌÐò
-{
-    unsigned char Temp, temp2;          //¶¨ÒåÁÙÊ±±äÁ¿ 
+// void UART_SER (void) interrupt 4 //ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// {
+//     unsigned char Temp, temp2;          //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ 
    
-   if(RI)                        //ÅÐ¶ÏÊÇ½ÓÊÕÖÐ¶Ï²úÉú
-    {
-	  	RI=0;                      //±êÖ¾Î»ÇåÁã
-	  	Temp = SBUF;                 //¶ÁÈë»º³åÇøµÄÖµ
+//    if(RI)                        //ï¿½Ð¶ï¿½ï¿½Ç½ï¿½ï¿½ï¿½ï¿½Ð¶Ï²ï¿½ï¿½ï¿½
+//     {
+// 	  	RI=0;                      //ï¿½ï¿½Ö¾Î»ï¿½ï¿½ï¿½ï¿½
+// 	  	Temp = SBUF;                 //ï¿½ï¿½ï¿½ë»ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 
-	  	if(Temp == 0x30)
-	  		{
-	  			LCD_Diaplay_Page(0,count);
-	  			count++;
-	  			if(count>3)
-	  				{count = 0;}
-	  				else {;}
-	  		}
+// 	  	if(Temp == 0x30)
+// 	  		{
+// 	  			LCD_Diaplay_Page(0,count);
+// 	  			count++;
+// 	  			if(count>3)
+// 	  				{count = 0;}
+// 	  				else {;}
+// 	  		}
 
-	  	if((Temp & 0xF0) == 0x40)		//0100 0000
-	  		{
-	    	  temp2 = (Temp & 0x0F);
-	    	  LCD_Diaplay_Page(1,temp2);
-	  		}          
-			if(Temp == 0x50)
-				{
-					Motor_Parameter.Motor_Direction = 0;
-					Motor_Direction_Update();
-				}
-			if(Temp == 0x51)
-				{
-					Motor_Parameter.Motor_Direction = 1;
-					Motor_Direction_Update();
-				}
+// 	  	if((Temp & 0xF0) == 0x40)		//0100 0000
+// 	  		{
+// 	    	  temp2 = (Temp & 0x0F);
+// 	    	  LCD_Diaplay_Page(1,temp2);
+// 	  		}          
+// 			if(Temp == 0x50)
+// 				{
+// 					Motor_Parameter.Motor_Direction = 0;
+// 					Motor_Direction_Update();
+// 				}
+// 			if(Temp == 0x51)
+// 				{
+// 					Motor_Parameter.Motor_Direction = 1;
+// 					Motor_Direction_Update();
+// 				}
 
-	 }
-   if(TI)                        //Èç¹ûÊÇ·¢ËÍ±êÖ¾Î»£¬ÇåÁã
-     TI=0;
-}
+// 	 }
+//    if(TI)                        //ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½Í±ï¿½Ö¾Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//      TI=0;
+// }
+
+
+
+// void Timer4(void) interrupt 20
+// {
+// 	uchar i;
+// 	Timer4_Count++;
+// 	T4L = 0xE0;		//ï¿½ï¿½ï¿½Ã¶ï¿½Ê±ï¿½ï¿½Öµ
+// 	T4H = 0xB1;		//ï¿½ï¿½ï¿½Ã¶ï¿½Ê±ï¿½ï¿½Öµ
+// 	AUXINTIF &= ~T4IF;	//clear T4IF flag
+// 	TR0 = 1;
+// }
+
+// void UART3_SER (void) interrupt 17 // UART 3 interrupt function
+// {
+//     uchar Temp;          						//Define temporay variant 
+   
+//    if(S3CON&S3RI)                        	//Receive interrupt
+//     {
+// 	  	Temp = S3BUF;                 //read in the data in S3BUF
+// 			S3BUF = Temp;									//send back to master for testing
+// 	 }
+//    if(S3CON&S3TI)                        	
+//      S3CON &= ~S3TI;
+// }
+
+
+// void UART4_SER (void) interrupt 18 // UART 4 interrupt function
+// {
+//     uchar Temp;          						//Define temporay variant 
+   
+//    if(S4CON&S4RI)                        	//Receive interrupt
+//     {	
+// 	  	Temp = S4BUF;                 //read in the data in S3BUF
+// 			S4BUF = Temp;									//send back to master for testing
+// 	 }
+//    if(S4CON&S4TI)                        
+//      S4CON &= ~S4TI;
+// }

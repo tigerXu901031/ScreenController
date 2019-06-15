@@ -52,8 +52,11 @@ static void readMsgAssemble(msgBuf_type *msgObj, unsigned int newData, unsigned 
        Default read message length is 2 byte except for the higher register address byte 
        was 0x30 
      */
-    static unsigned int dataFieldLen = 2;
+    static unsigned int dataFieldLen = 0;
     static unsigned int serviceType = 0;
+
+    unsigned int currentDataByte = 0;
+    unsigned int longFrameRemainLen = 0;
 
     /* increment the data byte counter */
     *dataByteCnt ++;
@@ -118,7 +121,7 @@ static void readMsgAssemble(msgBuf_type *msgObj, unsigned int newData, unsigned 
             else if(serviceType == SERVICETYPE_READ_RESP)
             {   
                 /* higher byte of the 1st 16-bit data */
-                msgObj->readRepMsgObj.data[0] = newData;
+                msgObj->readRepMsgObj.msgData[0] = newData;
             }
             else{/* unknown error happen */}
             break;
@@ -138,13 +141,13 @@ static void readMsgAssemble(msgBuf_type *msgObj, unsigned int newData, unsigned 
             else if(serviceType == SERVICETYPE_READ_LONGRESP)
             {
                 /* lower byte of the 1st 16 bit data */
-                msgObj->readLongRepMsgObj.data[0] = newData;
+                msgObj->readLongRepMsgObj.msgData[0] = newData;
 
             }
             else if(serviceType == SERVICETYPE_READ_RESP)
             {   
                 /* lower byte of the 1st 16-bit data */
-                msgObj->readRepMsgObj.data[1] = newData;
+                msgObj->readRepMsgObj.msgData[1] = newData;
             }
             else{/* unknown error happen */}
             break;
@@ -154,7 +157,7 @@ static void readMsgAssemble(msgBuf_type *msgObj, unsigned int newData, unsigned 
             if(serviceType == SERVICETYPE_READ_LONGRESP)
             {
                 /* lower byte of the 1st 16 bit data */
-                msgObj->readLongRepMsgObj.data[1] = newData;
+                msgObj->readLongRepMsgObj.msgData[1] = newData;
             }
             else if(serviceType == SERVICETYPE_READ_RESP)
             {   
@@ -168,7 +171,7 @@ static void readMsgAssemble(msgBuf_type *msgObj, unsigned int newData, unsigned 
             if(serviceType == SERVICETYPE_READ_LONGRESP)
             {
                 /* higher byte of the 2st 16 bit data */
-                msgObj->readLongRepMsgObj.data[2] = newData;
+                msgObj->readLongRepMsgObj.msgData[2] = newData;
             }
             else if(serviceType == SERVICETYPE_READ_RESP)
             {   
@@ -184,15 +187,16 @@ static void readMsgAssemble(msgBuf_type *msgObj, unsigned int newData, unsigned 
             break;
         
         default:
-            unsigned int currentDataByte = *dataByteCnt - 8;
-            unsigned int longFrameRemainLen = dataFieldLen - 3;
+            
+            currentDataByte = *dataByteCnt - 8;
+            longFrameRemainLen = dataFieldLen - 3;
             if(serviceType == SERVICETYPE_READ_LONGRESP)
             {
                 if(currentDataByte <= longFrameRemainLen)
                 {
                     /* When there is long-frame message Add_H = 0x30
                        then construct the other data byte */
-                    msgObj->readLongRepMsgObj.data[longFrameRemainLen] = newData;
+                    msgObj->readLongRepMsgObj.msgData[longFrameRemainLen] = newData;
                 }
                 else if(currentDataByte == longFrameRemainLen + 1)
                 {
@@ -238,11 +242,11 @@ static void writeOpMsgAssemble(msgBuf_type *msgObj, unsigned int newData,unsigne
             break;
         case 5:
             /* higher write data byte */
-            msgObj->writeAccessMsgObj.data[0] = newData;
+            msgObj->writeAccessMsgObj.msgData[0] = newData;
             break;
         case 6:
             /* lower write data byte */
-            msgObj->writeAccessMsgObj.data[1] = newData;
+            msgObj->writeAccessMsgObj.msgData[1] = newData;
             break;
         case 7:
             /* lower crc byte */
@@ -381,24 +385,24 @@ static void getRxMsgAndAssemble(msgBuf_type *msgObj)
                 switch(msgBuf[i].msgByteArray[1])
                 {
                     case MSGCMD_READOP:
-                        readResponseMsgConstruct(&msgBuf[i], newDatBuf[i], &dataByteCnt[i], (busIdx_type)i);
+                        readMsgAssemble(&msgBuf[i], newDatBuf[i], &dataByteCnt[i], (busIdx_type)i);
                     break;
 
                     case MSGCMD_WRITEOP:
-                        writeOpMsgConstruct(&msgBuf[i], newDatBuf[i], &dataByteCnt[i], (busIdx_type)i);
+                        writeOpMsgAssemble(&msgBuf[i], newDatBuf[i], &dataByteCnt[i], (busIdx_type)i);
                     break;
 
                     case MSGCMD_READOPFAIL:
                     case MSGCMD_WRITEOPFAIL:
-                        accessFailMsgConstruct(&msgBuf[i], newDatBuf[i], &dataByteCnt[i]);
+                        accessFailMsgAssemble(&msgBuf[i], newDatBuf[i], &dataByteCnt[i]);
                     break;
 
                     case MSGCMD_DATAMONITOR:
-                        dataMonitorMsgConstruct(&msgBuf[i], newDatBuf[i], &dataByteCnt[i]);
+                        dataMonitorMsgAssemble(&msgBuf[i], newDatBuf[i], &dataByteCnt[i]);
                     break;
 
                     case MSGCMD_HEARTBEAT:
-                        dataMonitorMsgConstruct(&msgBuf[i], newDatBuf[i], &dataByteCnt[i]);
+                        heartBeatMsgAssemble(&msgBuf[i], newDatBuf[i], &dataByteCnt[i]);
                     break;
 
                     default:
@@ -475,7 +479,12 @@ static void networkGatewayHandler(msgBuf_type *msgObj)
    }
 }
 
-static void networkStateHandler()
+static void msg2Data_Read()
+{
+   
+}
+
+static void networkRequestHandler()
 {
 
 }
@@ -494,7 +503,7 @@ static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
     if(msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE])
     {
         if(isCrc16Ok(&msgObj))
-        {   
+        {
             serviceType = msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE];
             switch (serviceType)
             {
@@ -503,8 +512,8 @@ static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
                     dataBuf->networkData[0].cmd = MSGCMD_READOP;
                     dataBuf->networkData[0].add[0] = msgObj->readRepMsgObj.regAdd[0];
                     dataBuf->networkData[0].add[1] = msgObj->readRepMsgObj.regAdd[1];
-                    dataBuf->networkData[0].data[0] = msgObj->readRepMsgObj.data[0];
-                    dataBuf->networkData[0].data[1] = msgObj->readRepMsgObj.data[1];
+                    dataBuf->networkData[0].opData[0] = msgObj->readRepMsgObj.msgData[0];
+                    dataBuf->networkData[0].opData[1] = msgObj->readRepMsgObj.msgData[1];
 
                     dataBuf->dataLength = 1;
                     break;
@@ -520,8 +529,8 @@ static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
                         dataBuf->networkData[i].add[0] = msgObj->readLongRepMsgObj.regAdd[0];
                         dataBuf->networkData[i].add[1] = longMsgAddLowerByte;
 
-                        dataBuf->networkData[i].data[0] = msgObj->readLongRepMsgObj.data[2*i];
-                        dataBuf->networkData[i].data[1] = msgObj->readLongRepMsgObj.data[2*i+1];
+                        dataBuf->networkData[i].opData[0] = msgObj->readLongRepMsgObj.msgData[2*i];
+                        dataBuf->networkData[i].opData[1] = msgObj->readLongRepMsgObj.msgData[2*i+1];
 
                         longMsgAddLowerByte ++;
                     }
@@ -530,25 +539,41 @@ static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
                 case SERVICETYPE_WRITE_RESP:
                     /* check whether the write response equal to the last write
                        request if equal  */
-                    dataBuf->networkData[0].cmd = SERVICETYPE_WRITE_RESP;
+                    dataBuf->dataLength = 1;
+                    dataBuf->networkData[0].cmd = MSGCMD_WRITEOP;
                     dataBuf->networkData[0].add[0] = msgObj->writeAccessMsgObj.regAdd[0];
                     dataBuf->networkData[0].add[1] = msgObj->writeAccessMsgObj.regAdd[1];
-                    dataBuf->networkData[0].data[0] = msgObj->writeAccessMsgObj.data[0];
-                    dataBuf->networkData[0].data[1] = msgObj->writeAccessMsgObj.data[1];
-
+                    dataBuf->networkData[0].opData[0] = msgObj->writeAccessMsgObj.msgData[0];
+                    dataBuf->networkData[0].opData[1] = msgObj->writeAccessMsgObj.msgData[1];
                     break;
 
                 case SERVICETYPE_READ_FAIL:
-
+                    /* check whether the write response equal to the last write
+                       request if equal  */
+                    dataBuf->dataLength = 1;
+                    dataBuf->networkData[0].cmd = MSGCMD_READOPFAIL;
+                    dataBuf->networkData[0].add[0] = msgObj->accessFailRepMsgObj.regAdd[0];
+                    dataBuf->networkData[0].add[1] = msgObj->accessFailRepMsgObj.regAdd[1];
+                    dataBuf->networkData[0].opData[0] = msgObj->accessFailRepMsgObj.errVal[0];
+                    dataBuf->networkData[0].opData[1] = msgObj->accessFailRepMsgObj.errVal[1];
                     break;
 
                 case SERVICETYPE_WRITE_FAIL:
-
+                    dataBuf->dataLength = 1;
+                    dataBuf->networkData[0].cmd = MSGCMD_WRITEOPFAIL;
+                    dataBuf->networkData[0].add[0] = msgObj->accessFailRepMsgObj.regAdd[0];
+                    dataBuf->networkData[0].add[1] = msgObj->accessFailRepMsgObj.regAdd[1];
+                    dataBuf->networkData[0].opData[0] = msgObj->accessFailRepMsgObj.errVal[0];
+                    dataBuf->networkData[0].opData[1] = msgObj->accessFailRepMsgObj.errVal[1];
                     break;
                 default:
                     /* error happened */
                     break;
             }
+            /* directly handle some request by network service */
+            networkRequestHandler();
+
+            /*  */
         }
         else{
             /* respond crc error message if needed (ony when R/W request message) */
@@ -566,8 +591,8 @@ static void readReqMsgTxPreprocess(msgBuf_type *msgObj, networkDataBuf_type *dat
 
     msgObj->readReqMsgObj.cmd = dataBuf->networkData[0].cmd;
 
-    msgObj->readReqMsgObj.regAdd[0] = dataBuf->networkData[0].data[0];
-    msgObj->readReqMsgObj.regAdd[1] = dataBuf->networkData[0].data[1];
+    msgObj->readReqMsgObj.regAdd[0] = dataBuf->networkData[0].add[0];
+    msgObj->readReqMsgObj.regAdd[1] = dataBuf->networkData[0].add[1];
 
     msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 6;
     msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_READ_REQ;
@@ -584,8 +609,8 @@ static void writeReqMsgTxPreprocess(msgBuf_type *msgObj, networkDataBuf_type *da
     msgObj->writeAccessMsgObj.regAdd[0] = dataBuf->networkData[0].add[0];
     msgObj->writeAccessMsgObj.regAdd[1] = dataBuf->networkData[0].add[1];
 
-    msgObj->writeAccessMsgObj.data[0] = dataBuf->networkData[0].data[0];
-    msgObj->writeAccessMsgObj.data[1] = dataBuf->networkData[0].data[1];
+    msgObj->writeAccessMsgObj.msgData[0] = dataBuf->networkData[0].opData[0];
+    msgObj->writeAccessMsgObj.msgData[1] = dataBuf->networkData[0].opData[1];
 
     msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 8;
     msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_WRITE_REQ;
@@ -632,7 +657,7 @@ static void txDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
 
 void networkInit()
 {
-    uartInit();
+    uartDrvInit();
 
     networkObj.privateNodeId = 0xff;
 

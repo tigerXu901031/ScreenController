@@ -1,10 +1,10 @@
-A51 MACRO ASSEMBLER  STARTUP                                                              06/12/2019 17:22:59 PAGE     1
+A51 MACRO ASSEMBLER  STARTUP                                                              06/15/2019 19:35:37 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.01
 OBJECT MODULE PLACED IN ..\bin\STARTUP.obj
-ASSEMBLER INVOKED BY: C:\Program Files\Keil\C51\BIN\A51.EXE ..\src\drv\STARTUP.A51 SET(SMALL) DEBUG PRINT(.\STARTUP.lst)
-                       OBJECT(..\bin\STARTUP.obj) EP
+ASSEMBLER INVOKED BY: C:\Program Files\Keil4\C51\BIN\A51.EXE ..\src\drv\STARTUP.A51 SET(LARGE) DEBUG PRINT(..\lst\STARTU
+                      P.lst) OBJECT(..\bin\STARTUP.obj) EP
 
 LOC  OBJ            LINE     SOURCE
 
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
                       55     ;------------------------------------------------------------------------------
                       56     ;
                       57     ;  Page Definition for Using the Compact Model with 64 KByte xdata RAM
-A51 MACRO ASSEMBLER  STARTUP                                                              06/12/2019 17:22:59 PAGE     2
+A51 MACRO ASSEMBLER  STARTUP                                                              06/15/2019 19:35:37 PAGE     2
 
                       58     ;
                       59     ;  The following EQU statements define the xdata page used for pdata
@@ -133,7 +133,7 @@ LOC  OBJ            LINE     SOURCE
                                              MOV     PPAGE_SFR,#PPAGE
                              ENDIF
                      123     
-A51 MACRO ASSEMBLER  STARTUP                                                              06/12/2019 17:22:59 PAGE     3
+A51 MACRO ASSEMBLER  STARTUP                                                              06/15/2019 19:35:37 PAGE     3
 
                      124     IF PDATALEN <> 0
                                              MOV     R0,#LOW (PDATASTART)
@@ -169,7 +169,7 @@ LOC  OBJ            LINE     SOURCE
 0009 020000   F      155                     LJMP    ?C_START
                      156     
                      157                     END
-A51 MACRO ASSEMBLER  STARTUP                                                              06/12/2019 17:22:59 PAGE     4
+A51 MACRO ASSEMBLER  STARTUP                                                              06/15/2019 19:35:37 PAGE     4
 
 SYMBOL TABLE LISTING
 ------ ----- -------

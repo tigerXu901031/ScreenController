@@ -1,0 +1,11 @@
+"..\bin\crc.obj",
+"..\bin\fifo.obj",
+"..\bin\uartNetwork.obj",
+"..\bin\isr.obj",
+"..\bin\STARTUP.obj",
+"..\bin\timer.obj",
+"..\bin\uartDrv.obj",
+"..\bin\main.obj",
+"..\bin\task.obj" 
+TO "..\bin\Screen Controller" 
+PRINT("..\lst\Screen Controller.m51") RAMSIZE(256) 

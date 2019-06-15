@@ -108,14 +108,3 @@ uint16_t crc16tablefast(uint8_t *ptr, uint16_t len)
 	
 	return crc;
 }
- 
-void modbuscrc16test()
-{
-	printf("\n");
-	printf(" Modbus CRC16 tester\n");
-	printf("-----------------------------------------------------------------------\n");
-	uint8_t crc16_data[] = { 0x01, 0x04, 0x04, 0x43, 0x6b, 0x58, 0x0e };	// expected crc value 0xD825.
-	printf(" modbus crc16table test, expected value : 0xd825, calculate value : 0x%x\n", crc16table(crc16_data, sizeof(crc16_data)));
-	printf(" modbus crc16tablefast test, expected value : 0xd825, calculate value : 0x%x\n", crc16tablefast(crc16_data, sizeof(crc16_data)));
-	printf(" modbus crc16bitbybit test, expected value : 0xd825, calculate value : 0x%x\n", crc16bitbybit(crc16_data, sizeof(crc16_data)));
-}

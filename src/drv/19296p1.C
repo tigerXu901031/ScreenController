@@ -4,7 +4,7 @@
 �ıࣺBruce Dong
 2019.5.15
 */
-//#include <reg52.H>
+#include <STC8.H>
 //#include <intrins.h>
 //#include <chinese_code.h>
 

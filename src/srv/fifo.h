@@ -18,6 +18,7 @@ typedef struct{
 }fifo_type;
 
 extern void clearDataBlock(unsigned int *startAdd, unsigned int length);
+extern void memcpy(unsigned int *destAdd,unsigned int *sourceAdd, unsigned int length);
 extern fifo_type fifoInit(unsigned int unitLen);
 extern fifoSts_type getFifoData(fifo_type *fifoObj, void *newData);
 extern fifoSts_type setFifoData(fifo_type *fifoObj, void *newData);

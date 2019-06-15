@@ -26,26 +26,59 @@ uartSts_type uartGlobalSts;
 fifo_type uartTxFifo_Obj[busIdx_max];
 fifo_type uartRxFifo_Obj[busIdx_max];
 
+
+
+// void switch485Mode(busIdx_type busId, busMode_type busMode)
+// {
+//     if(busId == busIdx_private)
+//     {
+//         if(busMode == busMode_tx)
+//         {
+            
+//         }
+//     }
+//     else if(busId == busIdx_public)
+//     {
+        
+//     }
+// }
+
 /* This function should be called cyclic in TODO: 1 ms
    (Not final decided yet) and will be called in a timer
    interrupt
  */
 static void sendDataCyclic()
 {
-    unsigned int data;
+    unsigned int uartData;
     busIdx_type i = 0;
+
+    P52 = 1;
+
     for(i = 0; i < busIdx_max; i ++)
     {
+        /* test only */
+        S3BUF = 0xaa;
         if(uartTxFifo_Obj[i].curPtr > 0)
         {
+
             /* If the Tx FIFO buffer has data to send then put
                the send data into data register
              */
             if(uartGlobalSts != uartSts_busy)
             {
                 uartGlobalSts = uartSts_busy;
-                getFifoData(&uartTxFifo_Obj[i], &data);
-                SBUF = data;
+                getFifoData(&uartTxFifo_Obj[i], &uartData);
+                if(i == busIdx_public)
+                {
+                    S4BUF = uartData;
+                }
+                else if(i == busIdx_private)
+                {
+                    // S3BUF = uartData;
+                }
+                else{
+                    /* unknown error */
+                }
             }
             else{
                 /* do nothing */
@@ -58,17 +91,37 @@ void uartDrvInit()
 {
     unsigned char i;
 
-    /* 9600bps @ 24Mhz */
-    SCON	= 0x50;         // uart 1 mode 1		
-	AUXR	|= 0x40;		// choose timer 1, Fosc 1T
-	AUXR	&= 0xFE;		// uart 1 choose timer 1 as baud rate generator
-	TMOD	&= 0x0F;		// set timer1 as auto-reload
-	TL1		= 0x8F;		    // initial value for timer 1
-	TH1		= 0xFD;		    // initial value for timer 1
-	ET1		= 0;		    // inhibit interrupt for timer
-	TR1		= 1;		    // start timer 1
-	ES		= 1;            // enable uart interrupt
-	EA		= 1;            // enable global interrupt
+	//UART 1
+	SCON	= 0x50;		//8λ����,�ɱ䲨����
+	AUXR	|= 0x40;		//��ʱ��1ʱ��ΪFosc,��1T
+	AUXR	&= 0xFE;		//����1ѡ��ʱ��1Ϊ�����ʷ�����
+	TMOD	&= 0x0F;		//�趨��ʱ��1Ϊ16λ�Զ���װ��ʽ
+	TL1		= 0x8F;		//�趨��ʱ��ֵ
+	TH1		= 0xFD;		//�趨��ʱ��ֵ
+	ET1		= 0;		//��ֹ��ʱ��1�ж�
+	TR1		= 1;		//������ʱ��1
+	ES		= 1;                  /*�򿪴����ж�*/
+	
+	//UART 2
+	//reserved
+	
+	//UART 3 Baud Rate:9600, using Timer3
+	S3CON = 	0x10;		//8λ����,�ɱ䲨����
+	S3CON |= 	0x40;		//����3ѡ��ʱ��3Ϊ�����ʷ�����
+	T4T3M &= 	0xFD;		//��ʱ��3ʱ��ΪFosc/12,��12T
+	T3L 	= 	0xCC;		//�趨��ʱ��ֵ
+	T3H 	= 	0xFF;		//�趨��ʱ��ֵ
+	T4T3M |= 	0x08;		//������ʱ��3
+	
+	//UART 4					Baud Rate:9600, using Timer2
+	S4CON = 	0x10;		//8λ����,�ɱ䲨����
+	S4CON &= 	0xBF;		//����4ѡ��ʱ��2Ϊ�����ʷ�����
+	AUXR 	&= 	0xFB;		//��ʱ��2ʱ��ΪFosc/12,��12T
+	T2L 	= 	0xCC;		//�趨��ʱ��ֵ
+	T2H 	= 	0xFF;		//�趨��ʱ��ֵ
+	AUXR 	|= 	0x10;		//������ʱ��2
+		
+	EA		= 1;                  /*�����ж�*/
 
     /* Create an FIFO object buffer uart data */
     for(i = 0; i < busIdx_max; i ++)
@@ -82,13 +135,14 @@ void uartDrvUpdate()
     sendDataCyclic();
 }
 
-uartSts_type setUartSendBuf(unsigned int *data, busIdx_type nwChn)
+uartSts_type setUartSendBuf(unsigned int *uartData, busIdx_type busId)
 {
     fifoSts_type writeOpsts;
     uartSts_type returnVal;
 
+
     /* write the data into the send buffer */
-    writeOpsts = setFifoData(&uartTxFifo_Obj[nwChn], data);
+    writeOpsts = setFifoData(&uartTxFifo_Obj[busId], uartData);
     if(writeOpsts == writeSuccess)
     {
         returnVal = uartSts_normal;
@@ -99,13 +153,13 @@ uartSts_type setUartSendBuf(unsigned int *data, busIdx_type nwChn)
     return returnVal;
 }
 
-uartSts_type getUartReceiveBuf(unsigned int *data, busIdx_type nwChn)
+uartSts_type getUartReceiveBuf(unsigned int *uartData, busIdx_type busId)
 {
     fifoSts_type readOpsts;
     uartSts_type returnVal;
 
     /* Get the data from Rx fifo */
-    readOpsts = getFifoData(&uartRxFifo_Obj[nwChn], data);
+    readOpsts = getFifoData(&uartRxFifo_Obj[busId], uartData);
 
     if(readOpsts == readSuccess)
     {
@@ -117,23 +171,44 @@ uartSts_type getUartReceiveBuf(unsigned int *data, busIdx_type nwChn)
     return returnVal;
 }
 
-void uartInterruptService() //interrupt 4
+void uart3Int() /* uart 3(private network connect with door controller) interrupt service function */ 
 {
     /* TODO this interrupt shoud be copy for two channel */
-    unsigned char data;
-    if (RI)
+    unsigned char uartData;
+    if (S3CON&S3RI)
     {
-        RI = 0;
+        S3CON &= ~S3RI;
 
-        data = SBUF;
+        uartData = S3BUF;
         /* Put the data into the Rx FIFO */                 
-		setFifoData(&uartRxFifo_Obj[0], &data);
+		setFifoData(&uartRxFifo_Obj[busIdx_private], &uartData);
     }
-    if (TI)
+    if (S3CON&S3TI)
     {
-        TI = 0;
+        S3CON &= ~S3TI;
         uartGlobalSts = uartSts_normal;                 
     }
+
+    P52 = 0;
+}
+
+void uart4Int() /* uart 4(public network connect with PC) interrupt service function */ 
+{
+    unsigned char uartData;
+    if (S4CON&S4RI)
+    {
+        S4CON &= ~S4RI;
+
+        uartData = S4BUF;
+        /* Put the data into the Rx FIFO */                 
+		setFifoData(&uartRxFifo_Obj[busIdx_public], &uartData);
+    }
+    if (S4CON&S4TI)
+    {
+        S4CON &= ~S4TI;
+        uartGlobalSts = uartSts_normal;                 
+    }
+
 }
 
 unsigned char isUartNewDataAvailable(busIdx_type nwChn)

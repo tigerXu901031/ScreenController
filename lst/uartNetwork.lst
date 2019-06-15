@@ -1,0 +1,773 @@
+C51 COMPILER V9.00   UARTNETWORK                                                           06/15/2019 19:35:37 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE UARTNETWORK
+OBJECT MODULE PLACED IN ..\bin\uartNetwork.obj
+COMPILER INVOKED BY: C:\Program Files\Keil4\C51\BIN\C51.EXE ..\src\srv\uartNetwork.c LARGE BROWSE DEBUG OBJECTEXTEND PRI
+                    -NT(..\lst\uartNetwork.lst) OBJECT(..\bin\uartNetwork.obj)
+
+line level    source
+
+   1          /* 
+   2             -----------------------------------------------------------------------
+   3             Author   - Tiger.Xu
+   4             Date     - 2019.06.08
+   5             Version  - 0.0.1
+   6          
+   7             Change Notes:
+   8                  2019.06.08      Tiger.Xu
+   9                  Initial version
+  10          
+  11                  ...             ...
+  12                  ...
+  13              
+  14             Description:
+  15                  - follow the MODBUS protocol format
+  16          
+  17                  - 2 Channel UART 485 communication network protocol
+  18                  - Channel 1: PC <-> LCD
+  19                  - Channel 2: LCD <-> Main Controller
+  20             
+  21                  - Broadcast Id(PC <-> LCD Controller)： 0x00
+  22                  - Public Id: 0x01 - 0xfe
+  23                  - Private Id(LCD Controller <-> Main Controller) is 0xff
+  24          
+  25                  - All the message recieved from PC public bus which use
+  26                    the right id should forward to the door controller
+  27                  - All the message recieved from door controller use the
+  28                    public id should be forward to 
+  29             -----------------------------------------------------------------------
+  30          */
+  31          #include "uartNetwork.h"
+  32          
+  33          networkInfo_type networkObj;
+  34          
+  35          static void crc16Calc(msgBuf_type *msgObj)
+  36          {
+  37   1      
+  38   1      }
+*** WARNING C280 IN LINE 35 OF ..\SRC\SRV\UARTNETWORK.C: 'msgObj': unreferenced local variable
+  39          
+  40          static unsigned int isCrc16Ok(msgBuf_type *msgObj)
+  41          {
+  42   1      
+  43   1      }
+*** WARNING C173 IN LINE 43 OF ..\SRC\SRV\UARTNETWORK.C: missing return-expression
+*** WARNING C280 IN LINE 40 OF ..\SRC\SRV\UARTNETWORK.C: 'msgObj': unreferenced local variable
+  44          
+  45          static void readMsgAssemble(msgBuf_type *msgObj, unsigned int newData, unsigned int *dataByteCnt, busIdx_t
+             -ype busId)
+  46          {
+  47   1          /* 
+  48   1             Both handle the read request message and read response message:
+  49   1             
+  50   1             TODO: to figure out how to distinguish 
+C51 COMPILER V9.00   UARTNETWORK                                                           06/15/2019 19:35:37 PAGE 2   
+
+  51   1      
+  52   1             Default read message length is 2 byte except for the higher register address byte 
+  53   1             was 0x30 
+  54   1           */
+  55   1          static unsigned int dataFieldLen = 0;
+  56   1          static unsigned int serviceType = 0;
+  57   1      
+  58   1          unsigned int currentDataByte = 0;
+  59   1          unsigned int longFrameRemainLen = 0;
+  60   1      
+  61   1          /* increment the data byte counter */
+  62   1          *dataByteCnt ++;
+*** WARNING C275 IN LINE 62 OF ..\SRC\SRV\UARTNETWORK.C: expression with possibly no effect
+  63   1      
+  64   1          /* in this switch case the data counter start from the 3rd byte
+  65   1             end to the start of */
+  66   1          switch(*dataByteCnt)
+  67   1          {
+  68   2              /* 3rd byte */
+  69   2              case 3:
+  70   2                  /* higher byte of the 16-bit address */
+  71   2                  if(busId == busIdx_private)
+  72   2                  {
+  73   3                      serviceType = SERVICETYPE_READ_REQ;
+  74   3                      msgObj->readReqMsgObj.regAdd[0] = newData;
+  75   3                  }
+  76   2                  else if(newData == 0x30 && busId == busIdx_private)
+  77   2                  {
+  78   3                      serviceType = SERVICETYPE_READ_LONGRESP;
+  79   3                      msgObj->readLongRepMsgObj.regAdd[0] = newData;
+  80   3                  }
+  81   2                  else{
+  82   3                      serviceType = SERVICETYPE_READ_RESP;
+  83   3                      msgObj->readRepMsgObj.regAdd[0] = newData;
+  84   3                  }
+  85   2                  break;
+  86   2      
+  87   2              /* 4th byte */
+  88   2              case 4:
+  89   2                  if(serviceType == SERVICETYPE_READ_REQ)
+  90   2                  {
+  91   3                      /* lower byte of the 16-bit address */
+  92   3                      msgObj->readReqMsgObj.regAdd[1] = newData;
+  93   3                  }
+  94   2                  else if(serviceType == SERVICETYPE_READ_LONGRESP)
+  95   2                  {
+  96   3                      /* in this case it is the start address from 0 - 19 */
+  97   3                      msgObj->readLongRepMsgObj.regAdd[1] = newData;
+  98   3                  }
+  99   2                  else if(serviceType == SERVICETYPE_READ_RESP)
+ 100   2                  {
+ 101   3                      /* lower byte of the 16-bit address */
+ 102   3                      msgObj->readRepMsgObj.regAdd[1] = newData;
+ 103   3                  }
+ 104   2                  else{/* unknown error happen */}
+ 105   2                  break;
+ 106   2      
+ 107   2              /* 5th byte */
+ 108   2              case 5:
+ 109   2                  if(serviceType == SERVICETYPE_READ_REQ)
+ 110   2                  {
+ 111   3                      /* in this case it is the lower crc byte */
+C51 COMPILER V9.00   UARTNETWORK                                                           06/15/2019 19:35:37 PAGE 3   
+
+ 112   3                      msgObj->readReqMsgObj.crc[0] = newData;
+ 113   3                  }
+ 114   2                  else if(serviceType == SERVICETYPE_READ_LONGRESP)
+ 115   2                  {
+ 116   3                      /* in this case it is the data length of the following data
+ 117   3                         lengthInByte = (2 ^ value) * 2 */
+ 118   3                      msgObj->readLongRepMsgObj.lengthCode = newData;
+ 119   3                      dataFieldLen = (2 << newData) * 2; 
+ 120   3                  }
+ 121   2                  else if(serviceType == SERVICETYPE_READ_RESP)
+ 122   2                  {   
+ 123   3                      /* higher byte of the 1st 16-bit data */
+ 124   3                      msgObj->readRepMsgObj.msgData[0] = newData;
+ 125   3                  }
+ 126   2                  else{/* unknown error happen */}
+ 127   2                  break;
+ 128   2              
+ 129   2              /* 6th byte */
+ 130   2              case 6:
+ 131   2                  if(serviceType == SERVICETYPE_READ_REQ)
+ 132   2                  {
+ 133   3                      /* in this case it is the lower crc byte */
+ 134   3                      msgObj->readReqMsgObj.crc[1] = newData;
+ 135   3      
+ 136   3                      /* message recieved finished */
+ 137   3                      msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = serviceType;
+ 138   3                      msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = *dataByteCnt;
+ 139   3                      *dataByteCnt = 0;
+ 140   3                  }
+ 141   2                  else if(serviceType == SERVICETYPE_READ_LONGRESP)
+ 142   2                  {
+ 143   3                      /* lower byte of the 1st 16 bit data */
+ 144   3                      msgObj->readLongRepMsgObj.msgData[0] = newData;
+ 145   3      
+ 146   3                  }
+ 147   2                  else if(serviceType == SERVICETYPE_READ_RESP)
+ 148   2                  {   
+ 149   3                      /* lower byte of the 1st 16-bit data */
+ 150   3                      msgObj->readRepMsgObj.msgData[1] = newData;
+ 151   3                  }
+ 152   2                  else{/* unknown error happen */}
+ 153   2                  break;
+ 154   2      
+ 155   2              /* 7th byte */
+ 156   2              case 7:
+ 157   2                  if(serviceType == SERVICETYPE_READ_LONGRESP)
+ 158   2                  {
+ 159   3                      /* lower byte of the 1st 16 bit data */
+ 160   3                      msgObj->readLongRepMsgObj.msgData[1] = newData;
+ 161   3                  }
+ 162   2                  else if(serviceType == SERVICETYPE_READ_RESP)
+ 163   2                  {   
+ 164   3                      /* lower byte of the 16-bit crc */
+ 165   3                      msgObj->readRepMsgObj.crc[0] = newData;
+ 166   3                  }
+ 167   2                  else{/* unknown error happen */}
+ 168   2                  break;
+ 169   2      
+ 170   2              case 8:
+ 171   2                  if(serviceType == SERVICETYPE_READ_LONGRESP)
+ 172   2                  {
+ 173   3                      /* higher byte of the 2st 16 bit data */
+C51 COMPILER V9.00   UARTNETWORK                                                           06/15/2019 19:35:37 PAGE 4   
+
+ 174   3                      msgObj->readLongRepMsgObj.msgData[2] = newData;
+ 175   3                  }
+ 176   2                  else if(serviceType == SERVICETYPE_READ_RESP)
+ 177   2                  {   
+ 178   3                      /* higher byte of the 16-bit crc */
+ 179   3                      msgObj->readRepMsgObj.crc[1] = newData;
+ 180   3      
+ 181   3                      /* message recieve finsihed */
+ 182   3                      msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = serviceType;
+ 183   3                      msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = *dataByteCnt;
+ 184   3                      *dataByteCnt = 0;
+ 185   3                  }
+ 186   2                  else{/* unknown error happen */}
+ 187   2                  break;
+ 188   2              
+ 189   2              default:
+ 190   2                  
+ 191   2                  currentDataByte = *dataByteCnt - 8;
+ 192   2                  longFrameRemainLen = dataFieldLen - 3;
+ 193   2                  if(serviceType == SERVICETYPE_READ_LONGRESP)
+ 194   2                  {
+ 195   3                      if(currentDataByte <= longFrameRemainLen)
+ 196   3                      {
+ 197   4                          /* When there is long-frame message Add_H = 0x30
+ 198   4                             then construct the other data byte */
+ 199   4                          msgObj->readLongRepMsgObj.msgData[longFrameRemainLen] = newData;
+ 200   4                      }
+ 201   3                      else if(currentDataByte == longFrameRemainLen + 1)
+ 202   3                      {
+ 203   4                          /* lower crc byte */
+ 204   4                          msgObj->readLongRepMsgObj.crc[0] = newData;
+ 205   4                      }
+ 206   3                      else if (currentDataByte == longFrameRemainLen + 2)
+ 207   3                      {
+ 208   4                          /* higher crc byte */
+ 209   4                          msgObj->readLongRepMsgObj.crc[1] = newData;
+ 210   4      
+ 211   4                          /* last byte recieved set the available status and
+ 212   4                             clear the data byte counter */
+ 213   4                          msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = serviceType;
+ 214   4                          msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = *dataByteCnt;
+ 215   4                          *dataByteCnt = 0;
+ 216   4                      }
+ 217   3                      else
+ 218   3                      {
+ 219   4                          /* unknown error */
+ 220   4                      }
+ 221   3                  }
+ 222   2                  else{
+ 223   3                      /* unknown error */
+ 224   3                  }
+ 225   2          }
+ 226   1      }
+ 227          
+ 228          static void writeOpMsgAssemble(msgBuf_type *msgObj, unsigned int newData,unsigned int *dataByteCnt, busIdx
+             -_type busId)
+ 229          {
+ 230   1          /* Usually when recieved this message after
+ 231   1             an success write operation */
+ 232   1          dataByteCnt ++;
+ 233   1          switch(*dataByteCnt)
+ 234   1          {
+C51 COMPILER V9.00   UARTNETWORK                                                           06/15/2019 19:35:37 PAGE 5   
+
+ 235   2              case 3:
+ 236   2                  /* higher address byte */
+ 237   2                  msgObj->writeAccessMsgObj.regAdd[0] = newData;
+ 238   2                  break;
+ 239   2              case 4:
+ 240   2                  /* lower address byte */
+ 241   2                  msgObj->writeAccessMsgObj.regAdd[1] = newData;
+ 242   2                  break;
+ 243   2              case 5:
+ 244   2                  /* higher write data byte */
+ 245   2                  msgObj->writeAccessMsgObj.msgData[0] = newData;
+ 246   2                  break;
+ 247   2              case 6:
+ 248   2                  /* lower write data byte */
+ 249   2                  msgObj->writeAccessMsgObj.msgData[1] = newData;
+ 250   2                  break;
+ 251   2              case 7:
+ 252   2                  /* lower crc byte */
+ 253   2                  msgObj->writeAccessMsgObj.crc[0] = newData;
+ 254   2                  break;
+ 255   2              case 8:
+ 256   2                  /* higher crc byte */
+ 257   2                  msgObj->writeAccessMsgObj.crc[1] = newData;
+ 258   2      
+ 259   2                  /* message recieved finsih */
+ 260   2                  if(busId == busIdx_public)
+ 261   2                  {
+ 262   3                      msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_WRITE_REQ;
+ 263   3                  }
+ 264   2                  else if(busId == busIdx_private)
+ 265   2                  {
+ 266   3                      msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_WRITE_RESP;
+ 267   3                  }
+ 268   2                  else{/* unknown error */}
+ 269   2                  msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = *dataByteCnt;
+ 270   2                  *dataByteCnt = 0;
+ 271   2                  break;
+ 272   2              default:
+ 273   2                  /* Error condition */
+ 274   2                  break;
+ 275   2          }
+ 276   1      }
+ 277          
+ 278          /* TODO: need to confirme the errVal byte filed are the same or not */
+ 279          static void accessFailMsgAssemble(msgBuf_type *msgObj, unsigned int newData,unsigned int *dataByteCnt)
+ 280          {
+ 281   1          *dataByteCnt ++;
+*** WARNING C275 IN LINE 281 OF ..\SRC\SRV\UARTNETWORK.C: expression with possibly no effect
+ 282   1          switch(*dataByteCnt)
+ 283   1          {
+ 284   2              case 3:
+ 285   2                  /* higher address byte */
+ 286   2                  msgObj->accessFailRepMsgObj.regAdd[0] = newData;
+ 287   2                  break;
+ 288   2              case 4:
+ 289   2                  /* lower address byte */
+ 290   2                  msgObj->accessFailRepMsgObj.regAdd[1] = newData;
+ 291   2                  break;
+ 292   2              case 5:
+ 293   2                  /* read or write operation error code */
+ 294   2                  msgObj->accessFailRepMsgObj.errVal[0] = newData;
+ 295   2                  break;
+C51 COMPILER V9.00   UARTNETWORK                                                           06/15/2019 19:35:37 PAGE 6   
+
+ 296   2              case 6:
+ 297   2                  /* read or write operation error code */
+ 298   2                  msgObj->accessFailRepMsgObj.errVal[1] = newData;
+ 299   2                  break;
+ 300   2              case 7:
+ 301   2                  /* lower crc byte */
+ 302   2                  msgObj->accessFailRepMsgObj.crc[0] = newData;
+ 303   2                  break;
+ 304   2              case 8:
+ 305   2                  /* higher crc byte */
+ 306   2                  msgObj->accessFailRepMsgObj.crc[1] = newData;
+ 307   2      
+ 308   2                  if(msgObj->accessFailRepMsgObj.cmd == MSGCMD_READOPFAIL)
+ 309   2                  {
+ 310   3                      msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_READ_FAIL;
+ 311   3                  }
+ 312   2                  else if(msgObj->accessFailRepMsgObj.cmd == MSGCMD_WRITEOPFAIL)
+ 313   2                  {
+ 314   3                      msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_WRITE_FAIL;
+ 315   3                  }
+ 316   2                  msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = *dataByteCnt;
+ 317   2                  *dataByteCnt = 0;
+ 318   2                  break;
+ 319   2              default:
+ 320   2                  /* unknown error condition */
+ 321   2                  break;
+ 322   2          }
+ 323   1      }
+ 324          
+ 325          static void dataMonitorMsgAssemble(msgBuf_type *msgObj, unsigned int newData,unsigned int *dataByteCnt)
+ 326          {
+ 327   1          /* TBD */
+ 328   1          
+ 329   1      }
+*** WARNING C280 IN LINE 325 OF ..\SRC\SRV\UARTNETWORK.C: 'msgObj': unreferenced local variable
+*** WARNING C280 IN LINE 325 OF ..\SRC\SRV\UARTNETWORK.C: 'newData': unreferenced local variable
+*** WARNING C280 IN LINE 325 OF ..\SRC\SRV\UARTNETWORK.C: 'dataByteCnt': unreferenced local variable
+ 330          
+ 331          static void heartBeatMsgAssemble(msgBuf_type *msgObj, unsigned int newData,unsigned int *dataByteCnt)
+ 332          {
+ 333   1          *dataByteCnt ++;
+*** WARNING C275 IN LINE 333 OF ..\SRC\SRV\UARTNETWORK.C: expression with possibly no effect
+ 334   1          switch(*dataByteCnt)
+ 335   1          {
+ 336   2              case 3:
+ 337   2                  /* heart beat data */
+ 338   2                  msgObj->heartBeatMsgObj.val = newData;
+ 339   2                  break;
+ 340   2              case 4:
+ 341   2                  /* lower crc byte */
+ 342   2                  msgObj->heartBeatMsgObj.crc[0] = newData;
+ 343   2                  break;
+ 344   2              case 5:
+ 345   2                  /* higher crc byte */
+ 346   2                  msgObj->heartBeatMsgObj.crc[1] = newData;
+ 347   2      
+ 348   2                  msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_HEART_BEAT;
+ 349   2                  msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = *dataByteCnt;
+ 350   2                  *dataByteCnt = 0;
+ 351   2                  break;    
+ 352   2              default:
+ 353   2                  /* unknown error condition */
+C51 COMPILER V9.00   UARTNETWORK                                                           06/15/2019 19:35:37 PAGE 7   
+
+ 354   2                  break;
+ 355   2          }
+ 356   1      }
+ 357          
+ 358          static void getRxMsgAndAssemble(msgBuf_type *msgObj)
+ 359          {
+ 360   1          static unsigned int dataByteCnt[2];
+ 361   1          static unsigned int newDatBuf[2];
+ 362   1          static msgBuf_type msgBuf[2];
+ 363   1      
+ 364   1          busIdx_type i = 0;
+ 365   1          for(i = 0; i < busIdx_max; i ++)
+ 366   1          {
+ 367   2              /* if new data from uart is available */
+ 368   2              if(isUartNewDataAvailable(i))
+ 369   2              {
+ 370   3                  getUartReceiveBuf(&newDatBuf[i], i);
+ 371   3      
+ 372   3                  if(dataByteCnt[i] == 0)
+ 373   3                  {
+ 374   4                      /* node index byte */
+ 375   4                      msgBuf[i].msgByteArray[0] = newDatBuf;
+ 376   4                  }
+ 377   3                  else if(dataByteCnt[i] == 1)
+ 378   3                  {
+ 379   4                      /* command byte */
+ 380   4                      msgBuf[i].msgByteArray[1] = newDatBuf;
+ 381   4                  }
+ 382   3                  else
+ 383   3                  {
+ 384   4                      /* consecutive byte */
+ 385   4                      switch(msgBuf[i].msgByteArray[1])
+ 386   4                      {
+ 387   5                          case MSGCMD_READOP:
+ 388   5                              readMsgAssemble(&msgBuf[i], newDatBuf[i], &dataByteCnt[i], (busIdx_type)i);
+ 389   5                          break;
+ 390   5      
+ 391   5                          case MSGCMD_WRITEOP:
+ 392   5                              writeOpMsgAssemble(&msgBuf[i], newDatBuf[i], &dataByteCnt[i], (busIdx_type)i);
+ 393   5                          break;
+ 394   5      
+ 395   5                          case MSGCMD_READOPFAIL:
+ 396   5                          case MSGCMD_WRITEOPFAIL:
+ 397   5                              accessFailMsgAssemble(&msgBuf[i], newDatBuf[i], &dataByteCnt[i]);
+ 398   5                          break;
+ 399   5      
+ 400   5                          case MSGCMD_DATAMONITOR:
+ 401   5                              dataMonitorMsgAssemble(&msgBuf[i], newDatBuf[i], &dataByteCnt[i]);
+ 402   5                          break;
+ 403   5      
+ 404   5                          case MSGCMD_HEARTBEAT:
+ 405   5                              heartBeatMsgAssemble(&msgBuf[i], newDatBuf[i], &dataByteCnt[i]);
+ 406   5                          break;
+ 407   5      
+ 408   5                          default:
+ 409   5                              /* Might need report error due to no message class
+ 410   5                                 is match */
+ 411   5                          break;
+ 412   5                      }
+ 413   4                  }
+ 414   3      
+ 415   3                  /* if the new message is assembled finished and available,
+C51 COMPILER V9.00   UARTNETWORK                                                           06/15/2019 19:35:37 PAGE 8   
+
+ 416   3                     if available then output the read buffer
+ 417   3                   */
+ 418   3                  if(msgBuf[i].msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] != 0)
+ 419   3                  {
+ 420   4                      /* copy the finished message to the argument */
+ 421   4                      memcpy(msgObj, &msgBuf[i], 50);
+*** WARNING C182 IN LINE 421 OF ..\SRC\SRV\UARTNETWORK.C: pointer to different objects
+*** WARNING C182 IN LINE 421 OF ..\SRC\SRV\UARTNETWORK.C: pointer to different objects
+ 422   4      
+ 423   4                      /* clear the buffer and wai for the new message */
+ 424   4                      clearDataBlock(&msgBuf[i], 50);
+*** WARNING C182 IN LINE 424 OF ..\SRC\SRV\UARTNETWORK.C: pointer to different objects
+ 425   4                  }
+ 426   3                  else{
+ 427   4                      /* do nothing */
+ 428   4                  }
+ 429   3              }
+ 430   2              else
+ 431   2              {
+ 432   3                  /* No new data do nothing */
+ 433   3              }
+ 434   2              msgObj ++;
+ 435   2          }
+ 436   1      
+ 437   1      }
+ 438          
+ 439          static void setTxMsgAndDisassemble(msgBuf_type *msgObj, busIdx_type busId)
+ 440          {
+ 441   1          /* convert the general message type into byte sequence in buffer */
+ 442   1          unsigned int i = 0;
+ 443   1          unsigned int *dataPtr = 0;
+ 444   1          dataPtr = &msgObj->msgByteArray[0];
+ 445   1      
+ 446   1          for(i = 0; i < msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE]; i ++)
+ 447   1          {
+ 448   2              setUartSendBuf(dataPtr, busId);
+ 449   2              dataPtr ++;
+ 450   2          }
+ 451   1      }
+ 452          
+ 453          static void networkGatewayHandler(msgBuf_type *msgObj)
+ 454          {
+ 455   1          /* 
+ 456   1             All the message recieved from public bus has same the public node id
+ 457   1             will forward to the door controller
+ 458   1      
+ 459   1             All the message revieved from private bus 
+ 460   1          */
+ 461   1         unsigned int i = 0;
+ 462   1         for(i = 0; i < busIdx_max; i ++)
+ 463   1         {
+ 464   2             if(busIdx_max == ((unsigned int)busIdx_public) && (msgObj->msgByteArray[0] == networkObj.publicNode
+             -Id))
+ 465   2             {
+ 466   3                     /* forward the message to the private bus */
+ 467   3                     setTxMsgAndDisassemble(msgObj, busIdx_private);
+ 468   3             }
+ 469   2             else if(busIdx_max == ((unsigned int)busIdx_private) && (msgObj->msgByteArray[0] == networkObj.publ
+             -icNodeId))
+ 470   2             {
+ 471   3                     /* forward the message to the public bus */
+ 472   3                     setTxMsgAndDisassemble(msgObj, busIdx_public);
+C51 COMPILER V9.00   UARTNETWORK                                                           06/15/2019 19:35:37 PAGE 9   
+
+ 473   3             }
+ 474   2             else
+ 475   2             {
+ 476   3                 /* something wrong here */
+ 477   3             }
+ 478   2             msgObj ++;
+ 479   2         }
+ 480   1      }
+ 481          
+ 482          static void msg2Data_Read()
+ 483          {
+ 484   1         
+ 485   1      }
+ 486          
+ 487          static void networkRequestHandler()
+ 488          {
+ 489   1      
+ 490   1      }
+ 491          
+ 492          static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
+ 493          {
+ 494   1          /* do crc check only for private communication 
+ 495   1          no need the gateway message */
+ 496   1          unsigned int serviceType;
+ 497   1          unsigned int i = 0;
+ 498   1      
+ 499   1          /* used for long message */
+ 500   1          unsigned char longMsgDataFeildLen = 0;
+ 501   1          unsigned char longMsgAddLowerByte = 0;
+ 502   1      
+ 503   1          if(msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE])
+ 504   1          {
+ 505   2              if(isCrc16Ok(&msgObj))
+*** WARNING C182 IN LINE 505 OF ..\SRC\SRV\UARTNETWORK.C: pointer to different objects
+ 506   2              {
+ 507   3                  serviceType = msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE];
+ 508   3                  switch (serviceType)
+ 509   3                  {
+ 510   4                      case SERVICETYPE_READ_RESP:
+ 511   4                          /* extract cmd, add, data */
+ 512   4                          dataBuf->networkData[0].cmd = MSGCMD_READOP;
+ 513   4                          dataBuf->networkData[0].add[0] = msgObj->readRepMsgObj.regAdd[0];
+ 514   4                          dataBuf->networkData[0].add[1] = msgObj->readRepMsgObj.regAdd[1];
+ 515   4                          dataBuf->networkData[0].opData[0] = msgObj->readRepMsgObj.msgData[0];
+ 516   4                          dataBuf->networkData[0].opData[1] = msgObj->readRepMsgObj.msgData[1];
+ 517   4      
+ 518   4                          dataBuf->dataLength = 1;
+ 519   4                          break;
+ 520   4      
+ 521   4                      case SERVICETYPE_READ_LONGRESP:
+ 522   4                          longMsgDataFeildLen = (msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] - 7) / 2;
+ 523   4                          longMsgAddLowerByte = msgObj->readLongRepMsgObj.regAdd[1];
+ 524   4                          dataBuf->dataLength = longMsgDataFeildLen;
+ 525   4                          for(i = 0; i < longMsgDataFeildLen; i ++)
+ 526   4                          {
+ 527   5                              dataBuf->networkData[i].cmd = MSGCMD_READOP;
+ 528   5      
+ 529   5                              dataBuf->networkData[i].add[0] = msgObj->readLongRepMsgObj.regAdd[0];
+ 530   5                              dataBuf->networkData[i].add[1] = longMsgAddLowerByte;
+ 531   5      
+ 532   5                              dataBuf->networkData[i].opData[0] = msgObj->readLongRepMsgObj.msgData[2*i];
+ 533   5                              dataBuf->networkData[i].opData[1] = msgObj->readLongRepMsgObj.msgData[2*i+1];
+C51 COMPILER V9.00   UARTNETWORK                                                           06/15/2019 19:35:37 PAGE 10  
+
+ 534   5      
+ 535   5                              longMsgAddLowerByte ++;
+ 536   5                          }
+ 537   4                          break;
+ 538   4      
+ 539   4                      case SERVICETYPE_WRITE_RESP:
+ 540   4                          /* check whether the write response equal to the last write
+ 541   4                             request if equal  */
+ 542   4                          dataBuf->dataLength = 1;
+ 543   4                          dataBuf->networkData[0].cmd = MSGCMD_WRITEOP;
+ 544   4                          dataBuf->networkData[0].add[0] = msgObj->writeAccessMsgObj.regAdd[0];
+ 545   4                          dataBuf->networkData[0].add[1] = msgObj->writeAccessMsgObj.regAdd[1];
+ 546   4                          dataBuf->networkData[0].opData[0] = msgObj->writeAccessMsgObj.msgData[0];
+ 547   4                          dataBuf->networkData[0].opData[1] = msgObj->writeAccessMsgObj.msgData[1];
+ 548   4                          break;
+ 549   4      
+ 550   4                      case SERVICETYPE_READ_FAIL:
+ 551   4                          /* check whether the write response equal to the last write
+ 552   4                             request if equal  */
+ 553   4                          dataBuf->dataLength = 1;
+ 554   4                          dataBuf->networkData[0].cmd = MSGCMD_READOPFAIL;
+ 555   4                          dataBuf->networkData[0].add[0] = msgObj->accessFailRepMsgObj.regAdd[0];
+ 556   4                          dataBuf->networkData[0].add[1] = msgObj->accessFailRepMsgObj.regAdd[1];
+ 557   4                          dataBuf->networkData[0].opData[0] = msgObj->accessFailRepMsgObj.errVal[0];
+ 558   4                          dataBuf->networkData[0].opData[1] = msgObj->accessFailRepMsgObj.errVal[1];
+ 559   4                          break;
+ 560   4      
+ 561   4                      case SERVICETYPE_WRITE_FAIL:
+ 562   4                          dataBuf->dataLength = 1;
+ 563   4                          dataBuf->networkData[0].cmd = MSGCMD_WRITEOPFAIL;
+ 564   4                          dataBuf->networkData[0].add[0] = msgObj->accessFailRepMsgObj.regAdd[0];
+ 565   4                          dataBuf->networkData[0].add[1] = msgObj->accessFailRepMsgObj.regAdd[1];
+ 566   4                          dataBuf->networkData[0].opData[0] = msgObj->accessFailRepMsgObj.errVal[0];
+ 567   4                          dataBuf->networkData[0].opData[1] = msgObj->accessFailRepMsgObj.errVal[1];
+ 568   4                          break;
+ 569   4                      default:
+ 570   4                          /* error happened */
+ 571   4                          break;
+ 572   4                  }
+ 573   3                  /* directly handle some request by network service */
+ 574   3                  networkRequestHandler();
+ 575   3      
+ 576   3                  /*  */
+ 577   3              }
+ 578   2              else{
+ 579   3                  /* respond crc error message if needed (ony when R/W request message) */
+ 580   3      
+ 581   3              } 
+ 582   2          }
+ 583   1            
+ 584   1      }
+ 585          
+ 586          static void readReqMsgTxPreprocess(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
+ 587          {
+ 588   1          /* TODO: now only considering normal 2-byte data read request message
+ 589   1             long frame read request havent been handled */
+ 590   1          msgObj->readReqMsgObj.nodeId = networkObj.privateNodeId;
+ 591   1      
+ 592   1          msgObj->readReqMsgObj.cmd = dataBuf->networkData[0].cmd;
+ 593   1      
+ 594   1          msgObj->readReqMsgObj.regAdd[0] = dataBuf->networkData[0].add[0];
+ 595   1          msgObj->readReqMsgObj.regAdd[1] = dataBuf->networkData[0].add[1];
+C51 COMPILER V9.00   UARTNETWORK                                                           06/15/2019 19:35:37 PAGE 11  
+
+ 596   1      
+ 597   1          msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 6;
+ 598   1          msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_READ_REQ;
+ 599   1      
+ 600   1          crc16Calc(msgObj);
+ 601   1      }
+ 602          
+ 603          static void writeReqMsgTxPreprocess(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
+ 604          {
+ 605   1          msgObj->writeAccessMsgObj.nodeId = networkObj.privateNodeId;
+ 606   1      
+ 607   1          msgObj->writeAccessMsgObj.cmd = dataBuf->networkData[0].cmd;
+ 608   1      
+ 609   1          msgObj->writeAccessMsgObj.regAdd[0] = dataBuf->networkData[0].add[0];
+ 610   1          msgObj->writeAccessMsgObj.regAdd[1] = dataBuf->networkData[0].add[1];
+ 611   1      
+ 612   1          msgObj->writeAccessMsgObj.msgData[0] = dataBuf->networkData[0].opData[0];
+ 613   1          msgObj->writeAccessMsgObj.msgData[1] = dataBuf->networkData[0].opData[1];
+ 614   1      
+ 615   1          msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 8;
+ 616   1          msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_WRITE_REQ;
+ 617   1      
+ 618   1          crc16Calc(msgObj);
+ 619   1      }
+ 620          
+ 621          static void txDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
+ 622          {
+ 623   1          /* process the data from application and convert the operational data to message
+ 624   1             1. fill all the operational data to the message
+ 625   1             2. do crc calculation and fill the crc field
+ 626   1      
+ 627   1              TODO: 
+ 628   1                  - need to consider how to remove the read out data and move all the remain
+ 629   1                    data one position forward.
+ 630   1                  - here just process and send one message each cycle, need to consider whether
+ 631   1                    require to handle multiple message each cycle.
+ 632   1                  - By default each cycle consume the first networkData array element need to determine 
+ 633   1                    how to remove the consumed first element as fifo
+ 634   1      
+ 635   1             - In this case normal write request 0x06 and read response 0x03
+ 636   1               message will be handled here
+ 637   1          
+ 638   1          */
+ 639   1         if(dataBuf->dataLength > 0)
+ 640   1         {
+ 641   2              switch (dataBuf->networkData[0].cmd)
+ 642   2              {
+ 643   3              case MSGCMD_READOP:
+ 644   3                  readReqMsgTxPreprocess(msgObj, dataBuf);
+ 645   3                  break;
+ 646   3      
+ 647   3              case MSGCMD_WRITEOP:
+ 648   3                  writeReqMsgTxPreprocess(msgObj, dataBuf);
+ 649   3                  break;
+ 650   3      
+ 651   3              default:
+ 652   3                  break;
+ 653   3              }
+ 654   2         }
+ 655   1      
+ 656   1      }
+ 657          
+C51 COMPILER V9.00   UARTNETWORK                                                           06/15/2019 19:35:37 PAGE 12  
+
+ 658          void networkInit()
+ 659          {
+ 660   1          uartDrvInit();
+ 661   1      
+ 662   1          networkObj.privateNodeId = 0xff;
+ 663   1      
+ 664   1          /* TODO:
+ 665   1             Fetch the public node ID from the door controller 
+ 666   1             if the fetch operation is failed then the initialization
+ 667   1             will fail 
+ 668   1             Fetch Node ID procedure:
+ 669   1             1. Send an read (public ID) request to the main controller
+ 670   1             2. Recieve the valid id and then regard this aid as the public
+ 671   1                id at this operation cycle.
+ 672   1             3. If the ID is not valid or if the ID was not received then
+ 673   1                set an fail status and stay in the init phase
+ 674   1          */
+ 675   1      }
+ 676          
+ 677          /* 10ms task */
+ 678          void getNetworkData(networkDataBuf_type *nwDataBuf)
+ 679          {
+ 680   1          /* Argument *nwDataBuf it's better  
+ 681   1           */
+ 682   1          unsigned int i = 0;
+ 683   1          msgBuf_type rxMsgBuf[busIdx_max];
+ 684   1      
+ 685   1          /* recieve data in byte and assemble the data byte into message */
+ 686   1          getRxMsgAndAssemble(&rxMsgBuf);
+ 687   1      
+ 688   1          /* forward the message that no need to do any handler */
+ 689   1          networkGatewayHandler(&rxMsgBuf);
+ 690   1      
+ 691   1          /* message -> application operational data */
+ 692   1          rxDataHandler(&rxMsgBuf, nwDataBuf);
+ 693   1      }
+ 694          
+ 695          /* 10ms task */
+ 696          void setNetworkData(networkDataBuf_type *nwDataBuf)
+ 697          {
+ 698   1          msgBuf_type txMsgFromApp;
+ 699   1      
+ 700   1          /* application operational data -> message */
+ 701   1          txDataHandler(&txMsgFromApp, nwDataBuf);
+ 702   1      
+ 703   1          /* put to the message to the uart send buffer
+ 704   1             each cycle one message */
+ 705   1          setTxMsgAndDisassemble(&txMsgFromApp, busIdx_private);
+ 706   1          
+ 707   1      }
+*** WARNING C290 IN LINE 43 OF ..\SRC\SRV\UARTNETWORK.C: missing return value
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   4557    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   2236     401
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+C51 COMPILER V9.00   UARTNETWORK                                                           06/15/2019 19:35:37 PAGE 13  
+
+
+C51 COMPILATION COMPLETE.  14 WARNING(S),  0 ERROR(S)

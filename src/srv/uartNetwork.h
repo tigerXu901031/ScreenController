@@ -41,7 +41,7 @@ typedef struct{
     unsigned int nodeId;
     unsigned int cmd;
     unsigned int regAdd[2];
-    unsigned int data[2];
+    unsigned int msgData[2];
     unsigned int crc[2];
 }readRepMsg_type;
 
@@ -51,7 +51,7 @@ typedef struct{
     unsigned int cmd;
     unsigned int regAdd[2];
     unsigned int lengthCode;
-    unsigned int data[40];
+    unsigned int msgData[40];
     unsigned int crc[2];
 }readLongRepMsg_type;
 
@@ -73,7 +73,7 @@ typedef struct{
     unsigned int nodeId;
     unsigned int cmd;
     unsigned int regAdd[2];
-    unsigned int data[2];
+    unsigned int msgData[2];
     unsigned int crc[2];
 }writeAccessMsg_type;
 
@@ -123,7 +123,7 @@ typedef union{
 typedef struct{
     unsigned int cmd;
     unsigned int add[2];
-    unsigned int data[2];  
+    unsigned int opData[2];  
 }netWorkData_type;
 
 typedef struct{

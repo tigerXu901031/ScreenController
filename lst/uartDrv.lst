@@ -1,0 +1,254 @@
+C51 COMPILER V9.00   UARTDRV                                                               06/15/2019 19:35:37 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE UARTDRV
+OBJECT MODULE PLACED IN ..\bin\uartDrv.obj
+COMPILER INVOKED BY: C:\Program Files\Keil4\C51\BIN\C51.EXE ..\src\drv\uartDrv.c LARGE BROWSE DEBUG OBJECTEXTEND PRINT(.
+                    -.\lst\uartDrv.lst) OBJECT(..\bin\uartDrv.obj)
+
+line level    source
+
+   1          /* 
+   2             -----------------------------------------------------------------------
+   3             Author   - Tiger.Xu
+   4             Date     - 2019.06.08
+   5             Version  - 0.0.1
+   6          
+   7             Change Notes:
+   8                  2019.06.08      Tiger.Xu
+   9                  Initial version
+  10          
+  11                  ...             ...
+  12                  ...
+  13              
+  14             Description:
+  15                  - Use one level fifo buffer when receive and transmit data in byte
+  16                    level
+  17                  - Baud rate: 9600bps
+  18                  - one start bit, one stop bit, 8 data bit
+  19                  
+  20             -----------------------------------------------------------------------
+  21          */
+  22          
+  23          #include "uartDrv.h"
+  24          
+  25          uartSts_type uartGlobalSts;
+  26          fifo_type uartTxFifo_Obj[busIdx_max];
+  27          fifo_type uartRxFifo_Obj[busIdx_max];
+  28          
+  29          
+  30          
+  31          // void switch485Mode(busIdx_type busId, busMode_type busMode)
+  32          // {
+  33          //     if(busId == busIdx_private)
+  34          //     {
+  35          //         if(busMode == busMode_tx)
+  36          //         {
+  37                      
+  38          //         }
+  39          //     }
+  40          //     else if(busId == busIdx_public)
+  41          //     {
+  42                  
+  43          //     }
+  44          // }
+  45          
+  46          /* This function should be called cyclic in TODO: 1 ms
+  47             (Not final decided yet) and will be called in a timer
+  48             interrupt
+  49           */
+  50          static void sendDataCyclic()
+  51          {
+  52   1          unsigned int uartData;
+  53   1          busIdx_type i = 0;
+  54   1      
+C51 COMPILER V9.00   UARTDRV                                                               06/15/2019 19:35:37 PAGE 2   
+
+  55   1          P52 = 1;
+  56   1      
+  57   1          for(i = 0; i < busIdx_max; i ++)
+  58   1          {
+  59   2              /* test only */
+  60   2              S3BUF = 0xaa;
+  61   2              if(uartTxFifo_Obj[i].curPtr > 0)
+  62   2              {
+  63   3      
+  64   3                  /* If the Tx FIFO buffer has data to send then put
+  65   3                     the send data into data register
+  66   3                   */
+  67   3                  if(uartGlobalSts != uartSts_busy)
+  68   3                  {
+  69   4                      uartGlobalSts = uartSts_busy;
+  70   4                      getFifoData(&uartTxFifo_Obj[i], &uartData);
+  71   4                      if(i == busIdx_public)
+  72   4                      {
+  73   5                          S4BUF = uartData;
+  74   5                      }
+  75   4                      else if(i == busIdx_private)
+  76   4                      {
+  77   5                          // S3BUF = uartData;
+  78   5                      }
+  79   4                      else{
+  80   5                          /* unknown error */
+  81   5                      }
+  82   4                  }
+  83   3                  else{
+  84   4                      /* do nothing */
+  85   4                  }
+  86   3              }
+  87   2          }
+  88   1      }
+  89          
+  90          void uartDrvInit()
+  91          {
+  92   1          unsigned char i;
+  93   1      
+  94   1              //UART 1
+  95   1              SCON    = 0x50;         //8λ����,�ɱ䲨����
+  96   1              AUXR    |= 0x40;                //��ʱ��1ʱ��ΪFosc,��1T
+  97   1              AUXR    &= 0xFE;                //����1ѡ��ʱ��1Ϊ�����ʷ�����
+  98   1              TMOD    &= 0x0F;                //�趨��ʱ��1Ϊ16λ�Զ���װ��ʽ
+  99   1              TL1             = 0x8F;         //�趨��ʱ��ֵ
+ 100   1              TH1             = 0xFD;         //�趨��ʱ��ֵ
+ 101   1              ET1             = 0;            //��ֹ��ʱ��1�ж�
+ 102   1              TR1             = 1;            //������ʱ��1
+ 103   1              ES              = 1;                  /*�򿪴����ж�*/
+ 104   1              
+ 105   1              //UART 2
+ 106   1              //reserved
+ 107   1              
+ 108   1              //UART 3 Baud Rate:9600, using Timer3
+ 109   1              S3CON =         0x10;           //8λ����,�ɱ䲨����
+ 110   1              S3CON |=        0x40;           //����3ѡ��ʱ��3Ϊ�����ʷ�����
+ 111   1              T4T3M &=        0xFD;           //��ʱ��3ʱ��ΪFosc/12,��12T
+ 112   1              T3L     =       0xCC;           //�趨��ʱ��ֵ
+ 113   1              T3H     =       0xFF;           //�趨��ʱ��ֵ
+ 114   1              T4T3M |=        0x08;           //������ʱ��3
+ 115   1              
+ 116   1              //UART 4                                        Baud Rate:9600, using Timer2
+C51 COMPILER V9.00   UARTDRV                                                               06/15/2019 19:35:37 PAGE 3   
+
+ 117   1              S4CON =         0x10;           //8λ����,�ɱ䲨����
+ 118   1              S4CON &=        0xBF;           //����4ѡ��ʱ��2Ϊ�����ʷ�����
+ 119   1              AUXR    &=      0xFB;           //��ʱ��2ʱ��ΪFosc/12,��12T
+ 120   1              T2L     =       0xCC;           //�趨��ʱ��ֵ
+ 121   1              T2H     =       0xFF;           //�趨��ʱ��ֵ
+ 122   1              AUXR    |=      0x10;           //������ʱ��2
+ 123   1                      
+ 124   1              EA              = 1;                  /*�����ж�*/
+ 125   1      
+ 126   1          /* Create an FIFO object buffer uart data */
+ 127   1          for(i = 0; i < busIdx_max; i ++)
+ 128   1          {
+ 129   2              uartTxFifo_Obj[i] = fifoInit(UART_DATA_LEN_IN_BYTE);
+ 130   2          }
+ 131   1      }
+ 132          
+ 133          void uartDrvUpdate()
+ 134          {
+ 135   1          sendDataCyclic();
+ 136   1      }
+ 137          
+ 138          uartSts_type setUartSendBuf(unsigned int *uartData, busIdx_type busId)
+ 139          {
+ 140   1          fifoSts_type writeOpsts;
+ 141   1          uartSts_type returnVal;
+ 142   1      
+ 143   1      
+ 144   1          /* write the data into the send buffer */
+ 145   1          writeOpsts = setFifoData(&uartTxFifo_Obj[busId], uartData);
+ 146   1          if(writeOpsts == writeSuccess)
+ 147   1          {
+ 148   2              returnVal = uartSts_normal;
+ 149   2          }
+ 150   1          else{
+ 151   2              returnVal = uartSts_sendFail; 
+ 152   2          }
+ 153   1          return returnVal;
+ 154   1      }
+ 155          
+ 156          uartSts_type getUartReceiveBuf(unsigned int *uartData, busIdx_type busId)
+ 157          {
+ 158   1          fifoSts_type readOpsts;
+ 159   1          uartSts_type returnVal;
+ 160   1      
+ 161   1          /* Get the data from Rx fifo */
+ 162   1          readOpsts = getFifoData(&uartRxFifo_Obj[busId], uartData);
+ 163   1      
+ 164   1          if(readOpsts == readSuccess)
+ 165   1          {
+ 166   2              returnVal = uartSts_normal;
+ 167   2          }
+ 168   1          else{
+ 169   2              returnVal = uartSts_receiveFail;
+ 170   2          }
+ 171   1          return returnVal;
+ 172   1      }
+ 173          
+ 174          void uart3Int() /* uart 3(private network connect with door controller) interrupt service function */ 
+ 175          {
+ 176   1          /* TODO this interrupt shoud be copy for two channel */
+ 177   1          unsigned char uartData;
+ 178   1          if (S3CON&S3RI)
+C51 COMPILER V9.00   UARTDRV                                                               06/15/2019 19:35:37 PAGE 4   
+
+ 179   1          {
+ 180   2              S3CON &= ~S3RI;
+ 181   2      
+ 182   2              uartData = S3BUF;
+ 183   2              /* Put the data into the Rx FIFO */                 
+ 184   2                      setFifoData(&uartRxFifo_Obj[busIdx_private], &uartData);
+ 185   2          }
+ 186   1          if (S3CON&S3TI)
+ 187   1          {
+ 188   2              S3CON &= ~S3TI;
+ 189   2              uartGlobalSts = uartSts_normal;                 
+ 190   2          }
+ 191   1      
+ 192   1          P52 = 0;
+ 193   1      }
+ 194          
+ 195          void uart4Int() /* uart 4(public network connect with PC) interrupt service function */ 
+ 196          {
+ 197   1          unsigned char uartData;
+ 198   1          if (S4CON&S4RI)
+ 199   1          {
+ 200   2              S4CON &= ~S4RI;
+ 201   2      
+ 202   2              uartData = S4BUF;
+ 203   2              /* Put the data into the Rx FIFO */                 
+ 204   2                      setFifoData(&uartRxFifo_Obj[busIdx_public], &uartData);
+ 205   2          }
+ 206   1          if (S4CON&S4TI)
+ 207   1          {
+ 208   2              S4CON &= ~S4TI;
+ 209   2              uartGlobalSts = uartSts_normal;                 
+ 210   2          }
+ 211   1      
+ 212   1      }
+ 213          
+ 214          unsigned char isUartNewDataAvailable(busIdx_type nwChn)
+ 215          {
+ 216   1          if(uartRxFifo_Obj[nwChn].curPtr > 0)
+ 217   1          {
+ 218   2              return 1;
+ 219   2          }
+ 220   1          else
+ 221   1          {
+ 222   2              return 0;
+ 223   2          }
+ 224   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    539    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =    817      14
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
