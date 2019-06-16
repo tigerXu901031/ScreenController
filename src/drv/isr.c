@@ -3,8 +3,8 @@
 void timer1msIsr() interrupt 1
 {
     /* Reload countr value and clear interrupt */
-	TL0 = 0x40;
-	TH0 = 0xA2;
+	TL0 = 0x80;
+	TH0 = 0x44;
 	TF0 = 0;
     TR0 = 1;
     task1ms();
@@ -25,7 +25,7 @@ void timer10msIsr() interrupt 20
     task10ms();
 }
 
-void uart3Isr() interrupt 17
+void uart3Isr() interrupt 17 using 1
 {
     uart3Int();
 }

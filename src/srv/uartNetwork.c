@@ -418,7 +418,8 @@ static void getRxMsgAndAssemble(msgBuf_type *msgObj)
             if(msgBuf[i].msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] != 0)
             {
                 /* copy the finished message to the argument */
-                memcpy(msgObj, &msgBuf[i], 50);
+                /* TODO: comment temporary due to the type error */
+                memcpyCus(msgObj, &msgBuf[i], 50);
 
                 /* clear the buffer and wai for the new message */
                 clearDataBlock(&msgBuf[i], 50);

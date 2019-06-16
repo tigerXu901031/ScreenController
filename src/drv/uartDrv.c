@@ -22,7 +22,7 @@
 
 #include "uartDrv.h"
 
-uartSts_type uartGlobalSts;
+uartSts_type uartGlobalSts[busIdx_max];
 fifo_type uartTxFifo_Obj[busIdx_max];
 fifo_type uartRxFifo_Obj[busIdx_max];
 
@@ -49,44 +49,46 @@ fifo_type uartRxFifo_Obj[busIdx_max];
  */
 static void sendDataCyclic()
 {
-    unsigned int uartData;
+    unsigned char uartData;
     busIdx_type i = 0;
 
-    P52 = 1;
     /* test only */
-    S4BUF = 0xaa;
-    S3BUF = 0xaa;
+    // S4BUF = 0xaa;
+    // S3BUF = 0xaa;
+    for(i = 0; i < busIdx_max; i ++)
+    {
 
-    // for(i = 0; i < busIdx_max; i ++)
-    // {
+        if(uartTxFifo_Obj[i].curPtr > 0)
+        {
 
-    //     if(uartTxFifo_Obj[i].curPtr > 0)
-    //     {
-
-    //         /* If the Tx FIFO buffer has data to send then put
-    //            the send data into data register
-    //          */
-    //         if(uartGlobalSts != uartSts_busy)
-    //         {
-    //             uartGlobalSts = uartSts_busy;
-    //             getFifoData(&uartTxFifo_Obj[i], &uartData);
-    //             if(i == busIdx_public)
-    //             {
-    //                 S4BUF = uartData;
-    //             }
-    //             else if(i == busIdx_private)
-    //             {
-    //                 S3BUF = uartData;
-    //             }
-    //             else{
-    //                 /* unknown error */
-    //             }
-    //         }
-    //         else{
-    //             /* do nothing */
-    //         }
-    //     }
-    // }
+            /* If the Tx FIFO buffer has data to send then put
+               the send data into data register
+             */
+            // if(uartGlobalSts != uartSts_busy)
+            // {
+                
+                getFifoData(&uartTxFifo_Obj[i], &uartData);
+                if(i == busIdx_public)
+                {
+                    uartGlobalSts[busIdx_public] = uartSts_busy;
+                    P53 = 1;
+                    S4BUF = uartData;
+                }
+                else if(i == busIdx_private)
+                {
+                    uartGlobalSts[busIdx_private] = uartSts_busy;
+                    P52 = 1;
+                    S3BUF = uartData;
+                }
+                else{
+                    /* unknown error */
+                }
+            // }
+            // else{
+            //     /* do nothing */
+            // }
+        }
+    }
 }
 
 void uartDrvInit()
@@ -94,38 +96,42 @@ void uartDrvInit()
     unsigned char i;
 
 	/* Debug uart channel */
-	SCON	= 0x50;		//8λ����,�ɱ䲨����
-	AUXR	|= 0x40;		//��ʱ��1ʱ��ΪFosc,��1T
-	AUXR	&= 0xFE;		//����1ѡ��ʱ��1Ϊ�����ʷ�����
-	TMOD	&= 0x0F;		//�趨��ʱ��1Ϊ16λ�Զ���װ��ʽ
-	TL1		= 0x8F;		//�趨��ʱ��ֵ
-	TH1		= 0xFD;		//�趨��ʱ��ֵ
-	ET1		= 0;		//��ֹ��ʱ��1�ж�
-	TR1		= 1;		//������ʱ��1
-	ES		= 1;                  /*�򿪴����ж�*/
+	SCON	=   0x50;		/* 8bit data, baudrate adjustable */
+	AUXR	|=  0x40;    /* Fosc cloco frequency for timer1 -> 1T */
+	AUXR	&=  0xFE;	/* uart1 choose timer1 as the baud rate generator */
+	TMOD	&=  0x0F;	/* set the timer 1 as the 16 bit auto reload operation mode */
+	TL1		=   0x8F;		/* set the timer initial value */
+	TH1		=   0xFD;		/* set the timer initial value */
+	ET1		=   0;		/* inhibit timer 1 interrupt */
+	TR1		=   1;		/* start timer 1 */
+	ES		=   1;        /* enable uart interrupt */
 	
 	/* UART 3 Baud Rate:9600, using Timer3 */
-	S3CON = 	0x10;		//8λ����,�ɱ䲨����
-	S3CON |= 	0x40;		//����3ѡ��ʱ��3Ϊ�����ʷ�����
-	T4T3M &= 	0xFD;		//��ʱ��3ʱ��ΪFosc/12,��12T
-	T3L 	= 	0xCC;		//�趨��ʱ��ֵ
-	T3H 	= 	0xFF;		//�趨��ʱ��ֵ
-	T4T3M |= 	0x08;		//������ʱ��3
+	S3CON   = 	0x10;	/* 8 bit data, baudrate adjustable */
+	S3CON   |= 	0x40;	/* uart3 use timer 3 as the baudrate generator */
+	T4T3M   &= 	0xFD;	/* set the clock frequency as Fosc / 12 -> 12T */
+	T3L 	= 	0xCC;	/* set the initial value */
+	T3H 	= 	0xFF;	/* set the initial value */
+	T4T3M   |= 	0x08;	/* start timer 3 */
+    IE2     |=  0x08;   /* enable uart 3 interrupt */
 	
 	/* UART 4	Baud Rate:9600, using Timer2 */
-	S4CON = 	0x10;		//8λ����,�ɱ䲨����
-	S4CON &= 	0xBF;		//����4ѡ��ʱ��2Ϊ�����ʷ�����
-	AUXR 	&= 	0xFB;		//��ʱ��2ʱ��ΪFosc/12,��12T
-	T2L 	= 	0xCC;		//�趨��ʱ��ֵ
-	T2H 	= 	0xFF;		//�趨��ʱ��ֵ
-	AUXR 	|= 	0x10;		//������ʱ��2
+	S4CON   = 	0x10;	/* 8 bit data, baud rate adjustable */
+	S4CON   &= 	0xBF;	/* uart 4 use timer 2 as the baudrate generator */
+	AUXR 	&= 	0xFB;	/* set the clock frequency for timer 2 as Fosc /12 -> 12T  */
+	T2L 	= 	0xCC;	/* set the initial value */
+	T2H 	= 	0xFF;	/* set the initial value */
+	AUXR 	|= 	0x10;	/* start timer 2 */
+    IE2     |=  0x10;   /* enable uart 4 interrupt */
+
 		
-	EA		= 1;                  /*�����ж�*/
+	EA		= 1;        /* start the gloabl interrupt */
 
     /* Create an FIFO object buffer uart data */
     for(i = 0; i < busIdx_max; i ++)
     {
         uartTxFifo_Obj[i] = fifoInit(UART_DATA_LEN_IN_BYTE);
+        uartRxFifo_Obj[i] = fifoInit(UART_DATA_LEN_IN_BYTE);
     }
 }
 
@@ -134,7 +140,7 @@ void uartDrvUpdate()
     sendDataCyclic();
 }
 
-uartSts_type setUartSendBuf(unsigned int *uartData, busIdx_type busId)
+uartSts_type setUartSendBuf(unsigned char *uartData, busIdx_type busId)
 {
     fifoSts_type writeOpsts;
     uartSts_type returnVal;
@@ -152,7 +158,7 @@ uartSts_type setUartSendBuf(unsigned int *uartData, busIdx_type busId)
     return returnVal;
 }
 
-uartSts_type getUartReceiveBuf(unsigned int *uartData, busIdx_type busId)
+uartSts_type getUartReceiveBuf(unsigned char *uartData, busIdx_type busId)
 {
     fifoSts_type readOpsts;
     uartSts_type returnVal;
@@ -185,10 +191,11 @@ void uart3Int() /* uart 3(private network connect with door controller) interrup
     if (S3CON&S3TI)
     {
         S3CON &= ~S3TI;
-        uartGlobalSts = uartSts_normal;                 
+        uartGlobalSts[busIdx_private] = uartSts_normal;
+        P52 = 0;         
     }
 
-    P52 = 0;
+    
 }
 
 void uart4Int() /* uart 4(public network connect with PC) interrupt service function */ 
@@ -205,7 +212,8 @@ void uart4Int() /* uart 4(public network connect with PC) interrupt service func
     if (S4CON&S4TI)
     {
         S4CON &= ~S4TI;
-        uartGlobalSts = uartSts_normal;                 
+        uartGlobalSts[busIdx_public] = uartSts_normal;
+        P53 = 0;         
     }
 
 }

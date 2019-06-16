@@ -28,8 +28,8 @@ typedef enum{
 
 extern void uartDrvInit();
 extern void uartDrvUpdate();
-extern uartSts_type setUartSendBuf(unsigned int *uartData, busIdx_type nwChn);
-extern uartSts_type getUartReceiveBuf(unsigned int *uartData, busIdx_type nwChn);
+extern uartSts_type setUartSendBuf(unsigned char *uartData, busIdx_type nwChn);
+extern uartSts_type getUartReceiveBuf(unsigned char *uartData, busIdx_type nwChn);
 extern unsigned char isUartNewDataAvailable(busIdx_type nwChn);
 extern void uart3Int();
 extern void uart4Int();

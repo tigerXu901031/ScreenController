@@ -17,7 +17,7 @@
 */
 #include "fifo.h"
 
-void clearDataBlock(unsigned int *startAdd, unsigned int length)
+void clearDataBlock(unsigned char *startAdd, unsigned char length)
 {
     unsigned int i = 0;
     for(i = 0; i < length; i ++)
@@ -27,9 +27,9 @@ void clearDataBlock(unsigned int *startAdd, unsigned int length)
     }
 }
 
-void memcpy(unsigned int *destAdd,unsigned int *sourceAdd, unsigned int length)
+void memcpyCus(unsigned char *destAdd,unsigned char *sourceAdd, unsigned char length)
 {
-    unsigned int i = 0;
+    unsigned char i = 0;
     for(i = 0; i < length; i ++)
     {
         *destAdd = *sourceAdd;
@@ -38,11 +38,16 @@ void memcpy(unsigned int *destAdd,unsigned int *sourceAdd, unsigned int length)
     }
 }
 
-fifo_type fifoInit(unsigned int unitLen)
+fifo_type fifoInit(unsigned char unitLen)
 {
     fifo_type fifoObj;
     fifoObj.unitLen = unitLen;
+
+    /* set the initial current data pointer at 0 */
     fifoObj.curPtr = 0;
+
+    /* clear all the data area */
+    clearDataBlock(&fifoObj.fifoData[0], FIFO_MAX_LENGTH);
 
     return fifoObj;
 }
@@ -51,20 +56,20 @@ fifoSts_type getFifoData(fifo_type *fifoObj, void *newData)
 {
     fifoSts_type returnVal = readFail;
     
-    unsigned int* newDataAdd = (unsigned int*)newData;
+    unsigned char* newDataAdd = (unsigned char*)newData;
     
     /* If the current data pointer is higher than 0
        it means there has valid data to output */
     if(fifoObj->curPtr > 0)
     {
         /* Output the first item in FIFO */
-        memcpy(newDataAdd, &fifoObj->fifoData[0], fifoObj->unitLen);
+        memcpyCus(newDataAdd, &fifoObj->fifoData[0], fifoObj->unitLen);
         
         /* Clear the first item content */
         clearDataBlock(&fifoObj->fifoData[0], fifoObj->unitLen);
 
         /* Move all the existing items to the one position forward */
-        memcpy(&fifoObj->fifoData[0], &fifoObj->fifoData[1],fifoObj->curPtr - 1);
+        memcpyCus(&fifoObj->fifoData[0], &fifoObj->fifoData[1],fifoObj->curPtr - 1);
 
         /* Clear the last valid item content */
         clearDataBlock(&fifoObj->fifoData[fifoObj->curPtr], fifoObj->unitLen);
@@ -87,13 +92,13 @@ fifoSts_type setFifoData(fifo_type *fifoObj, void *newData)
 {
     fifoSts_type returnVal = writeFail;
 
-    unsigned int* newDataAdd = (unsigned int*)newData;
+    unsigned char* newDataAdd = (unsigned char*)newData;
 
     /* Check whether the FIFO has the spare space to write 
        into the new data */
     if((FIFO_MAX_LENGTH - (fifoObj->unitLen * fifoObj->curPtr)) >= fifoObj->unitLen)
     {
-        memcpy(&fifoObj->fifoData[fifoObj->curPtr], newDataAdd, fifoObj->unitLen);
+        memcpyCus(&fifoObj->fifoData[fifoObj->curPtr], newDataAdd, fifoObj->unitLen);
         fifoObj->curPtr ++;
         returnVal = writeSuccess;
     }

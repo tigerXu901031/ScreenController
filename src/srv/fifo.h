@@ -12,14 +12,14 @@ typedef enum{
 }fifoSts_type;
 
 typedef struct{
-    unsigned int fifoData[FIFO_MAX_LENGTH];
-    unsigned int unitLen;
-    unsigned int curPtr;
+    unsigned char fifoData[FIFO_MAX_LENGTH];
+    unsigned char unitLen;
+    unsigned char curPtr;
 }fifo_type;
 
-extern void clearDataBlock(unsigned int *startAdd, unsigned int length);
-extern void memcpy(unsigned int *destAdd,unsigned int *sourceAdd, unsigned int length);
-extern fifo_type fifoInit(unsigned int unitLen);
+extern void clearDataBlock(unsigned char *startAdd, unsigned char length);
+extern void memcpyCus(unsigned char *destAdd,unsigned char *sourceAdd, unsigned char length);
+extern fifo_type fifoInit(unsigned char unitLen);
 extern fifoSts_type getFifoData(fifo_type *fifoObj, void *newData);
 extern fifoSts_type setFifoData(fifo_type *fifoObj, void *newData);
 
