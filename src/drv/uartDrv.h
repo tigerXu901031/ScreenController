@@ -25,6 +25,9 @@ typedef enum{
     busMode_rx,
 }busMode_type;
 
+/* test purpose only */
+extern fifo_type uartTxFifo_Obj[busIdx_max];
+extern fifo_type uartRxFifo_Obj[busIdx_max];
 
 extern void uartDrvInit();
 extern void uartDrvUpdate();

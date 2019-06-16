@@ -71,11 +71,11 @@ fifoSts_type getFifoData(fifo_type *fifoObj, void *newData)
         /* Move all the existing items to the one position forward */
         memcpyCus(&fifoObj->fifoData[0], &fifoObj->fifoData[1],fifoObj->curPtr - 1);
 
-        /* Clear the last valid item content */
-        clearDataBlock(&fifoObj->fifoData[fifoObj->curPtr], fifoObj->unitLen);
-
         /* Move the current pointer of the FIFO */
         fifoObj->curPtr --;
+
+        /* Clear the last valid item content */
+        clearDataBlock(&fifoObj->fifoData[fifoObj->curPtr], fifoObj->unitLen);
 
         returnVal = readSuccess;
     }

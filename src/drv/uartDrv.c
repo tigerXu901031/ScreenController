@@ -64,9 +64,8 @@ static void sendDataCyclic()
             /* If the Tx FIFO buffer has data to send then put
                the send data into data register
              */
-            // if(uartGlobalSts != uartSts_busy)
-            // {
-                
+            if(uartGlobalSts != uartSts_busy)
+            {
                 getFifoData(&uartTxFifo_Obj[i], &uartData);
                 if(i == busIdx_public)
                 {
@@ -83,10 +82,10 @@ static void sendDataCyclic()
                 else{
                     /* unknown error */
                 }
-            // }
-            // else{
-            //     /* do nothing */
-            // }
+            }
+            else{
+                /* do nothing */
+            }
         }
     }
 }
@@ -96,15 +95,15 @@ void uartDrvInit()
     unsigned char i;
 
 	/* Debug uart channel */
-	SCON	=   0x50;		/* 8bit data, baudrate adjustable */
-	AUXR	|=  0x40;    /* Fosc cloco frequency for timer1 -> 1T */
+	SCON	=   0x50;	/* 8bit data, baudrate adjustable */
+	AUXR	|=  0x40;   /* Fosc cloco frequency for timer1 -> 1T */
 	AUXR	&=  0xFE;	/* uart1 choose timer1 as the baud rate generator */
 	TMOD	&=  0x0F;	/* set the timer 1 as the 16 bit auto reload operation mode */
-	TL1		=   0x8F;		/* set the timer initial value */
-	TH1		=   0xFD;		/* set the timer initial value */
+	TL1		=   0x8F;	/* set the timer initial value */
+	TH1		=   0xFD;	/* set the timer initial value */
 	ET1		=   0;		/* inhibit timer 1 interrupt */
 	TR1		=   1;		/* start timer 1 */
-	ES		=   1;        /* enable uart interrupt */
+	ES		=   1;      /* enable uart interrupt */
 	
 	/* UART 3 Baud Rate:9600, using Timer3 */
 	S3CON   = 	0x10;	/* 8 bit data, baudrate adjustable */
@@ -176,7 +175,8 @@ uartSts_type getUartReceiveBuf(unsigned char *uartData, busIdx_type busId)
     return returnVal;
 }
 
-void uart3Int() /* uart 3(private network connect with door controller) interrupt service function */ 
+/* uart 3(private network connect with door controller) interrupt service function */ 
+void uart3Int()
 {
     /* TODO this interrupt shoud be copy for two channel */
     unsigned char uartData;
@@ -198,7 +198,8 @@ void uart3Int() /* uart 3(private network connect with door controller) interrup
     
 }
 
-void uart4Int() /* uart 4(public network connect with PC) interrupt service function */ 
+/* uart 4(public network connect with PC) interrupt service function */
+void uart4Int()
 {
     unsigned char uartData;
     if (S4CON&S4RI)
