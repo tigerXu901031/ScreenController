@@ -53,45 +53,47 @@ static void sendDataCyclic()
     busIdx_type i = 0;
 
     P52 = 1;
+    /* test only */
+    S4BUF = 0xaa;
+    S3BUF = 0xaa;
 
-    for(i = 0; i < busIdx_max; i ++)
-    {
-        /* test only */
-        S3BUF = 0xaa;
-        if(uartTxFifo_Obj[i].curPtr > 0)
-        {
+    // for(i = 0; i < busIdx_max; i ++)
+    // {
 
-            /* If the Tx FIFO buffer has data to send then put
-               the send data into data register
-             */
-            if(uartGlobalSts != uartSts_busy)
-            {
-                uartGlobalSts = uartSts_busy;
-                getFifoData(&uartTxFifo_Obj[i], &uartData);
-                if(i == busIdx_public)
-                {
-                    S4BUF = uartData;
-                }
-                else if(i == busIdx_private)
-                {
-                    // S3BUF = uartData;
-                }
-                else{
-                    /* unknown error */
-                }
-            }
-            else{
-                /* do nothing */
-            }
-        }
-    }
+    //     if(uartTxFifo_Obj[i].curPtr > 0)
+    //     {
+
+    //         /* If the Tx FIFO buffer has data to send then put
+    //            the send data into data register
+    //          */
+    //         if(uartGlobalSts != uartSts_busy)
+    //         {
+    //             uartGlobalSts = uartSts_busy;
+    //             getFifoData(&uartTxFifo_Obj[i], &uartData);
+    //             if(i == busIdx_public)
+    //             {
+    //                 S4BUF = uartData;
+    //             }
+    //             else if(i == busIdx_private)
+    //             {
+    //                 S3BUF = uartData;
+    //             }
+    //             else{
+    //                 /* unknown error */
+    //             }
+    //         }
+    //         else{
+    //             /* do nothing */
+    //         }
+    //     }
+    // }
 }
 
 void uartDrvInit()
 {
     unsigned char i;
 
-	//UART 1
+	/* Debug uart channel */
 	SCON	= 0x50;		//8λ����,�ɱ䲨����
 	AUXR	|= 0x40;		//��ʱ��1ʱ��ΪFosc,��1T
 	AUXR	&= 0xFE;		//����1ѡ��ʱ��1Ϊ�����ʷ�����
@@ -102,10 +104,7 @@ void uartDrvInit()
 	TR1		= 1;		//������ʱ��1
 	ES		= 1;                  /*�򿪴����ж�*/
 	
-	//UART 2
-	//reserved
-	
-	//UART 3 Baud Rate:9600, using Timer3
+	/* UART 3 Baud Rate:9600, using Timer3 */
 	S3CON = 	0x10;		//8λ����,�ɱ䲨����
 	S3CON |= 	0x40;		//����3ѡ��ʱ��3Ϊ�����ʷ�����
 	T4T3M &= 	0xFD;		//��ʱ��3ʱ��ΪFosc/12,��12T
@@ -113,7 +112,7 @@ void uartDrvInit()
 	T3H 	= 	0xFF;		//�趨��ʱ��ֵ
 	T4T3M |= 	0x08;		//������ʱ��3
 	
-	//UART 4					Baud Rate:9600, using Timer2
+	/* UART 4	Baud Rate:9600, using Timer2 */
 	S4CON = 	0x10;		//8λ����,�ɱ䲨����
 	S4CON &= 	0xBF;		//����4ѡ��ʱ��2Ϊ�����ʷ�����
 	AUXR 	&= 	0xFB;		//��ʱ��2ʱ��ΪFosc/12,��12T

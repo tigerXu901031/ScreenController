@@ -804,74 +804,9 @@ void LCD_Diaplay_Page(uchar page, uchar level)
 			{;}
 }
 
-// void UartInit(void)		//9600bps@24.000MHz
-// {
-// 	//UART 1
-// 	SCON	= 0x50;		//8λ����,�ɱ䲨����
-// 	AUXR	|= 0x40;		//��ʱ��1ʱ��ΪFosc,��1T
-// 	AUXR	&= 0xFE;		//����1ѡ��ʱ��1Ϊ�����ʷ�����
-// 	TMOD	&= 0x0F;		//�趨��ʱ��1Ϊ16λ�Զ���װ��ʽ
-// 	TL1		= 0x8F;		//�趨��ʱ��"background: #ffffff"ֵ
-// 	TH1		= 0xFD;		//�趨��ʱ��ֵ
-// 	ET1		= 0;		//��ֹ��ʱ��1�ж�
-// 	TR1		= 1;		//������ʱ��1
-// 	ES		= 1;                  /*�򿪴����ж�*/
-	
-// 	//UART 2
-// 	//reserved
-	
-// 	//UART 3 Baud Rate:9600, using Timer3
-// 	S3CON = 	0x10;		//8λ����,�ɱ䲨����
-// 	S3CON |= 	0x40;		//����3ѡ��ʱ��3Ϊ�����ʷ�����
-// 	T4T3M &= 	0xFD;		//��ʱ��3ʱ��ΪFosc/12,��12T
-// 	T3L 	= 	0xCC;		//�趨��ʱ��ֵ
-// 	T3H 	= 	0xFF;		//�趨��ʱ��ֵ
-// 	T4T3M |= 	0x08;		//������ʱ��3
-	
-// 	//UART 4					Baud Rate:9600, using Timer2
-// 	S4CON = 	0x10;		//8λ����,�ɱ䲨����
-// 	S4CON &= 	0xBF;		//����4ѡ��ʱ��2Ϊ�����ʷ�����
-// 	AUXR 	&= 	0xFB;		//��ʱ��2ʱ��ΪFosc/12,��12T
-// 	T2L 	= 	0xCC;		//�趨��ʱ��ֵ
-// 	T2H 	= 	0xFF;		//�趨��ʱ��ֵ
-// 	AUXR 	|= 	0x10;		//������ʱ��2
-		
-// 	EA		= 1;                  /*�����ж�*/
-// }
-
-// void Timer7Init(void)		//10����@24.000MHz
-// {
-// //	T4T3M &= 0xDF;		//��ʱ��ʱ��12Tģʽ 0b11011111
-// 	T4T3M &= 0x0F;		//��ʱ��ʱ��12Tģʽ, ��ʱ��ģʽ��ʱ������ر� 0b00001111
-// 	T4L = 0xE0;		//���ö�ʱ��ֵ
-// 	T4H = 0xB1;		//���ö�ʱ��ֵ
-// //	T4T3M |= 0x80;		//��ʱ��4��ʼ��ʱ
-// }
-
-// void Timer10ms_Enable(void)
-// {
-// 	T4T3M |= 0x80;		//��ʱ��4��ʼ��ʱ
-// 	IE2		|= ET4;			//0b01000000
-// }
-
-// void Timer10ms_Disable(void)
-// {
-// 	T4T3M &= 0x7F;		//��ʱ��4ֹͣ��ʱ
-// 	IE2		&= ~ET4;		//0b10111111
-// }
-
-
-//������ ��������
 void main()
 {
 
-	IO_INIT();										//IO��ʼ��
-	// UartInit();
-	INIT_LCD();
-	// Timer7Init();									//T4 timer initialization
-	delay_ms(200);								//�ϵ���ʱ100ms
-	clear_screen();
-	// Timer10ms_Enable();
 //	Timer10ms_Disable();
 	taskInit();
 //	LED2 = 1;
@@ -884,86 +819,6 @@ void main()
 	
 	
 	while(1)											//��ѭ��
-	{
-		delay_ms(200);
-		uartDrvUpdate();
+	{	
 	}
 }
-
-// void UART_SER (void) interrupt 4 //�����жϷ������
-// {
-//     unsigned char Temp, temp2;          //������ʱ���� 
-   
-//    if(RI)                        //�ж��ǽ����жϲ���
-//     {
-// 	  	RI=0;                      //��־λ����
-// 	  	Temp = SBUF;                 //���뻺������ֵ
-
-// 	  	if(Temp == 0x30)
-// 	  		{
-// 	  			LCD_Diaplay_Page(0,count);
-// 	  			count++;
-// 	  			if(count>3)
-// 	  				{count = 0;}
-// 	  				else {;}
-// 	  		}
-
-// 	  	if((Temp & 0xF0) == 0x40)		//0100 0000
-// 	  		{
-// 	    	  temp2 = (Temp & 0x0F);
-// 	    	  LCD_Diaplay_Page(1,temp2);
-// 	  		}          
-// 			if(Temp == 0x50)
-// 				{
-// 					Motor_Parameter.Motor_Direction = 0;
-// 					Motor_Direction_Update();
-// 				}
-// 			if(Temp == 0x51)
-// 				{
-// 					Motor_Parameter.Motor_Direction = 1;
-// 					Motor_Direction_Update();
-// 				}
-
-// 	 }
-//    if(TI)                        //����Ƿ��ͱ�־λ������
-//      TI=0;
-// }
-
-
-
-// void Timer4(void) interrupt 20
-// {
-// 	uchar i;
-// 	Timer4_Count++;
-// 	T4L = 0xE0;		//���ö�ʱ��ֵ
-// 	T4H = 0xB1;		//���ö�ʱ��ֵ
-// 	AUXINTIF &= ~T4IF;	//clear T4IF flag
-// 	TR0 = 1;
-// }
-
-// void UART3_SER (void) interrupt 17 // UART 3 interrupt function
-// {
-//     uchar Temp;          						//Define temporay variant 
-   
-//    if(S3CON&S3RI)                        	//Receive interrupt
-//     {
-// 	  	Temp = S3BUF;                 //read in the data in S3BUF
-// 			S3BUF = Temp;									//send back to master for testing
-// 	 }
-//    if(S3CON&S3TI)                        	
-//      S3CON &= ~S3TI;
-// }
-
-
-// void UART4_SER (void) interrupt 18 // UART 4 interrupt function
-// {
-//     uchar Temp;          						//Define temporay variant 
-   
-//    if(S4CON&S4RI)                        	//Receive interrupt
-//     {	
-// 	  	Temp = S4BUF;                 //read in the data in S3BUF
-// 			S4BUF = Temp;									//send back to master for testing
-// 	 }
-//    if(S4CON&S4TI)                        
-//      S4CON &= ~S4TI;
-// }

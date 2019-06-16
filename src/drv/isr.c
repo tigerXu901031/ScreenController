@@ -16,9 +16,11 @@ void timer10msIsr() interrupt 20
     
 
     T4L = 0xE0;
-	T4H = 0xB1;		
-    AUXINTIF &= T4IF;
-    T4T3M &= T4R;
+	T4H = 0xB1;	
+
+    /* set these two bit seems not used in ISR, maybe useful later */	
+    // AUXINTIF &= T4IF;
+    // T4T3M |= T4R;
     /* Reload countr value and clear interrupt */
     task10ms();
 }

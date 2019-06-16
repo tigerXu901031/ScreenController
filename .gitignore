@@ -14,3 +14,9 @@
 .vscode/ipch/82e209506e0a34a8/uartNetwork.ipch
 .vscode/ipch/be30b088ba423582/fifo.ipch
 .vscode/ipch/be30b088ba423582/mmap_address.bin
+*.lst
+*.bin
+*.ipch
+*.obj
+*.obj
+*.obj

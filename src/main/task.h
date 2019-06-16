@@ -10,9 +10,9 @@ extern void task1ms();
 extern void task10ms();
 
 /*  */
-// extern void IO_INIT();
-// extern void INIT_LCD();
-// extern void clear_screen();
-// extern void delay_ms(unsigned int time);
+extern void IO_INIT();
+extern void INIT_LCD();
+extern void clear_screen();
+extern void delay_ms(unsigned int time);
 
 #endif

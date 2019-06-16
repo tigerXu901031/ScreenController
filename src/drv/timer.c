@@ -1,6 +1,6 @@
 #include "timer.h"
 
-static void timer7Init(void)
+static void timer4Init(void)
 {
     /* 10ms @ 24Mhz */
 	T4T3M &= 0x0F;		// Fosc / 12T, timer output disable
@@ -46,6 +46,6 @@ void timer1ms_Disable(void)
 
 void timerInit()
 {
-    timer7Init();
+    timer4Init();
     timer0Init();
 }
