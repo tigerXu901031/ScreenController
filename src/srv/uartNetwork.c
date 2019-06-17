@@ -113,7 +113,7 @@ static void readMsgAssemble(msgBuf_type *msgObj, unsigned char newData, unsigned
                 /* in this case it is the data length of the following data
                    lengthInByte = (2 ^ value) * 2 */
                 msgObj->readLongRepMsgObj.lengthCode = newData;
-                dataFieldLen = (2 << newData) * 2; 
+                dataFieldLen = (2 << newData); 
             }
             else if(serviceType == SERVICETYPE_READ_RESP)
             {   
@@ -192,8 +192,12 @@ static void readMsgAssemble(msgBuf_type *msgObj, unsigned char newData, unsigned
                 if(currentDataByte <= longFrameRemainLen)
                 {
                     /* When there is long-frame message Add_H = 0x30
-                       then construct the other data byte */
-                    msgObj->readLongRepMsgObj.msgData[longFrameRemainLen] = newData;
+                       then construct the other data byte
+                       here the index = currentDataByte + 2 means in the
+                       last case:8 is has already assigned to the byte #3,
+                       hence it will -3 and due to the array was count from 0
+                       then its 3-1 = 2 */
+                    msgObj->readLongRepMsgObj.msgData[currentDataByte + 2] = newData;
                 }
                 else if(currentDataByte == longFrameRemainLen + 1)
                 {
@@ -482,12 +486,7 @@ static void networkGatewayHandler(msgBuf_type *msgObj)
    }
 }
 
-static void msg2Data_Read()
-{
-   
-}
-
-static void networkRequestHandler()
+static void networkRequestHandler(msgBuf_type *msgObj)
 {
 
 }
@@ -574,9 +573,6 @@ static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
                     /* error happened */
                     break;
             }
-            /* directly handle some request by network service */
-            networkRequestHandler();
-
             /*  */
         }
         else{
@@ -600,6 +596,8 @@ static void readReqMsgTxPreprocess(msgBuf_type *msgObj, networkDataBuf_type *dat
 
     msgObj->readReqMsgObj.regAdd[0] = dataBuf->networkData[0].add[0];
     msgObj->readReqMsgObj.regAdd[1] = dataBuf->networkData[0].add[1];
+
+    
 
     msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 6;
     msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_READ_REQ;
@@ -647,19 +645,25 @@ static void txDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
    {
         switch (dataBuf->networkData[0].cmd)
         {
-        case MSGCMD_READOP:
-            readReqMsgTxPreprocess(msgObj, dataBuf);
-            break;
+            case MSGCMD_READOP:
+                readReqMsgTxPreprocess(msgObj, dataBuf);
+                break;
 
-        case MSGCMD_WRITEOP:
-            writeReqMsgTxPreprocess(msgObj, dataBuf);
-            break;
+            case MSGCMD_WRITEOP:
+                writeReqMsgTxPreprocess(msgObj, dataBuf);
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
    }
 
+}
+
+static void fetchNodeId()
+{
+    networkObj.privateNodeId = 0xff;
+    networkObj.publicNodeId = 0x01;
 }
 
 void networkInit()
@@ -679,8 +683,7 @@ void networkInit()
        3. If the ID is not valid or if the ID was not received then
           set an fail status and stay in the init phase
     */
-    networkObj.privateNodeId = 0xff;
-    networkObj.publicNodeId = 0x01;
+    fetchNodeId();
 }
 
 void networkUpdate()
@@ -699,8 +702,16 @@ void getNetworkData(networkDataBuf_type *nwDataBuf)
     /* recieve data in byte and assemble the data byte into message */
     if(getRxMsgAndAssemble(&rxMsgBuf))
     {
-        /* forward the message that no need to do any handler */
+        /* TODO: its better to clear the rxMsgBuf after the function
+           has already handled this message then the next function
+           is no need to do anything */
+
+        /* first forward the message that no need to do anything with it */
         networkGatewayHandler(&rxMsgBuf);
+
+        /* second handle some request by network service and do handle the
+           message without the intervene from app */
+        networkRequestHandler(&rxMsgBuf);
 
         /* message -> application operational data
            only the private communication need to be handled
@@ -715,6 +726,11 @@ void setNetworkData(networkDataBuf_type *nwDataBuf)
 {
     msgBuf_type txMsgFromApp;
 
+    /* TODO: 
+       1. need to add more logic to handle how to deal
+          with multiple data length request in the same
+          10ms task cycle. */
+          
     /* application operational data -> message */
     txDataHandler(&txMsgFromApp, nwDataBuf);
 
