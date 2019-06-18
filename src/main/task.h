@@ -2,8 +2,9 @@
 #define __TASK_H__
 
 #include "../drv/timer.h"
-#include "../drv/uartDrv.h"
 #include "../srv/uartNetwork.h"
+/* test purpose only */
+#include "../drv/uartDrv.h"
 
 extern void taskInit();
 extern void task1ms();
