@@ -33,8 +33,8 @@
           <BinPath></BinPath>
           <IncludePath></IncludePath>
           <LibPath></LibPath>
-          <RegisterFilePath>STC\</RegisterFilePath>
-          <DBRegisterFilePath>STC\</DBRegisterFilePath>
+          <RegisterFilePath>STC\</RegisterFilePath>
+          <DBRegisterFilePath>STC\</DBRegisterFilePath>
           <TargetStatus>
             <Error>0</Error>
             <ExitCodeStop>0</ExitCodeStop>
@@ -351,6 +351,16 @@
               <FileType>5</FileType>
               <FilePath>..\src\app\ParaDefine.H</FilePath>
             </File>
+            <File>
+              <FileName>HMI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\app\HMI.c</FilePath>
+            </File>
+            <File>
+              <FileName>application.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\app\application.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -430,6 +440,11 @@
               <FileName>UARTDRV.H</FileName>
               <FileType>5</FileType>
               <FilePath>..\src\drv\UARTDRV.H</FilePath>
+            </File>
+            <File>
+              <FileName>19296p1.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\drv\19296p1.C</FilePath>
             </File>
           </Files>
         </Group>
