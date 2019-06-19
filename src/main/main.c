@@ -1,9 +1,9 @@
 #include "../drv/STC8.H"
-//#include "../app/ParaDefine.H"
-//#include "../app/HMI.H" 
-
+#include "../app/ParaDefine.H"
+#include "../app/HMI.H" 
+#include "../app/application.H"
 #include "intrins.h"
-//#include "../drv/19296p1.H"
+#include "../drv/19296p1.H"
 #include "../drv/uartDrv.h"
 #include "task.h"
 

@@ -1,4 +1,15 @@
-#include "task.h"
+#include "../drv/STC8.H"
+#include "../app/ParaDefine.H"
+#include "../app/HMI.H" 
+#include "../app/application.H"
+
+#include "intrins.h"
+#include "../drv/19296p1.H"
+#include "../drv/uartDrv.h"
+#include "../main/task.h"
+
+SystemStatusType SysStatus;
+
 
 void taskInit()
 {
@@ -6,11 +17,12 @@ void taskInit()
     delay_ms(200);
     INIT_LCD();
     clear_screen();
+		SysStatusInit(SysStatus);
 
     /* need to consider to use cyclic task or not */
 
-    P52 = 0;
-    P53 = 0;
+    P52 = 0;		//RS485_DR_1
+    P53 = 0;		//RS485_DR_2
     networkInit();
     timerInit();
     timer10ms_Enable();
@@ -49,7 +61,7 @@ void task1ms()
 }
 
 /* test purpose only */
-unsigned char testSendByte[2] = {0x55, 0xaa};
+unsigned char testSendByte[2] = {0x55, 0xAA};
 unsigned char testRecByte[2] = {0, 0};
 
 void task10ms()
@@ -85,5 +97,5 @@ void task10ms()
 
     setNetworkData(&testSetNwData);
 
-
+		AppFunRun();		//application program
 }
