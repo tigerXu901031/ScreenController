@@ -1,15 +1,6 @@
-#include "../drv/STC8.H"
-#include "../app/ParaDefine.H"
-#include "../app/HMI.H" 
-#include "../app/application.H"
-
-#include "intrins.h"
-#include "../drv/19296p1.H"
-#include "../drv/uartDrv.h"
-#include "../main/task.h"
+#include "task.h"
 
 SystemStatusType SysStatus;
-
 
 void taskInit()
 {
@@ -17,7 +8,7 @@ void taskInit()
     delay_ms(200);
     INIT_LCD();
     clear_screen();
-		SysStatusInit(SysStatus);
+	SysStatusInit(SysStatus);
 
     /* need to consider to use cyclic task or not */
 
@@ -41,61 +32,78 @@ const unsigned char testReadFailMsg[8] = {0xFF, 0x83, 0xF0, 0x99, 0x88, 0x55, 0x
 void task1ms()
 {
 
-    static unsigned char testCnt = 0;
+    // static unsigned char testCnt = 0;
     /* test purpose only
        to simulate an test message that set in the FIFO buffer cyclic */
-    if(testCnt < sizeof(testReadFailMsg))
-    {
-        setFifoData(&uartRxFifo_Obj[busIdx_private], &testReadFailMsg[testCnt]);
-        testCnt ++;
-    }
-    else
-    {
-        testCnt = 0;
-    }
-    
+    // if(testCnt < sizeof(testReadFailMsg))
+    // {
+    //     setFifoData(&uartRxFifo_Obj[busIdx_private], &testReadFailMsg[testCnt]);
+    //     testCnt ++;
+    // }
+    // else
+    // {
+    //     testCnt = 0;
+    // }
+
     /* 1ms send out data via uart seems very critial for 8bit send,
        maybe need to increase to 2ms later
        TODO: now its 2ms ---  */
     networkUpdate();
+
 }
 
 /* test purpose only */
-unsigned char testSendByte[2] = {0x55, 0xAA};
+unsigned char testSendByte[2] = {0x55, 0xaa};
 unsigned char testRecByte[2] = {0, 0};
+
+networkDataBuf_type testGetNwData;
+networkDataBuf_type testSetNwData;
 
 void task10ms()
 {
+
     /* test purpose only */
-    static networkDataBuf_type testNwData;
-    static networkDataBuf_type testSetNwData;
+
     static unsigned char iCounter = 0;
 
-    testSetNwData.dataLength =1;
-    testSetNwData.networkData[0].cmd = 0x03;
-    testSetNwData.networkData[0].add[0] = 0xf1;
-    testSetNwData.networkData[0].add[1] = 0xf2;
-    testSetNwData.networkData[0].opData[0] = 0x13;
-    testSetNwData.networkData[0].opData[1] = 0x22;    
+    // unsigned char i = 0;
+    // unsigned char tempData = 0;
+    // /* test code --- echo whatever it recieved at the same bus */
+    // for(i = 0; i < uartRxFifo_Obj[1].curPtr; i ++)
+    // {
+    //     getFifoData(&uartRxFifo_Obj[1], &tempData);
+    //     setFifoData(&uartTxFifo_Obj[1], &tempData);
+    // }
+
+
+    // getNetworkData(&testGetNwData);
     /* some test for FIFO buffer + uart drvier */
     // getUartReceiveBuf(&testRecByte[0],busIdx_public);
     // getUartReceiveBuf(&testRecByte[1],busIdx_public);
     // setUartSendBuf(&testSendByte[0], busIdx_public);
     // setUartSendBuf(&testSendByte[1], busIdx_public);
-    if(iCounter == 0)
-    {
-        P44 = 0;
-        iCounter ++;
-    }
-    else
-    {
-        P44 = 1;
-        iCounter --;
-    }
+    // if(iCounter == 0)
+    // {
+    //     P44 = 0;
+    //     iCounter ++;
+    // }
+    // else
+    // {
+    //     P44 = 1;
+    //     iCounter --;
+    // }
 
-    getNetworkData(&testNwData);
+
+    clearDataBlock(&testSetNwData, sizeof(testSetNwData));
+    testSetNwData.dataLength =1;
+    testSetNwData.networkData[0].cmd = 0x03;
+    testSetNwData.networkData[0].add[0] = 0x00;
+    testSetNwData.networkData[0].add[1] = 0x04;
+
+    clearDataBlock(&testGetNwData, sizeof(testGetNwData));
+    getNetworkData(&testGetNwData);
 
     setNetworkData(&testSetNwData);
 
-		AppFunRun();		//application program
+	AppFunRun();		//application program
 }

@@ -725,6 +725,7 @@ void getNetworkData(networkDataBuf_type *nwDataBuf)
 void setNetworkData(networkDataBuf_type *nwDataBuf)
 {
     msgBuf_type txMsgFromApp;
+    clearDataBlock(&txMsgFromApp, sizeof(txMsgFromApp));
 
     /* TODO: 
        1. need to add more logic to handle how to deal

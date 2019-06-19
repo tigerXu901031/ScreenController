@@ -93,12 +93,13 @@ fifoSts_type setFifoData(fifo_type *fifoObj, void *newData)
     fifoSts_type returnVal = writeFail;
 
     unsigned char* newDataAdd = (unsigned char*)newData;
+    unsigned char* destAdd = &fifoObj->fifoData[fifoObj->curPtr];
 
     /* Check whether the FIFO has the spare space to write 
        into the new data */
     if((FIFO_MAX_LENGTH - (fifoObj->unitLen * fifoObj->curPtr)) >= fifoObj->unitLen)
     {
-        memcpyCus(&fifoObj->fifoData[fifoObj->curPtr], newDataAdd, fifoObj->unitLen);
+        memcpyCus(destAdd, newDataAdd, fifoObj->unitLen);
         fifoObj->curPtr ++;
         returnVal = writeSuccess;
     }
