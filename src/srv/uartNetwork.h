@@ -77,28 +77,6 @@ typedef struct{
     unsigned char crc[2];
 }writeAccessMsg_type;
 
-// /* Tx on public bus by forward from private bus
-//    Rx on private bus forward to public bus
-//    Rx on private bus to display */
-// typedef struct{
-//     unsigned int nodeId;
-//     unsigned int cmd;
-//     unsigned int regAdd[2];
-//     unsigned int data[2];
-//     unsigned int crc[2];
-// }writeRepMsg_type;
-
-/* Tx on public bus by forward from private bus
-   Rx on private bus forward to public bus
-   Rx on private bus to display */
-// typedef struct{
-//     unsigned int nodeId;
-//     unsigned int cmd;
-//     unsigned int regAdd[2];
-//     unsigned int errVal[2];
-//     unsigned int crc[2];
-// }writeFailRepMsg_type;
-
 /* Rx on private bus to check the system alive status
    Tx on private bus to inform the system alive */
 typedef struct{

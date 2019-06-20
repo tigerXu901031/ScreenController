@@ -1,10 +1,5 @@
 #include "crc.h" 
- 
-typedef unsigned char uint8_t;
-typedef unsigned short uint16_t;
-typedef unsigned long uint32_t;
-typedef int int32_t;
- 
+
 const uint16_t polynom = 0xA001;
  
 uint16_t crc16bitbybit(uint8_t *ptr, uint16_t len)
@@ -108,3 +103,12 @@ uint16_t crc16tablefast(uint8_t *ptr, uint16_t len)
 	
 	return crc;
 }
+
+// /* test function */
+// uint8_t dataArr[8] = {0xff, 0x03, 0x30, 0x00, 0x00, 0x01, 0x00, 0x00};
+// int main()
+// {
+// 	uint16_t crcVal = 0;
+// 	crcVal = crc16tablefast(&dataArr[0], 8);
+// 	return 1;
+// }

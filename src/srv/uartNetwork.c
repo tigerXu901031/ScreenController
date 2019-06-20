@@ -486,11 +486,6 @@ static void networkGatewayHandler(msgBuf_type *msgObj)
    }
 }
 
-static void networkRequestHandler(msgBuf_type *msgObj)
-{
-
-}
-
 static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
 {
     /* do crc check only for private communication 
@@ -660,6 +655,17 @@ static void txDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
 
 }
 
+
+static void rxServiceHandler(msgBuf_type *msgObj)
+{
+
+}
+
+static void txServiceHandler(msgBuf_type *msgObj)
+{
+
+}
+
 static void fetchNodeId()
 {
     networkObj.privateNodeId = 0xff;
@@ -710,8 +716,10 @@ void getNetworkData(networkDataBuf_type *nwDataBuf)
         networkGatewayHandler(&rxMsgBuf);
 
         /* second handle some request by network service and do handle the
-           message without the intervene from app */
-        networkRequestHandler(&rxMsgBuf);
+           message without the intervene from app
+           1. Clear some requst status
+           2. Request status timeout and record the error info */
+        rxServiceHandler(&rxMsgBuf);
 
         /* message -> application operational data
            only the private communication need to be handled
@@ -724,19 +732,48 @@ void getNetworkData(networkDataBuf_type *nwDataBuf)
 /* 10ms task */
 void setNetworkData(networkDataBuf_type *nwDataBuf)
 {
-    msgBuf_type txMsgFromApp;
-    clearDataBlock(&txMsgFromApp, sizeof(txMsgFromApp));
+    msgBuf_type txMsgBuf;
+    clearDataBlock(&txMsgBuf, sizeof(txMsgBuf));
 
+    /* test purpose only */
+    static unsigned char iCounter = 0;
     /* TODO: 
        1. need to add more logic to handle how to deal
           with multiple data length request in the same
           10ms task cycle. */
           
     /* application operational data -> message */
-    txDataHandler(&txMsgFromApp, nwDataBuf);
+    txDataHandler(&txMsgBuf, nwDataBuf);
+
+    /* test purpose only */
+    clearDataBlock(&txMsgBuf, sizeof(txMsgBuf));
+    if(iCounter == 10)
+    {
+        txMsgBuf.msgByteArray[0] = 0xff;
+        txMsgBuf.msgByteArray[1] = 0x03;
+        txMsgBuf.msgByteArray[2] = 0x30;
+        txMsgBuf.msgByteArray[3] = 0x00;
+        txMsgBuf.msgByteArray[4] = 0x00;
+        txMsgBuf.msgByteArray[5] = 0x01;
+        txMsgBuf.msgByteArray[6] = 0x9e;
+        txMsgBuf.msgByteArray[7] = 0xd4;
+        txMsgBuf.msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 0x08;
+        P44 = 0;
+        iCounter = 0;
+    }
+    else
+    {
+        P44 = 1;
+        iCounter ++;
+    }
+
+    /* TODO:
+        1. send the 100ms cyclic system info read request message 
+        2. set request status */
+    txServiceHandler(&txMsgBuf);
 
     /* put to the message to the uart send buffer
        each cycle one message */
-    setTxMsgAndDisassemble(&txMsgFromApp, busIdx_private);
+    setTxMsgAndDisassemble(&txMsgBuf, busIdx_private);
     
 }

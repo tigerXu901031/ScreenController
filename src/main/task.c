@@ -64,7 +64,7 @@ void task10ms()
 
     /* test purpose only */
 
-    static unsigned char iCounter = 0;
+    // static unsigned char iCounter = 0;
 
     // unsigned char i = 0;
     // unsigned char tempData = 0;
@@ -82,28 +82,30 @@ void task10ms()
     // getUartReceiveBuf(&testRecByte[1],busIdx_public);
     // setUartSendBuf(&testSendByte[0], busIdx_public);
     // setUartSendBuf(&testSendByte[1], busIdx_public);
-    // if(iCounter == 0)
+    clearDataBlock(&testSetNwData, sizeof(testSetNwData));
+
+    // if(iCounter == 10)
     // {
+    //     testSetNwData.dataLength =1;
+    //     testSetNwData.networkData[0].cmd = 0x03;
+    //     testSetNwData.networkData[0].add[0] = 0x00;
+    //     testSetNwData.networkData[0].add[1] = 0x04;
     //     P44 = 0;
-    //     iCounter ++;
+    //     iCounter = 0;
     // }
     // else
     // {
     //     P44 = 1;
-    //     iCounter --;
+    //     iCounter ++;
     // }
 
 
-    clearDataBlock(&testSetNwData, sizeof(testSetNwData));
-    testSetNwData.dataLength =1;
-    testSetNwData.networkData[0].cmd = 0x03;
-    testSetNwData.networkData[0].add[0] = 0x00;
-    testSetNwData.networkData[0].add[1] = 0x04;
+
 
     clearDataBlock(&testGetNwData, sizeof(testGetNwData));
     getNetworkData(&testGetNwData);
 
     setNetworkData(&testSetNwData);
 
-	AppFunRun();		//application program
+	// AppFunRun();		//application program
 }
