@@ -26,8 +26,6 @@ uartSts_type uartGlobalSts[busIdx_max];
 fifo_type uartTxFifo_Obj[busIdx_max];
 fifo_type uartRxFifo_Obj[busIdx_max];
 
-
-
 // void switch485Mode(busIdx_type busId, busMode_type busMode)
 // {
 //     if(busId == busIdx_private)
@@ -178,26 +176,22 @@ uartSts_type getUartReceiveBuf(unsigned char *uartData, busIdx_type busId)
 /* uart 3(private network connect with door controller) interrupt service function */ 
 void uart3Int()
 {
-    /* test only */
-    unsigned char testStuff = 0;
     /* TODO this interrupt shoud be copy for two channel */
     unsigned char uartData;
-    if (S3CON&S3RI)
+    
+    if (S3CON & S3RI)
     {
         P44 = 1;
-        S3CON &= ~S3RI;
 
         uartData = S3BUF;
-        /* Put the data into the Rx FIFO */
-        if(uartRxFifo_Obj[busIdx_private].curPtr == 3)
-        {
-            testStuff ++;
-        }                 
-		setFifoData(&uartRxFifo_Obj[busIdx_private], &uartData);
-        
-        P44 = 0;
+
+        setFifoData(&uartRxFifo_Obj[busIdx_private], &uartData);
+
+        S3CON &= ~S3RI;
+
+        P44 = 0;     
     }
-    if (S3CON&S3TI)
+    if (S3CON & S3TI)
     {
         S3CON &= ~S3TI;
         uartGlobalSts[busIdx_private] = uartSts_normal;

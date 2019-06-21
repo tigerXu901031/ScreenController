@@ -49,7 +49,6 @@ typedef struct{
 typedef struct{
     unsigned char nodeId;
     unsigned char cmd;
-    unsigned char regAdd[2];
     unsigned char lengthCode;
     unsigned char msgData[40];
     unsigned char crc[2];
@@ -62,7 +61,7 @@ typedef struct{
     unsigned char nodeId;
     unsigned char cmd;
     unsigned char regAdd[2];
-    unsigned char errVal[2];
+    unsigned char errVal;
     unsigned char crc[2];
 }accessFailRepMsg_type;
 
@@ -110,15 +109,26 @@ typedef struct{
 }networkDataBuf_type;
 
 typedef struct{
+    unsigned char srvId;
+    unsigned char add[2];
+    unsigned char longFrameLen;
+}serviceReq_type;
+
+typedef enum{
+    reqIdx_readReq,
+    reqIdx_writeReq,
+    reqIdx_readLongReq,
+};
+
+typedef struct{
     unsigned char        publicNodeId;
     unsigned char        privateNodeId;
-    networkDataBuf_type reqBuf[5];
-    networkDataBuf_type repBuf[5];
+    serviceReq_type      reqSrv[3];
 }networkInfo_type;
 
 extern void networkInit();
 extern void networkUpdate();
-extern void getNetworkData(networkDataBuf_type *nwDataBuf);
-extern void setNetworkData(networkDataBuf_type *nwDataBuf);
+extern void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *dataL, unsigned char *dataH);
+extern void setNetworkData(unsigned char addL, unsigned char addH, unsigned char *dataL, unsigned char *dataH, unsigned char cmd);
 
 #endif

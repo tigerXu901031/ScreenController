@@ -2,6 +2,29 @@
 
 const uint16_t polynom = 0xA001;
  
+
+// u16 CrcCal(u8 *pDataValue,u16 uiDataLen)
+// {
+//  int i;
+//  u16 uiCrcValue = 0xffff;
+//  while(uiDataLen--)
+//  {
+//   uiCrcValue^=*pDataValue++;
+//   for(i=0;i<8;i++)
+//   {
+//    if(uiCrcValue&0x0001)
+//    {
+//     uiCrcValue = (uiCrcValue>>1)^0xa001;
+//    }
+//    else
+//    {
+//     uiCrcValue >>=1;
+//    }
+//   }
+//  }
+//  return(uiCrcValue);
+// }
+
 uint16_t crc16bitbybit(uint8_t *ptr, uint16_t len)
 {
 	uint8_t i;

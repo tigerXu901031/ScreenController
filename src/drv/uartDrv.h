@@ -6,6 +6,8 @@
 
 #define UART_DATA_LEN_IN_BYTE   1
 
+
+
 typedef enum uartSts{
     uartSts_normal,
     uartSts_sendFail,
@@ -24,6 +26,7 @@ typedef enum{
     busMode_tx,
     busMode_rx,
 }busMode_type;
+
 
 /* test purpose only */
 extern fifo_type uartTxFifo_Obj[busIdx_max];
