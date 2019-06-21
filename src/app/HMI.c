@@ -3,44 +3,23 @@
 
 
 Machine_Parameters_Def Motor_Parameter;
+
 uchar char_num[16];
 
-void Display_Full_Line_Up(uchar x)
+void Display_Full_Line(uchar ucLine, uchar ucUpDown)
 {
 	uchar i;
-//	if(x==2)
-//		{
-//			for(i=1;i<15;i++)
-//				{display_8x8((i-1)*8+1,x,Char0808_Up);}
-//			display_8x8(185,x,Char0808_Up);
-//		}
-//		else
-//			{
-				for(i=1;i<25;i++)
-				{display_8x8((i-1)*8+1,x,Char0808_Up);}
-//			}
-}
-
-void Display_Full_Line_Down(uchar x)
-{
-	uchar i;
-	if(x==12)
+	for(i=1;i<25;i++)
+	{
+		if(ucUpDown)	//up
 		{
-			//������һ��
-			display_8x8(1,12,Char0808_Down);
-			for(i=2;i<6;i++)
-				{display_8x8((i-1)*8+1,12,Char0808_UpDown);}
-			for(i=6;i<20;i++)
-				{display_8x8((i-1)*8+1,12,Char0808_Down);}			
-			for(i=20;i<24;i++)
-				{display_8x8((i-1)*8+1,12,Char0808_UpDown);}
-			display_8x8(185,12,Char0808_Down);
+			display_8x8((i-1)*8+1,ucLine,Char0808_Up);
 		}
-		else
+		else					//Down
 			{
-				for(i=1;i<25;i++)
-				{display_8x8((i-1)*8+1,x,Char0808_Down);}
+				display_8x8((i-1)*8+1,ucLine,Char0808_Down);
 			}
+	}
 }
 
 void Display_Full_Vertical_Line(uchar line)
@@ -50,102 +29,48 @@ void Display_Full_Vertical_Line(uchar line)
 		{display_8x1(line,i,0xFF);}
 }
 
-void BUTTON1_Display1_FanXiang(void)		//����
+void BUTTON_Display(uchar x, uchar HanziButton)		//Button Display
 {
-	uchar i;
-	for(i=2;i<6;i++)
-	{display_8x8((i-1)*8+1,9,Char0808_Down);}
-	Hanzi_Disp_16x16(9, 10, Hanzi_1616_XST_Fan1, 0x04);	//0000 0100
-	Hanzi_Disp_16x16(25, 10, Hanzi_1616_XST_Xiang, 0x08); //00001000
-	for(i=2;i<6;i++)
-	{display_8x8((i-1)*8+1, 12,Char0808_Up);}
-	Display_Full_Line_Down(12); 
-	Display_Full_Vertical_Line(1);
-	Display_Full_Vertical_Line(192); 
-}
-
-void BUTTON1_Display1_ZhengXiang(void)		//����
-{
-	uchar i;
-	for(i=2;i<6;i++)
-	{display_8x8((i-1)*8+1,9,Char0808_Down);}
-	Hanzi_Disp_16x16(9, 10, Hanzi_1616_XST_Zheng, 0x04);	//0000 0100
-	Hanzi_Disp_16x16(25, 10, Hanzi_1616_XST_Xiang, 0x08); //00001000
-	for(i=2;i<6;i++)
-	{display_8x8((i-1)*8+1, 12,Char0808_Up);}
-	Display_Full_Line_Down(12);
-	Display_Full_Vertical_Line(1);
-	Display_Full_Vertical_Line(192);
-}
-
-void BUTTON1_Display2_Fanhui(void)		//����
-{
-	uchar i;
-	for(i=2;i<6;i++)
-	{display_8x8((i-1)*8+1,9,Char0808_Down);}
-	Hanzi_Disp_16x16(9, 10, Hanzi_1616_XST_Fan, 0x04);	//0000 0100
-	Hanzi_Disp_16x16(25, 10, Hanzi_1616_XST_Hui, 0x08); //00001000
-	for(i=2;i<6;i++)
-	{display_8x8((i-1)*8+1, 12,Char0808_Up);}
-	Display_Full_Line_Down(12);
-	Display_Full_Vertical_Line(1);
-	Display_Full_Vertical_Line(192);
-}
-
-void BUTTON1_Display3_Caidan(void)		//�˵�
-{
-	uchar i;
-	for(i=2;i<6;i++)
-	{display_8x8((i-1)*8+1,9,Char0808_Down);}
-	Hanzi_Disp_16x16(9, 10, Hanzi_1616_XST_Cai, 0x04);	//0000 0100
-	Hanzi_Disp_16x16(25, 10, Hanzi_1616_XST_Dan, 0x08); //00001000
-	for(i=2;i<6;i++)
-	{display_8x8((i-1)*8+1, 12,Char0808_Up);}
-	Display_Full_Line_Down(12);
-	Display_Full_Vertical_Line(1);
-	Display_Full_Vertical_Line(192);
-}
-
-void BUTTON2_Display1_QueRen(void)		//ȷ��
-{
-	uchar i;
-	for(i=20;i<24;i++)
-	{display_8x8((i-1)*8+1,9,Char0808_Down);}
-	Hanzi_Disp_16x16(153, 10, Hanzi_1616_XST_Que, 0x04);	//0000 0100
-	Hanzi_Disp_16x16(169, 10, Hanzi_1616_XST_Ren, 0x08); //00001000
-	for(i=20;i<24;i++)
-	{display_8x8((i-1)*8+1, 12,Char0808_Up);}
-	Display_Full_Line_Down(12);
-	Display_Full_Vertical_Line(1);
-	Display_Full_Vertical_Line(192);
-}
-
-void BUTTON2_Display2_Fanhui(void)		//����
-{
-	uchar i;
-	for(i=20;i<24;i++)
-	{display_8x8((i-1)*8+1,9,Char0808_Down);}
-	Hanzi_Disp_16x16(153, 10, Hanzi_1616_XST_Fan, 0x04);	//0000 0100
-	Hanzi_Disp_16x16(169, 10, Hanzi_1616_XST_Hui, 0x08); //00001000
-	for(i=20;i<24;i++)
-	{display_8x8((i-1)*8+1, 12,Char0808_Up);}
-	Display_Full_Line_Down(12);
-	Display_Full_Vertical_Line(1);
-	Display_Full_Vertical_Line(192);
-}
-
-void BUTTON2_Display3_Caidan(void)		//�˵�
-{
-	uchar i;
-	for(i=20;i<24;i++)
-	{display_8x8((i-1)*8+1,9,Char0808_Down);}
-	Hanzi_Disp_16x16(153, 10, Hanzi_1616_XST_Cai, 0x04);	//0000 0100
-	Hanzi_Disp_16x16(169, 10, Hanzi_1616_XST_Dan, 0x08); //00001000
-	for(i=20;i<24;i++)
-	{display_8x8((i-1)*8+1, 12,Char0808_Up);}
-	Display_Full_Line_Down(12);
-	Display_Full_Vertical_Line(1);
-	Display_Full_Vertical_Line(192);
+	if(x == 1)
+		{
+			switch(HanziButton)
+			{
+				case Hanzi_Fanxiang:
+					Hanzi_Disp_16x16(1, 11, Hanzi_1616_XST_Fan1, 0x07);	//0000 0111
+					Hanzi_Disp_16x16(17, 11, Hanzi_1616_XST_Xiang, 0x0B); //0000 1011
+					break;
+				case Hanzi_Zhengxiang:
+					Hanzi_Disp_16x16(1, 11, Hanzi_1616_XST_Zheng, 0x07);	//0000 0100
+					Hanzi_Disp_16x16(17, 11, Hanzi_1616_XST_Xiang, 0x0B); //00001000
+					break;
+				case Hanzi_Fanhui:
+					Hanzi_Disp_16x16(1, 11, Hanzi_1616_XST_Fan, 0x07);	//0000 0100
+					Hanzi_Disp_16x16(17, 11, Hanzi_1616_XST_Hui, 0x0B); //00001000
+					break;
+				case Hanzi_Xuexi:
+					Hanzi_Disp_16x16(1, 11, Hanzi_1616_XST_Xue, 0x07);	//0000 0100
+					Hanzi_Disp_16x16(17, 11, Hanzi_1616_XST_Xi, 0x0B); //00001000
+					break;
+				default: break;
+			}
+		}
+		else {;}
+	if(x == 2)
+		{
+			switch(HanziButton)
+			{
+				case Hanzi_Queren:
+					Hanzi_Disp_16x16(161, 11, Hanzi_1616_XST_Que, 0x07);	//0000 0111
+					Hanzi_Disp_16x16(177, 11, Hanzi_1616_XST_Ren, 0x0B); //0000 1011
+					break;
+				case Hanzi_Caidan:
+					Hanzi_Disp_16x16(161, 11, Hanzi_1616_XST_Cai, 0x07);	//0000 0100
+					Hanzi_Disp_16x16(177, 11, Hanzi_1616_XST_Dan, 0x0B); //00001000
+					break;
+				default: break;
+			}
+		}
+		else {;}
 }
 
 void Number_Lookup_Table(uchar number)
@@ -155,10 +80,17 @@ void Number_Lookup_Table(uchar number)
 		{char_num[i] = char_number_table[number*16+i];}
 }
 
-void Display_Encoder_Number(void)
+void Display_Encoder_Number(uchar x)
 {
 	uint encoder;
+	uchar getDataBufH, getDataBufL;
+	//	p1 = &getDataBufH;
+	//	p2 = &getDataBufL;
+	//void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *dataL, unsigned char *dataH)
+	//getNetworkData(MonitorPara_Position_AddrL, MonitorPara_Position_AddrH, &getDataBufL, &getDataBufH);
+	Motor_Parameter.E_encoder = (getDataBufH >> 8) + getDataBufL;
 	encoder = Motor_Parameter.E_encoder;
+	encoder = 63408;		//example for display demo only
 	
 	if(encoder>10000)			//���λ
 		{
@@ -191,77 +123,72 @@ void Display_Encoder_Number(void)
 	Motor_Parameter.E_Digit5 = encoder;		//��5λ
 	
 	Number_Lookup_Table(Motor_Parameter.E_Digit1);
-	CHAR_Display_16x8(57, 2,char_num, 0); 
-
+	if(x==1)
+		{
+			CHAR_Display_16x8(57, 1,char_num, 1);
+		}
+		else if(x==2)
+			{
+				CHAR_Display_16x8(57, 2,char_num, 0);
+			}
+				else{;}
+	
 	Number_Lookup_Table(Motor_Parameter.E_Digit2);
-	CHAR_Display_16x8(65, 2,char_num, 0); 
+	if(x==1)
+		{
+			CHAR_Display_16x8(57, 1,char_num, 1);
+		}
+		else if(x==2)
+			{
+				CHAR_Display_16x8(65, 2,char_num, 0);
+			}
+				else{;}	
 
 	Number_Lookup_Table(Motor_Parameter.E_Digit3);
-	CHAR_Display_16x8(73, 2,char_num, 0); 
+	if(x==1)
+		{
+			CHAR_Display_16x8(73, 1,char_num, 1);
+		}
+		else if(x==2)
+			{
+				CHAR_Display_16x8(73, 2,char_num, 0);
+			}
+				else{;}	
 
 	Number_Lookup_Table(Motor_Parameter.E_Digit4);
-	CHAR_Display_16x8(81, 2,char_num, 0); 
+	if(x==1)
+		{
+			CHAR_Display_16x8(81, 1,char_num, 1);
+		}
+		else if(x==2)
+			{
+				CHAR_Display_16x8(81, 2,char_num, 0);
+			}
+				else{;}		
 
 	Number_Lookup_Table(Motor_Parameter.E_Digit5);
-	CHAR_Display_16x8(89, 2,char_num, 0); 
+	if(x==1)
+		{
+			CHAR_Display_16x8(89, 1,char_num, 1);
+		}
+		else if(x==2)
+			{
+				CHAR_Display_16x8(89, 2,char_num, 0);
+			}
+				else{;}		 
 }
-
-void Display_Encoder_Number1(void)
-{
-	uint encoder;
-	encoder = Motor_Parameter.E_encoder;
-	
-	if(encoder>10000)			//���λ
-		{
-			Motor_Parameter.E_Digit1 = encoder/10000;
-			encoder %= 10000;	
-		}
-		else {Motor_Parameter.E_Digit1 = 0;}
-		
-	if(encoder>1000)		//��2λ
-		{
-			Motor_Parameter.E_Digit2 = encoder/1000;
-			encoder %= 1000;	
-		}
-		else {Motor_Parameter.E_Digit2 = 0;}
-		
-	if(encoder>100)		//��3λ
-		{
-			Motor_Parameter.E_Digit3 = encoder/100;
-			encoder %= 100;	
-		}
-		else {Motor_Parameter.E_Digit3 = 0;}
-		
-	if(encoder>10)		//��4λ
-		{
-			Motor_Parameter.E_Digit4 = encoder/10;
-			encoder %= 10;	
-		}
-		else {Motor_Parameter.E_Digit4 = 0;}
-			
-	Motor_Parameter.E_Digit5 = encoder;		//��5λ
-	
-	Number_Lookup_Table(Motor_Parameter.E_Digit1);
-	CHAR_Display_16x8(57, 1,char_num, 1); 
-
-	Number_Lookup_Table(Motor_Parameter.E_Digit2);
-	CHAR_Display_16x8(65, 1,char_num, 1); 
-
-	Number_Lookup_Table(Motor_Parameter.E_Digit3);
-	CHAR_Display_16x8(73, 1,char_num, 1); 
-
-	Number_Lookup_Table(Motor_Parameter.E_Digit4);
-	CHAR_Display_16x8(81, 1,char_num, 1); 
-
-	Number_Lookup_Table(Motor_Parameter.E_Digit5);
-	CHAR_Display_16x8(89, 1,char_num, 1); 
-}
-
 
 void Display_RunTime(void)
 {
 	uint runtime;
+	uchar getDataBufH, getDataBufL;
+	//	p1 = &getDataBufH;
+	//	p2 = &getDataBufL;
+	//void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *dataL, unsigned char *dataH)
+	//getNetworkData(FuncPara_AutoCloseDoor_DelayT_AddrL, FuncPara_AutoCloseDoor_DelayT_AddrH, &getDataBufL, &getDataBufH);
+	Motor_Parameter.RT_runtime = (getDataBufH >> 8) + getDataBufL;
 	runtime = Motor_Parameter.RT_runtime;
+	runtime = 12356;		//example for display demo only
 	
 	if(runtime>10000)			//���λ
 		{
@@ -312,8 +239,15 @@ void Display_RunTime(void)
 void Display_I_current(void)
 {
 	uint current_data;
+	uchar getDataBufH, getDataBufL;
+	//	p1 = &getDataBufH;
+	//	p2 = &getDataBufL;
+	//void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *dataL, unsigned char *dataH)
+	//getNetworkData(MonitorPara_CurrentFBK_AddrL, MonitorPara_CurrentFBK_AddrH, &getDataBufL, &getDataBufH);
+	Motor_Parameter.I_current = (getDataBufH >> 8) + getDataBufL;
 	current_data = Motor_Parameter.I_current;
-
+	current_data = 12345;		//example for display demo only
+	
 	if(current_data>10000)			//���λ
 		{
 			Motor_Parameter.I_Digit1 = current_data/10000;
@@ -363,6 +297,8 @@ void Display_I_current(void)
 void Display_F_frequency(void)
 {
 	uint frequency_data;
+	Motor_Parameter.F_frequency = 62503;
+
 	frequency_data = Motor_Parameter.F_frequency;
 
 	if(frequency_data>10000)			//���λ
@@ -414,9 +350,9 @@ void Display_F_frequency(void)
 void Motor_Direction_Update(void)
 {
 	if(Motor_Parameter.Motor_Direction == 1)
-		{BUTTON1_Display1_ZhengXiang();	}
+		{BUTTON_Display(1, Hanzi_Fanxiang);}
 		else
-			{	BUTTON1_Display1_FanXiang();}
+			{	BUTTON_Display(1, Hanzi_Zhengxiang);}
 }
 
 void Display_Page00_00_ParaArea(void)		//Page00_00���������
@@ -425,7 +361,6 @@ void Display_Page00_00_ParaArea(void)		//Page00_00���������
 	Hanzi_Disp_16x16(17, 2, Hanzi_1616_XST_Ma, 0);	//0000 0100
 	Hanzi_Disp_16x16(33, 2, Hanzi_1616_XST_Qi, 0);	//0000 0100
 	CHAR_Display_16x8(49,2,char_cMaohao, 0);
-	Display_Encoder_Number();
 }
 
 void Display_Page00_01_ParaArea(void)		//Page00_01���������
@@ -440,8 +375,6 @@ void Display_Page00_01_ParaArea(void)		//Page00_01���������
 	CHAR_Display_16x8(177,1,char_capital_A, 1);
 	CHAR_Display_16x8(177,3,char_capital_H, 0);
 	CHAR_Display_16x8(185,3,char_z, 0);
-	Display_I_current();
-	Display_F_frequency();
 }
 
 void Display_Page00_03_ParaArea(void)	//��ʾ�̶���Ϣ
@@ -464,20 +397,22 @@ void Display_Page00_03_ParaArea(void)	//��ʾ�̶���Ϣ
 	CHAR_Display_16x8(153,3,char_cDot, 0);
 	CHAR_Display_16x8(177,3,char_capital_H, 0);
 	CHAR_Display_16x8(185,3,char_z, 0);
-	
-	Display_Encoder_Number1();
-	Display_RunTime();
-	Display_I_current();
-	Display_F_frequency();
-}
+	}
 
-void Display_Page00_00_MotorDirt(void)	//�������
+void Display_Page00_00_MotorDirt(void)	//Display "电机方向"
 {
 	disp_24x24(49,6,Hanzi_2424_HWZS_Dian);
 	disp_24x24(73,6,Hanzi_2424_HWZS_Ji);
 	disp_24x24(97,6,Hanzi_2424_HWZS_Fang);
 	disp_24x24(121,6,Hanzi_2424_HWZS_Xiang);
-//	disp_96x24(49,6,Hanzi_9624_HWZS_DJFX);
+}
+
+void Display_Page00_03_CDDT(void)	//Display "close door delay time"
+{
+	disp_24x24(1,6,Hanzi_2424_HWZS_Guan);
+	disp_24x24(25,6,Hanzi_2424_HWZS_Men);
+	disp_24x24(49,6,Hanzi_2424_HWZS_Yan);
+	disp_24x24(73,6,Hanzi_2424_HWZS_Shi);
 }
 
 void Display_Page00_01_LLStudy(void)		//����λѧϰ
@@ -509,97 +444,110 @@ void Display_Page00_03_ZDKJ(void)			//�µ�Ƽ�
 //	disp_96x24(49,6,Hanzi_9624_HWZS_DJFX);
 }
 
-void Disp_Page_00_00(void)		//�������
+void Disp_Page_MotorDirtSet(void)		// Motor Direction Setting
 {
-	Display_Full_Line_Up(1);
-	Display_Full_Line_Up(5);
-
-	Motor_Parameter.E_encoder = 00001;
-	Display_Page00_00_ParaArea();	//��ʾ�̶���Ϣ
-	
-
-	BUTTON1_Display1_FanXiang();		//��ʾ������
-	BUTTON2_Display1_QueRen();		//��ʾ��ȷ�ϡ�
-	Display_Full_Line_Down(12);
+	clear_screen();
+	Display_Full_Line(1, Up);
+	Display_Full_Line(5, Up);
+	Display_Full_Line(12, Down);
 	Display_Full_Vertical_Line(1);
+	Display_Full_Vertical_Line(192);
+	Display_Page00_00_ParaArea();	
+
+	BUTTON_Display(1, Hanzi_Fanxiang);
+//	Motor_Direction_Update();
+	BUTTON_Display(2, Hanzi_Queren);		
 	
 	Display_Page00_00_MotorDirt(); 
-	
-	Display_Full_Vertical_Line(192);
+//	Motor_Parameter.E_encoder = 00001;
+//	getdata(MonitorPara_Position_AddrH,MonitorPara_Position_AddrL);
+	Display_Encoder_Number(2);
 }
 
-void Disp_Page_00_01(void)		//����λѧϰ
+void Disp_Page_DownLMT_STD(void)		//����λѧϰ
 {
-	Display_Full_Line_Up(1);
-	Display_Full_Line_Up(5);
+	clear_screen();
+	Display_Full_Line(1, Up);
+	Display_Full_Line(5, Up);
 	
-	Motor_Parameter.E_encoder = 11223;
-	Motor_Parameter.I_current = 12345;
-	Motor_Parameter.F_frequency = 62503;
 	Display_Page00_01_ParaArea();	//��ʾ�̶���Ϣ
 	
-	BUTTON1_Display2_Fanhui();		//��ʾ�����ء�
-	BUTTON2_Display1_QueRen();		//��ʾ��ȷ����
-	Display_Full_Line_Down(12);
+	Display_Full_Line(12, Down);
 	Display_Full_Vertical_Line(1);
 	Display_Full_Vertical_Line(192);
 	
 	Display_Page00_01_LLStudy();
 	
+	BUTTON_Display(1, Hanzi_Fanhui);
+	BUTTON_Display(2, Hanzi_Queren);		
+
 }
 
-void Disp_Page_00_02(void)		//����λѧϰ
+void Disp_Page_UpLMT_STD(void)		//����λѧϰ
 {
-	Display_Full_Line_Up(1);
-	Display_Full_Line_Up(5);
-	Motor_Parameter.E_encoder = 11223;
-	Motor_Parameter.I_current = 12345;
-	Motor_Parameter.F_frequency = 25389;
+	clear_screen();
+	Display_Full_Line(1, Up);
+	Display_Full_Line(5, Up);
+
 	Display_Page00_01_ParaArea();	//��ʾ�̶���Ϣ
 	
-	BUTTON1_Display2_Fanhui();		//��ʾ�����ء�
-	BUTTON2_Display1_QueRen();		//��ʾ��ȷ����
-	Display_Full_Line_Down(12);
+	Display_Full_Line(12, Down);
 	Display_Full_Vertical_Line(1);
 	Display_Full_Vertical_Line(192);
 	
 	Display_Page00_01_ULStudy();
+	
+	BUTTON_Display(1, Hanzi_Fanhui);
+	BUTTON_Display(2, Hanzi_Queren);		
 }
 
-void Disp_Page_00_03(void)
+void Disp_Page_CloseDoor_DelayT(void)
 {
-	Display_Full_Line_Up(1);
-	Display_Full_Line_Up(5);
-	Motor_Parameter.E_encoder = 11223;
-	Motor_Parameter.I_current = 12345;
-	Motor_Parameter.F_frequency = 25389;
+	clear_screen();
+	Display_Full_Line(1, Up);
+	Display_Full_Line(5, Up);
+	Display_Page00_03_ParaArea();
+	
+	Display_Full_Line(12, Down);
+	Display_Page00_03_CDDT();
+	Display_Full_Vertical_Line(1);
+	Display_Full_Vertical_Line(192);
+	
+	BUTTON_Display(1, Hanzi_Fanhui);
+	BUTTON_Display(2, Hanzi_Queren);	
+}
+
+void Disp_Page_RunningMode(void)
+{
+	Display_Full_Line(1, Up);
+	Display_Full_Line(5, Up);
 	Motor_Parameter.RT_runtime = 00002;
 	
 	Display_Page00_03_ParaArea();	//��ʾ�̶���Ϣ
 	
-//	BUTTON1_Display3_Caidan();		//��ʾ���˵���
-//	BUTTON2_Display2_Fanhui();		//��ʾ�����ء�
-
-	BUTTON1_Display2_Fanhui();		//��ʾ�����ء�
-	BUTTON2_Display3_Caidan();		//��ʾ���˵���
-
-	Display_Full_Line_Down(12);
+	
+	Display_Full_Line(12, Down);
 	Display_Full_Vertical_Line(1);
 	Display_Full_Vertical_Line(192);
 	Display_Page00_03_ZDKJ();
+	
+	BUTTON_Display(1, Hanzi_Xuexi);
+	BUTTON_Display(2, Hanzi_Caidan);		
+
 }
 
 
 void Disp_Page_01_00(void)
 {
-	Display_Full_Line_Up(1);
-	Display_Full_Line_Up(5);
+	Display_Full_Line(1, Up);
+	Display_Full_Line(5, Up);
 	
 	Display_Page00_01_ParaArea();	//��ʾ�̶���Ϣ
 	
-	BUTTON1_Display2_Fanhui();		//��ʾ�����ء�
-	BUTTON2_Display1_QueRen();		//��ʾ��ȷ����
-	Display_Full_Line_Down(12);
+	BUTTON_Display(1, Hanzi_Fanhui);
+	BUTTON_Display(2, Hanzi_Queren);		
+
+	Display_Full_Line(12, Down);
 	Display_Full_Vertical_Line(1);
 	Display_Full_Vertical_Line(192);
 	
@@ -609,14 +557,15 @@ void Disp_Page_01_00(void)
 
 void Disp_Page_01_01(void)
 {
-	Display_Full_Line_Up(1);
-	Display_Full_Line_Up(5);
+	Display_Full_Line(1, Up);
+	Display_Full_Line(5, Up);
 	
 	Display_Page00_01_ParaArea();	//��ʾ�̶���Ϣ
 	
-	BUTTON1_Display2_Fanhui();		//��ʾ�����ء�
-	BUTTON2_Display1_QueRen();		//��ʾ��ȷ����
-	Display_Full_Line_Down(12);
+	BUTTON_Display(1, Hanzi_Fanhui);
+	BUTTON_Display(2, Hanzi_Queren);		
+
+	Display_Full_Line(12, Down);
 	Display_Full_Vertical_Line(1);
 	Display_Full_Vertical_Line(192);
 	
@@ -625,35 +574,33 @@ void Disp_Page_01_01(void)
 
 void Disp_Page_01_02(void)
 {
-	Display_Full_Line_Up(1);
-	Display_Full_Line_Up(5);
+	Display_Full_Line(1, Up);
+	Display_Full_Line(5, Up);
 	
 	Display_Page00_01_ParaArea();	//��ʾ�̶���Ϣ
 	
-	BUTTON1_Display2_Fanhui();		//��ʾ�����ء�
-	BUTTON2_Display1_QueRen();		//��ʾ��ȷ����
-	Display_Full_Line_Down(12);
+	BUTTON_Display(1, Hanzi_Fanhui);
+	BUTTON_Display(2, Hanzi_Queren);		
+
+	Display_Full_Line(12, Down);
 	Display_Full_Vertical_Line(1);
 	Display_Full_Vertical_Line(192);
-	
-	
-	
 }
 
 void Disp_Page_01_03(void)
 {
-	Display_Full_Line_Up(1);
-	Display_Full_Line_Up(5);
+	Display_Full_Line(1, Up);
+	Display_Full_Line(5, Up);
 	
 	Display_Page00_01_ParaArea();	//��ʾ�̶���Ϣ
 	
-	BUTTON1_Display2_Fanhui();		//��ʾ�����ء�
-	BUTTON2_Display1_QueRen();		//��ʾ��ȷ����
-	Display_Full_Line_Down(12);
+	BUTTON_Display(1, Hanzi_Fanhui);
+	BUTTON_Display(2, Hanzi_Queren);		
+
+	Display_Full_Line(12, Down);
 	Display_Full_Vertical_Line(1);
 	Display_Full_Vertical_Line(192);
 	
-		
 }
 
 void LCD_Diaplay_Page(uchar page, uchar level)
@@ -663,10 +610,10 @@ void LCD_Diaplay_Page(uchar page, uchar level)
 		{
 			switch(level)
 			{
-				case 0:	Disp_Page_00_00();break;
-				case 1:	Disp_Page_00_01();break;
-				case 2:	Disp_Page_00_02();break;
-				case 3:	Disp_Page_00_03();break;
+				case 0:	Display_Page00_00_MotorDirt();break;
+				case 1:	Disp_Page_DownLMT_STD();break;
+				case 2:	Disp_Page_UpLMT_STD();break;
+				case 3:	Disp_Page_RunningMode();break;
 				default: break;
 			}
 		}
@@ -772,7 +719,14 @@ uchar code Hanzi_1616_XST_Dan[]={
 0x00,0x00,0x1F,0x92,0x52,0x32,0x12,0x1F,0x12,0x32,0x52,0x92,0x1F,0x00,0x00,0x00,
 0x08,0x08,0xC8,0x48,0x48,0x48,0x48,0xFF,0x48,0x48,0x48,0x48,0xC8,0x08,0x08,0x00};/*"单",0*/
 
- 
+uchar code Hanzi_1616_XST_Xue[]={
+0x02,0x0C,0x88,0x69,0x09,0x09,0x89,0x69,0x09,0x09,0x19,0x28,0xC8,0x0A,0x0C,0x00,
+0x20,0x20,0x20,0x20,0x20,0x22,0x21,0x7E,0x60,0xA0,0x20,0x20,0x20,0x20,0x20,0x00};/*"学",0*/
+
+uchar code Hanzi_1616_XST_Xi[]={
+0x00,0x40,0x40,0x40,0x48,0x44,0x43,0x40,0x40,0x40,0x40,0x40,0x7F,0x00,0x00,0x00,
+0x00,0x10,0x18,0x10,0x20,0x20,0x20,0x40,0x40,0x82,0x81,0x02,0xFC,0x00,0x00,0x00};/*"习",0*/
+
 
 uchar code char_number_table[]={
 0x00,0x00,0x0F,0x1F,0x10,0x16,0x1F,0x0F,0x00,0x00,0xE0,0xF0,0xD0,0x10,0xF0,0xE0,/*"0",0*/
@@ -888,4 +842,32 @@ uchar code Hanzi_2424_HWZS_Ji1[]={
 0x17,0x11,0xF0,0xF0,0x11,0x17,0x3E,0x38,0x10,0x00,0x00,0x00,0x00,0x00,0x08,0x08,0x0C,0xFC,
 0xF8,0x00,0x04,0x04,0x08,0x08,0x10,0xF0,0xE0,0xE0,0xB0,0x38,0x18,0x1C,0x1C,0x08,0x00,0x00};/*"技",0*/
 
+uchar code Hanzi_2424_HWZS_Null[]={
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*" ",0*/
 
+uchar code Hanzi_2424_HWZS_Guan[]={
+0x00,0x00,0x00,0x01,0x01,0x01,0x01,0x21,0x19,0x1D,0x01,0x01,0x01,0x03,0x0D,0x79,0x31,0x01,
+0x01,0x03,0x01,0x00,0x00,0x00,0x00,0x00,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x05,0xFF,
+0xE4,0x06,0x05,0x04,0x04,0x04,0x04,0x04,0x0C,0x0C,0x04,0x00,0x00,0x00,0x02,0x02,0x04,0x04,
+0x08,0x10,0x30,0x60,0x80,0x00,0x00,0x00,0x80,0x60,0x30,0x18,0x0C,0x0C,0x06,0x04,0x04,0x00};/*"关",0*/
+
+uchar code Hanzi_2424_HWZS_Men[]={
+0x00,0x00,0x00,0x00,0x03,0x02,0x20,0x1C,0x1C,0x00,0x00,0x08,0x08,0x08,0x08,0x08,0x08,0x08,
+0x08,0x1F,0x0F,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFE,0x00,
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x08,0x08,0x04,0x06,0xFC,0xF8,0x00,0x00,0x00};/*"门",0*/
+
+uchar code Hanzi_2424_HWZS_Yan[]={
+0x00,0x00,0x08,0x08,0x08,0x09,0x0B,0x0C,0x08,0x00,0x00,0x04,0x04,0x04,0x04,0x08,0x0F,0x08,
+0x08,0x18,0x18,0x08,0x00,0x00,0x00,0x00,0x00,0x32,0x61,0x90,0x10,0x1F,0x38,0x00,0x00,0x40,
+0x3F,0x00,0x00,0x00,0xFF,0x20,0x20,0x20,0x20,0x00,0x00,0x00,0x00,0x02,0x02,0x04,0x88,0x70,
+0xE0,0x90,0x10,0x08,0x08,0x4C,0xCC,0x44,0x44,0x44,0xC4,0x44,0x44,0x44,0xC4,0x48,0x08,0x00};/*"延",0*/
+
+uchar code Hanzi_2424_HWZS_Shi[]={
+0x00,0x00,0x0F,0x04,0x04,0x04,0x04,0x0F,0x0F,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x3F,
+0x21,0x01,0x01,0x01,0x00,0x00,0x00,0x00,0xFF,0x10,0x10,0x10,0x10,0xFF,0xFF,0x00,0x00,0x10,
+0x0E,0x06,0x00,0x00,0x00,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xF8,0x20,0x20,0x20,
+0x20,0xF0,0xE0,0x00,0x00,0x00,0x00,0x00,0x04,0x04,0x06,0xFC,0x00,0x00,0x00,0x00,0x00,0x00};/*"时",0*/

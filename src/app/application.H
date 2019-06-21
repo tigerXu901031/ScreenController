@@ -4,11 +4,6 @@
 #define uchar unsigned char
 #define uint unsigned int
 
-
-
-
-
-
 typedef struct{
 	uchar SysMode;
 	uchar ManuLevel;
@@ -24,19 +19,32 @@ typedef struct{
 	uchar	KEY_Up_Status;
 	uchar	KEY_Stop_Status;
 	uchar	KEY_Down_Status;
+}KeyStatusType;
+
+typedef struct{
+	uchar key_press;
+	uchar keyin_confirm;
+	uchar key_release;
 }KeyInStatusType;
 
+extern KeyStatusType KeyInPrev, KeyInCurr;
+
 extern void DummySingleFrameTestDataGenerate(uchar addrL, uchar addrH, uchar opDataL, uchar opDataH);
-extern void AppFunRun(void);
+extern void AppFunRun();
+//extern void AppFunRun(networkDataBuf_type* appDataBuf);
 extern void SysStatusInit(SystemStatusType SysS1);
 
 void System_Study(void);
 void System_Running(void);
 void User_Setting(void);
 void Vendor_Setting(void);
-
-
-
+void KeyStatusInit(void);
+void KeyIn_Check(void);
+void Key1_response(void);
+void Key2_response(void);
+void Key3_response(void);
+void Key4_response(void);
+void Key5_response(void);
 
 
 

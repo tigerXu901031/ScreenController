@@ -230,140 +230,140 @@
 #define	GPIO_DO_RLY_Sel_FaultOut							0x12
 
 /*********** Function Parameters ************/
-#define	FuncPara_PARA_Prog_AddrH							0x0200
-#define	FuncPara_PARA_Prog_AddrL							0x0200
+#define	FuncPara_PARA_Prog_AddrH							0x02
+#define	FuncPara_PARA_Prog_AddrL							0x00
 
-#define	FuncPara_POSLMT_Type_AddrH						0x0201
-#define	FuncPara_POSLMT_Type_AddrL						0x0201
+#define	FuncPara_POSLMT_Type_AddrH						0x02
+#define	FuncPara_POSLMT_Type_AddrL						0x01
 
-#define	FuncPara_LMT_STUDY_AddrH							0x0202
-#define	FuncPara_LMT_STUDY_AddrL							0x0202
+#define	FuncPara_LMT_STUDY_AddrH							0x02
+#define	FuncPara_LMT_STUDY_AddrL							0x02
 
-#define	FuncPara_Motor_DIRT_AddrH							0x0203
-#define	FuncPara_Motor_DIRT_AddrL							0x0203
+#define	FuncPara_Motor_DIRT_AddrH							0x02
+#define	FuncPara_Motor_DIRT_AddrL							0x03
 
-#define	FuncPara_Encoder_DIRT_AddrH						0x0204
-#define	FuncPara_Encoder_DIRT_AddrL						0x0204
+#define	FuncPara_Encoder_DIRT_AddrH						0x02
+#define	FuncPara_Encoder_DIRT_AddrL						0x04
 
-#define	FuncPara_DoorClose_SPD1_AddrH					0x0205
-#define	FuncPara_DoorClose_SPD1_AddrL					0x0205
+#define	FuncPara_DoorClose_SPD1_AddrH					0x02
+#define	FuncPara_DoorClose_SPD1_AddrL					0x05
 
-#define	FuncPara_DoorOpen_SPD1_AddrH					0x0206
-#define	FuncPara_DoorOpen_SPD1_AddrL					0x0206
+#define	FuncPara_DoorOpen_SPD1_AddrH					0x02
+#define	FuncPara_DoorOpen_SPD1_AddrL					0x06
 
-#define	FuncPara_DoorClose_SPD2_AddrH					0x0207
-#define	FuncPara_DoorClose_SPD2_AddrL					0x0207
+#define	FuncPara_DoorClose_SPD2_AddrH					0x02
+#define	FuncPara_DoorClose_SPD2_AddrL					0x07
 
-#define	FuncPara_DoorOpen_SPD2_AddrH					0x0208
-#define	FuncPara_DoorOpen_SPD2_AddrL					0x0208
+#define	FuncPara_DoorOpen_SPD2_AddrH					0x02
+#define	FuncPara_DoorOpen_SPD2_AddrL					0x08
 
-#define	FuncPara_Debug_Speed_AddrH						0x0209
-#define	FuncPara_Debug_Speed_AddrL						0x0209
+#define	FuncPara_Debug_Speed_AddrH						0x02
+#define	FuncPara_Debug_Speed_AddrL						0x09
 
-#define	FuncPara_Fault_Speed_AddrH						0x020A
-#define	FuncPara_Fault_Speed_AddrL						0x020A
+#define	FuncPara_Fault_Speed_AddrH						0x02
+#define	FuncPara_Fault_Speed_AddrL						0x0A
 
-#define	FuncPara_INC_ENC_RES_AddrH						0x020B
-#define	FuncPara_INC_ENC_RES_AddrL						0x020B
+#define	FuncPara_INC_ENC_RES_AddrH						0x02
+#define	FuncPara_INC_ENC_RES_AddrL						0x0B
 
-#define	FuncPara_ABS_ENC_RES_AddrH						0x020C
-#define	FuncPara_ABS_ENC_RES_AddrL						0x020C
+#define	FuncPara_ABS_ENC_RES_AddrH						0x02
+#define	FuncPara_ABS_ENC_RES_AddrL						0x0C
 
-#define	FuncPara_ABS_ENC_REV_AddrH						0x020D
-#define	FuncPara_ABS_ENC_REV_AddrL						0x020D
+#define	FuncPara_ABS_ENC_REV_AddrH						0x02
+#define	FuncPara_ABS_ENC_REV_AddrL						0x0D
 
-#define	FuncPara_POSLOS_ERR_AddrH							0x020E
-#define	FuncPara_POSLOS_ERR_AddrL							0x020E
+#define	FuncPara_POSLOS_ERR_AddrH							0x02
+#define	FuncPara_POSLOS_ERR_AddrL							0x0E
 
-#define	FuncPara_POSLOS_TMT_AddrH							0x020F
-#define	FuncPara_POSLOS_TMT_AddrL							0x020F
+#define	FuncPara_POSLOS_TMT_AddrH							0x02
+#define	FuncPara_POSLOS_TMT_AddrL							0x0F
 
-#define	FuncPara_IO_MDFY_EN_AddrH							0x0210
-#define	FuncPara_IO_MDFY_EN_AddrL							0x0210
+#define	FuncPara_IO_MDFY_EN_AddrH							0x02
+#define	FuncPara_IO_MDFY_EN_AddrL							0x10
 
-#define	FuncPara_AutoCloseDoor_EN_AddrH				0x0211
-#define	FuncPara_AutoCloseDoor_EN_AddrL				0x0211
+#define	FuncPara_AutoCloseDoor_EN_AddrH				0x02
+#define	FuncPara_AutoCloseDoor_EN_AddrL				0x11
 
-#define	FuncPara_AutoCloseDoor_DelayT_AddrH		0x0212
-#define	FuncPara_AutoCloseDoor_DelayT_AddrL		0x0212
+#define	FuncPara_AutoCloseDoor_DelayT_AddrH		0x02
+#define	FuncPara_AutoCloseDoor_DelayT_AddrL		0x12
 
-#define	FuncPara_UpLimit_Val_AddrH						0x0213
-#define	FuncPara_UpLimit_Val_AddrL						0x0213
+#define	FuncPara_UpLimit_Val_AddrH						0x02
+#define	FuncPara_UpLimit_Val_AddrL						0x13
 
-#define	FuncPara_UpLimit_BUF_AddrH						0x0214
-#define	FuncPara_UpLimit_BUF_AddrL						0x0214
+#define	FuncPara_UpLimit_BUF_AddrH						0x02
+#define	FuncPara_UpLimit_BUF_AddrL						0x14
 
-#define	FuncPara_MidLimit_Val_AddrH						0x0215
-#define	FuncPara_MidLimit_Val_AddrL						0x0215
+#define	FuncPara_MidLimit_Val_AddrH						0x02
+#define	FuncPara_MidLimit_Val_AddrL						0x15
 
-#define	FuncPara_MidLimit_BUF_AddrH						0x0216
-#define	FuncPara_MidLimit_BUF_AddrL						0x0216
+#define	FuncPara_MidLimit_BUF_AddrH						0x02
+#define	FuncPara_MidLimit_BUF_AddrL						0x16
 
-#define	FuncPara_DownLimit_Val_AddrH					0x0217
-#define	FuncPara_DownLimit_Val_AddrL					0x0217
+#define	FuncPara_DownLimit_Val_AddrH					0x02
+#define	FuncPara_DownLimit_Val_AddrL					0x17
 
-#define	FuncPara_DownLimit_BUF_AddrH					0x0218
-#define	FuncPara_DownLimit_BUF_AddrL					0x0218
+#define	FuncPara_DownLimit_BUF_AddrH					0x02
+#define	FuncPara_DownLimit_BUF_AddrL					0x18
 
-#define	FuncPara_AutoTest_AddrH								0x0219
-#define	FuncPara_AutoTest_AddrL								0x0219
+#define	FuncPara_AutoTest_AddrH								0x02
+#define	FuncPara_AutoTest_AddrL								0x19
 
-#define	FuncPara_AT_DoorCloseDelay_AddrH			0x021A
-#define	FuncPara_AT_DoorCloseDelay_AddrL			0x021A
+#define	FuncPara_AT_DoorCloseDelay_AddrH			0x02
+#define	FuncPara_AT_DoorCloseDelay_AddrL			0x1A
 
-#define	FuncPara_AT_DoorOpenDelay_AddrH				0x021B
-#define	FuncPara_AT_DoorOpenDelay_AddrL				0x021B
+#define	FuncPara_AT_DoorOpenDelay_AddrH				0x02
+#define	FuncPara_AT_DoorOpenDelay_AddrL				0x1B
 
-#define	FuncPara_ResetAll_AddrH								0x021C
-#define	FuncPara_ResetAll_AddrL								0x021C
+#define	FuncPara_ResetAll_AddrH								0x02
+#define	FuncPara_ResetAll_AddrL								0x1C
 
-#define	FuncPara_AB_Mode_AddrH								0x021D
-#define	FuncPara_AB_Mode_AddrL								0x021D
+#define	FuncPara_AB_Mode_AddrH								0x02
+#define	FuncPara_AB_Mode_AddrL								0x1D
 
-#define	FuncPara_PON_WaitRunTime_AddrH				0x021E
-#define	FuncPara_PON_WaitRunTime_AddrL				0x021E
+#define	FuncPara_PON_WaitRunTime_AddrH				0x02
+#define	FuncPara_PON_WaitRunTime_AddrL				0x1E
 
-#define	FuncPara_TL1_AddrH										0x021F
-#define	FuncPara_TL1_AddrL										0x021F
+#define	FuncPara_TL1_AddrH										0x02
+#define	FuncPara_TL1_AddrL										0x1F
 
-#define	FuncPara_TL2_AddrH										0x0220
-#define	FuncPara_TL2_AddrL										0x0220
+#define	FuncPara_TL2_AddrH										0x02
+#define	FuncPara_TL2_AddrL										0x20
 
-#define	FuncPara_TP_Mode1_AddrH								0x0221
-#define	FuncPara_TP_Mode1_AddrL								0x0221
+#define	FuncPara_TP_Mode1_AddrH								0x02
+#define	FuncPara_TP_Mode1_AddrL								0x21
 
-#define	FuncPara_TP_Mode2_AddrH								0x0222
-#define	FuncPara_TP_Mode2_AddrL								0x0222
+#define	FuncPara_TP_Mode2_AddrH								0x02
+#define	FuncPara_TP_Mode2_AddrL								0x22
 
-#define	FuncPara_AbsEnc_AngOff_Addr						0x0223
-#define	FuncPara_AbsEnc_AngOff_Addr						0x0223
+#define	FuncPara_AbsEnc_AngOff_AddrH					0x02
+#define	FuncPara_AbsEnc_AngOff_AddrL					0x23
 
-#define	FuncPara_OptPOS_Change_Addr						0x0224
-#define	FuncPara_OptPOS_Change_Addr						0x0224
+#define	FuncPara_OptPOS_Change_AddrH					0x02
+#define	FuncPara_OptPOS_Change_AddrL					0x24
 
-#define	FuncPara_UL_HYS_Addr									0x0225
-#define	FuncPara_UL_HYS_Addr									0x0225
+#define	FuncPara_UL_HYS_AddrH									0x02
+#define	FuncPara_UL_HYS_AddrL									0x25
 
-#define	FuncPara_DL_HYS_Addr									0x0226
-#define	FuncPara_DL_HYS_Addr									0x0226
+#define	FuncPara_DL_HYS_AddrH									0x02
+#define	FuncPara_DL_HYS_AddrL									0x26
 
-#define	FuncPara_LMTPOS_StudyT_Addr						0x0227
-#define	FuncPara_LMTPOS_StudyT_Addr						0x0227
+#define	FuncPara_LMTPOS_StudyT_AddrH					0x02
+#define	FuncPara_LMTPOS_StudyT_AddrL					0x27
 
-#define	FuncPara_POS_Study_OverShoot_Addr			0x0228
-#define	FuncPara_POS_Study_OverShoot_Addr			0x0228
+#define	FuncPara_POS_Study_OverShoot_AddrH		0x02
+#define	FuncPara_POS_Study_OverShoot_AddrL		0x28
 
-#define	FuncPara_USER_CODE_Addr								0x0229
-#define	FuncPara_USER_CODE_Addr								0x0229
+#define	FuncPara_USER_CODE_AddrH							0x02
+#define	FuncPara_USER_CODE_AddrL							0x29
 
-#define	FuncPara_INT_Lock_EN_Addr							0x022A
-#define	FuncPara_INT_Lock_EN_Addr							0x022A
+#define	FuncPara_INT_Lock_EN_AddrH						0x02
+#define	FuncPara_INT_Lock_EN_AddrL						0x2A
 
-#define	FuncPara_ORG_SW_Addr									0x022B
-#define	FuncPara_ORG_SW_Addr									0x022B
+#define	FuncPara_ORG_SW_AddrH									0x02
+#define	FuncPara_ORG_SW_AddrL									0x2B
 
-#define	FuncPara_EncDirtStd_EN_Addr						0x022C
-#define	FuncPara_EncDirtStd_EN_Addr						0x022C
+#define	FuncPara_EncDirtStd_EN_AddrH					0x02
+#define	FuncPara_EncDirtStd_EN_AddrL					0x2C
 
 #define	POSLmtType_MEC												0x00
 #define	POSLmtType_INC												0x01
@@ -401,21 +401,29 @@
 #define	EndDirtStd_EN													0x01
 
 /*********** Communication Parameters ************/
-#define	CommPara_OverTime_Addr								0x0300
+#define	CommPara_OverTime_AddrH								0x03
+#define	CommPara_OverTime_AddrL								0x00
 
-#define	CommPara_EncSel_Addr									0x0301
+#define	CommPara_EncSel_AddrH									0x03
+#define	CommPara_EncSel_AddrL									0x01
 
-#define	CommPara_NodeNum_Addr									0x0302
+#define	CommPara_NodeNum_AddrH								0x03
+#define	CommPara_NodeNum_AddrL								0x02
 
-#define	CommPara_RSV1_Addr										0x0303
+#define	CommPara_RSV1_AddrH										0x03
+#define	CommPara_RSV1_AddrL										0x03
 
-#define	CommPara_RSV2_Addr										0x0304
+#define	CommPara_RSV2_AddrH										0x03
+#define	CommPara_RSV2_AddrL										0x04
 
-#define	CommPara_RSV3_Addr										0x0305
+#define	CommPara_RSV3_AddrH										0x03
+#define	CommPara_RSV3_AddrL										0x05
 
-#define	CommPara_RSV4_Addr										0x0306
+#define	CommPara_RSV4_AddrH										0x03
+#define	CommPara_RSV4_AddrL										0x06
 
-#define	CommPara_RSV5_Addr										0x0307
+#define	CommPara_RSV5_AddrH										0x03
+#define	CommPara_RSV5_AddrL										0x07
 
 #define	Encoder_Sel_KSD												0x00
 #define	Encoder_Sel_TOFI1											0x01
@@ -424,27 +432,38 @@
 #define	Encoder_Sel_ALWAYI										0x04
 
 /*********** Vendor Parameters ************/
-#define	VendPara_PSW_Addr											0x0400
+#define	VendPara_PSW_AddrH										0x04
+#define	VendPara_PSW_AddrL										0x00
 
-#define	VendPara_Maintainance_LMT_Addr				0x0401
+#define	VendPara_Mtain_LMT_AddrH							0x04
+#define	VendPara_Mtain_LMT_AddrL							0x01
 
-#define	VendPara_PWR_On_Time_LMT_Addr					0x0402
+#define	VendPara_PWR_On_Time_LMT_AddrH				0x04
+#define	VendPara_PWR_On_Time_LMT_AddrL				0x02
 
-#define	VendPara_MFG_Date_Addr								0x0403
+#define	VendPara_MFG_Date_AddrH								0x04
+#define	VendPara_MFG_Date_AddrL								0x03
 
-#define	VendPara_Rtime_LowLMT_Addr						0x0404
+#define	VendPara_Rtime_LowLMT_AddrH						0x04
+#define	VendPara_Rtime_LowLMT_AddrL						0x04
 
-#define	VendPara_Rtime_HighLMT_Addr						0x0405
+#define	VendPara_Rtime_HighLMT_AddrH					0x04
+#define	VendPara_Rtime_HighLMT_AddrL					0x05
 
-#define	VendPara_RSV1_Addr										0x0406
+#define	VendPara_RSV1_AddrH										0x04
+#define	VendPara_RSV1_AddrL										0x06
 
-#define	VendPara_CLR_Rtime_Addr								0x0407
+#define	VendPara_CLR_Rtime_AddrH							0x04
+#define	VendPara_CLR_Rtime_AddrL							0x07
 
-#define	VendPara_CLR_POT_Addr									0x0408
+#define	VendPara_CLR_POT_AddrH								0x04
+#define	VendPara_CLR_POT_AddrL								0x08
 
-#define	VendPara_CLR_HISFLT_Addr							0x0409
+#define	VendPara_CLR_HISFLT_AddrH							0x04
+#define	VendPara_CLR_HISFLT_AddrL							0x09
 
-#define	VendPara_Product_SN_Addr							0x040A
+#define	VendPara_Product_SN_AddrH							0x04
+#define	VendPara_Product_SN_AddrL							0x0A
                                         			
 #define	Maintainance_LMT_DEN									0x00
 #define	Maintainance_LMT_EN										0x01
