@@ -470,6 +470,23 @@
 #define	CLR_HISFLT_DEN												0x00
 #define	CLR_HISFLT_EN													0x01
 
+#define	MotionControl_AddrH										0x20
+#define	MotionControl_AddrL										0x00
+
+#define	MotionControl_Stop										0x01
+#define	MotionControl_Open										0x02
+#define	MotionControl_Close										0x03
+		
+#define	LearnModeOperation_AddrH							0x20
+#define	LearnModeOperation_AddrL							0x01
+
+#define	LMO_Null															0x00
+#define	LMO_Single_Up													0x01
+#define	LMO_Single_Stop												0x02
+#define	LMO_Single_Down												0x03
+#define	LMO_UpLMT_Confirmed										0x04
+#define	LMO_DownLMT_Confirmed									0x05
+#define	LMO_POS_Learning_Finished							0x06
 
 
 typedef struct{

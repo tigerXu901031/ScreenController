@@ -2,7 +2,9 @@
 #define __UARTNETWORK_H__
 
 #include "../drv/uartDrv.h"
+#include "parMap.h"
 #include "fifo.h"
+#include "crc.h"
 
 #define MSGCMD_READOP       0x03
 #define MSGCMD_READOPFAIL   0x83
@@ -127,8 +129,9 @@ typedef struct{
 }networkInfo_type;
 
 extern void networkInit();
-extern void networkUpdate();
-extern void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *dataL, unsigned char *dataH);
-extern void setNetworkData(unsigned char addL, unsigned char addH, unsigned char *dataL, unsigned char *dataH, unsigned char cmd);
+extern void network2msUpdate();
+extern void network10msUpdate();
+extern void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *Ldata, unsigned char *Hdata, unsigned char cmd);
+extern void setNetworkData(unsigned char addL, unsigned char addH, unsigned char *Ldata, unsigned char *Hdata, unsigned char cmd);
 
 #endif

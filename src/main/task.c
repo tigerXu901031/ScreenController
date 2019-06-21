@@ -48,7 +48,7 @@ void task1ms()
     /* 1ms send out data via uart seems very critial for 8bit send,
        maybe need to increase to 2ms later
        TODO: now its 2ms ---  */
-    networkUpdate();
+    network2msUpdate();
 
 }
 
@@ -56,8 +56,7 @@ void task1ms()
 unsigned char testSendByte[2] = {0x55, 0xaa};
 unsigned char testRecByte[2] = {0, 0};
 
-networkDataBuf_type testGetNwData;
-networkDataBuf_type testSetNwData;
+InterfaceData_type testPar[20];
 
 void task10ms()
 {
@@ -75,15 +74,6 @@ void task10ms()
     //     setFifoData(&uartTxFifo_Obj[1], &tempData);
     // }
 
-
-    // getNetworkData(&testGetNwData);
-    /* some test for FIFO buffer + uart drvier */
-    // getUartReceiveBuf(&testRecByte[0],busIdx_public);
-    // getUartReceiveBuf(&testRecByte[1],busIdx_public);
-    // setUartSendBuf(&testSendByte[0], busIdx_public);
-    // setUartSendBuf(&testSendByte[1], busIdx_public);
-    clearDataBlock(&testSetNwData, sizeof(testSetNwData));
-
     // if(iCounter == 10)
     // {
     //     testSetNwData.dataLength =1;
@@ -99,13 +89,31 @@ void task10ms()
     //     iCounter ++;
     // }
 
+    getNetworkData(testPar[0].add[1], testPar[0].add[0], &testPar[0].opData[0], &testPar[0].opData[1], testPar[0].cmd);
+    // getNetworkData(testPar[1].add[1], testPar[1].add[0], &testPar[1].opData[0], &testPar[1].opData[1], testPar[1].cmd);
+    // getNetworkData(testPar[2].add[1], testPar[2].add[0], &testPar[2].opData[0], &testPar[2].opData[1], testPar[2].cmd);
+    // getNetworkData(testPar[3].add[1], testPar[3].add[0], &testPar[3].opData[0], &testPar[3].opData[1], testPar[3].cmd);
+    // getNetworkData(testPar[4].add[1], testPar[4].add[0], &testPar[4].opData[0], &testPar[4].opData[1], testPar[4].cmd);
+    // getNetworkData(testPar[5].add[1], testPar[5].add[0], &testPar[5].opData[0], &testPar[5].opData[1], testPar[5].cmd);
+    // getNetworkData(testPar[6].add[1], testPar[6].add[0], &testPar[6].opData[0], &testPar[6].opData[1], testPar[6].cmd);
+    // getNetworkData(testPar[7].add[1], testPar[7].add[0], &testPar[7].opData[0], &testPar[7].opData[1], testPar[7].cmd);
+    // getNetworkData(testPar[8].add[1], testPar[8].add[0], &testPar[8].opData[0], &testPar[8].opData[1], testPar[8].cmd);
+    // getNetworkData(testPar[9].add[1], testPar[9].add[0], &testPar[9].opData[0], &testPar[9].opData[1], testPar[9].cmd);
+    // getNetworkData(testPar[10].add[1], testPar[10].add[0], &testPar[10].opData[0], &testPar[10].opData[1], testPar[10].cmd);
+    // getNetworkData(testPar[11].add[1], testPar[11].add[0], &testPar[11].opData[0], &testPar[11].opData[1], testPar[11].cmd);
+    // getNetworkData(testPar[12].add[1], testPar[12].add[0], &testPar[12].opData[0], &testPar[12].opData[1], testPar[12].cmd);
+    // getNetworkData(testPar[13].add[1], testPar[13].add[0], &testPar[13].opData[0], &testPar[13].opData[1], testPar[13].cmd);
+    // getNetworkData(testPar[14].add[1], testPar[14].add[0], &testPar[14].opData[0], &testPar[14].opData[1], testPar[14].cmd);
+    // getNetworkData(testPar[15].add[1], testPar[15].add[0], &testPar[15].opData[0], &testPar[15].opData[1], testPar[15].cmd);
+    // getNetworkData(testPar[16].add[1], testPar[16].add[0], &testPar[16].opData[0], &testPar[16].opData[1], testPar[16].cmd);
+    // getNetworkData(testPar[17].add[1], testPar[17].add[0], &testPar[17].opData[0], &testPar[17].opData[1], testPar[17].cmd);
+    // getNetworkData(testPar[18].add[1], testPar[18].add[0], &testPar[18].opData[0], &testPar[18].opData[1], testPar[18].cmd);
+    // getNetworkData(testPar[19].add[1], testPar[19].add[0], &testPar[19].opData[0], &testPar[19].opData[1], testPar[19].cmd);
 
 
+    network10msUpdate();
 
-    clearDataBlock(&testGetNwData, sizeof(testGetNwData));
-    getNetworkData(&testGetNwData);
-
-    setNetworkData(&testSetNwData);
+    // setNetworkData(&testSetNwData);
 
 	// AppFunRun();		//application program
 }

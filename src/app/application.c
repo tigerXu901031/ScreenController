@@ -23,7 +23,7 @@ KeyStatusType KeyInPrev, KeyInCurr;
 KeyInStatusType K1, K2, K3, K4, K5;
 uchar POS_StudyFinished = 0;
 uchar Page_New = 1;
-uchar T10ms_Count, T100ms_Count, T1s_Count;
+uchar T10ms_Count, T100ms_Count=0, T1s_Count;
 uint KeyinTime1,KeyinTime2,KeyinTime3,KeyinTime4,KeyinTime5;
 
 
@@ -124,6 +124,24 @@ void System_Study(void)
 							Display_RunTime();
 						}
 			break;
+	//	case 4:
+	//		SysStatus.SysMode = 1;
+	//		Page_New = 1;
+	//		POS_StudyFinished = 1;
+	//			if(Page_New)
+	//			{
+	//				SysStatus.ManuLevel = 4;			//Running Page
+	//				Disp_Page_RunningMode();
+	//				Page_New = 0;
+	//			}
+	//				else
+	//					{
+	//						Display_Encoder_Number(1);		//encoder value update
+	//						Display_I_current();
+	//						Display_F_frequency();
+	//						Display_RunTime();
+	//					}
+			break;
 		default: 
 			SysStatus.ManuLevel = 0; 
 			break;
@@ -132,7 +150,20 @@ void System_Study(void)
 
 void System_Running(void)
 {
-	
+	if(Page_New)
+				{
+					//SysStatus.ManuLevel = 4;			//system running manu
+					Disp_Page_RunningMode();
+					Page_New = 0;
+				}
+					else
+						{
+							Display_Encoder_Number(1);		//encoder value update
+							Display_I_current();
+							Display_F_frequency();
+							Display_RunTime();
+							Display_ATMT();
+						}
 }
 
 void User_Setting(void)
@@ -254,7 +285,21 @@ void KeyIn_Check()
 							{
 								//key pressed confirmed
 								KeyInPrev.KEY_Up_Status = 1;
-								K3.keyin_confirm = 1;								
+								K3.keyin_confirm = 1;
+								if(SysStatus.ManuLevel==2)
+									{
+										T100ms_Count++;
+										if(T100ms_Count==Contd_keyUpDown_Time)	//100ms time
+											{
+												//setNetworkData(LearnModeOperation_AddrL, LearnModeOperation_AddrH, LMO_Single_Up, 0x00, 0x06);
+												T100ms_Count = 0;
+											}	
+											else
+												{;}		
+									}
+									else
+										{;}
+													
 							}
 				}
 	
@@ -292,6 +337,19 @@ void KeyIn_Check()
 								//key pressed confirmed
 								KeyInPrev.KEY_Stop_Status = 1;
 								K4.keyin_confirm = 1;								
+								if((SysStatus.ManuLevel==2)||(SysStatus.ManuLevel==3))
+									{
+										T100ms_Count++;
+										if(T100ms_Count==Contd_keyUpDown_Time)	//100ms time
+											{
+												//setNetworkData(LearnModeOperation_AddrL, LearnModeOperation_AddrH, LMO_Single_Stop, 0x00, 0x06);
+												T100ms_Count = 0;
+											}	
+											else
+												{;}		
+									}
+									else
+										{;}
 							}
 				}
 	
@@ -328,7 +386,20 @@ void KeyIn_Check()
 							{
 								//key pressed confirmed
 								KeyInPrev.KEY_Down_Status = 1;
-								K5.keyin_confirm = 1;								
+								K5.keyin_confirm = 1;
+								if(SysStatus.ManuLevel==3)
+									{
+										T100ms_Count++;
+										if(T100ms_Count==Contd_keyUpDown_Time)	//100ms time
+											{
+												//setNetworkData(LearnModeOperation_AddrL, LearnModeOperation_AddrH, LMO_Single_Down, 0x00, 0x06);
+												T100ms_Count = 0;
+											}	
+											else
+												{;}		
+									}
+									else
+										{;}								
 							}
 				}
 }
@@ -353,29 +424,45 @@ void Key1_response(void)
 							}
 					break;
 				case 1:		//down limit confirm page
-					
+					SysStatus.ManuLevel -=1;
+					Page_New = 1;
 					break;
 				case 2:		//up limit confirm page
-					
+					SysStatus.ManuLevel -=1;
+					Page_New = 1;
 					break;
 				case 3:		//close door delay time confirm page
-					
+					SysStatus.ManuLevel -=1;
+					Page_New = 1;
+					break;
+				case 4:		//system running page
+					SysStatus.ManuLevel -=1;
+					Page_New = 1;
 					break;
 				default: break;
 			}
 		}
-	if(SysStatus.SysMode ==1)		//Running Mode
-		{
-			
-		}
-	if(SysStatus.SysMode ==2)		//User Set Mode
-		{
-			
-		}
-	if(SysStatus.SysMode ==3)		//Vendor Set Mode
-		{
-			
-		}
+if(SysStatus.SysMode ==1)		//Running Mode
+	{
+		SysStatus.SysMode = 0;		//change back to Study Mode
+		POS_StudyFinished = 0;		//unstudied
+		SysStatus.ManuLevel = 0;
+		Page_New = 1;
+	}
+if(SysStatus.SysMode ==2)		//User Set Mode
+	{
+		SysStatus.SysMode = 1;		//change back to Study Mode
+		POS_StudyFinished = 1;		//unstudied
+		SysStatus.ManuLevel = 4;
+		Page_New = 1;
+	}
+if(SysStatus.SysMode ==3)		//Vendor Set Mode
+	{
+		SysStatus.SysMode = 2;		//change back to Study Mode
+		POS_StudyFinished = 1;		//unstudied
+		SysStatus.ManuLevel = 5;
+		Page_New = 1;
+	}
 }
 
 void Key2_response(void)
@@ -384,85 +471,190 @@ void Key2_response(void)
 		{
 			SysStatus.ManuLevel++;
 			Page_New = 1;
-			if(SysStatus.ManuLevel>3)
+			if(SysStatus.ManuLevel==4)
 				{
 					SysStatus.SysMode = 1;
+					POS_StudyFinished = 1;
+					Page_New = 1;
+					SysStatus.ManuLevel = 3;
 				}
 				else
 					{;}
 		}
 	if(SysStatus.SysMode ==1)		//Running Mode
 		{
-			
+			//Enter into User Set Mode
+			//not open further mode in first stage
+//			SysStatus.ManuLevel++;
+			//Page_New = 1;
+//			if(SysStatus.ManuLevel==5)
+//				{
+//					SysStatus.SysMode = 2;
+//					Page_New = 1;
+//					SysStatus.ManuLevel = 4;
+//				}
+//				else
+//					{;}
 		}
 	if(SysStatus.SysMode ==2)		//User Set Mode
 		{
-			
+			//Enter into Vendor Set Mode
+			SysStatus.ManuLevel++;
+			//Page_New = 1;
+			if(SysStatus.ManuLevel==6)
+				{
+					SysStatus.SysMode = 3;
+					Page_New = 1;
+					SysStatus.ManuLevel = 5;
+				}
+				else
+					{;}			
 		}
 	if(SysStatus.SysMode ==3)		//Vendor Set Mode
 		{
-			
+			SysStatus.ManuLevel++;
+			//Page_New = 1;
+			if(SysStatus.ManuLevel==7)
+				{
+					SysStatus.SysMode = 4;
+					Page_New = 1;
+					SysStatus.ManuLevel = 6;
+				}
+				else
+					{;}			
 		}
+		else
+			{;}
 }
 
 void Key3_response(void)
 {
-	if(SysStatus.SysMode ==0)		//Study Mode
-		{
-			;
-		}
-	if(SysStatus.SysMode ==1)		//Running Mode
-		{
-			
-		}
-	if(SysStatus.SysMode ==2)		//User Set Mode
-		{
-			
-		}
-	if(SysStatus.SysMode ==3)		//Vendor Set Mode
-		{
-			
-		}	
+	switch(SysStatus.ManuLevel)
+	{
+		case 0:		//Motor direction confirm page, no action
+		break;
+		
+		case 1:		//down limit study page, send "MoveUp" signal to mainmachine (seems rarely happened)
+		//setNetworkData(FuncPara_Motor_DIRT_AddrL, FuncPara_Motor_DIRT_AddrH, Motor_Dirt_RVS, 0x00, 0x06);
+		break;
+		
+		case 2:		//Up limit study page, send "MoveUp" signal to mainmachine
+		//setNetworkData(FuncPara_Motor_DIRT_AddrL, FuncPara_Motor_DIRT_AddrH, Motor_Dirt_RVS, 0x00, 0x06);
+		break;
+		
+		case 3:		//close door delay time set page, set delaytime numbers, no action
+		break;
+		
+		case 4:		//system running page, one push send one control command
+		//setNetworkData(MotionControl_AddrL, MotionControl_AddrH, MotionControl_Open, 0x00, 0x06);
+		break;
+		default:break;	
+	}
+	
+//	if(SysStatus.SysMode ==0)		//Study Mode
+//		{
+//			if(SysStatus.ManuLevel == 0)
+//			{
+//				
+//			}
+//			else
+//			{
+//				
+//			}
+//		}
+//	if(SysStatus.SysMode ==1)		//Running Mode
+//		{
+//			
+//		}
+//	if(SysStatus.SysMode ==2)		//User Set Mode
+//		{
+//			
+//		}
+//	if(SysStatus.SysMode ==3)		//Vendor Set Mode
+//		{
+//			
+//		}	
 }
 
 void Key4_response(void)
 {
-	if(SysStatus.SysMode ==0)		//Study Mode
-		{
-			;
-		}
-	if(SysStatus.SysMode ==1)		//Running Mode
-		{
-			
-		}
-	if(SysStatus.SysMode ==2)		//User Set Mode
-		{
-			
-		}
-	if(SysStatus.SysMode ==3)		//Vendor Set Mode
-		{
-			
-		}	
+	switch(SysStatus.ManuLevel)
+	{
+		case 0:		//Motor direction confirm page, no action
+		break;
+		
+		case 1:		//down limit study page, send "Stop" signal to mainmachine (seems rarely happened)
+		//setNetworkData(FuncPara_Motor_DIRT_AddrL, FuncPara_Motor_DIRT_AddrH, Motor_Dirt_RVS, 0x00, 0x06);
+		break;
+		
+		case 2:		//Up limit study page, send "MoveUp" signal to mainmachine
+		break;
+		
+		case 3:		//close door delay time set page, set delaytime numbers
+		break;
+		
+		case 4:		//system running page, one push send one control command
+			//setNetworkData(MotionControl_AddrL, MotionControl_AddrH, MotionControl_Stop, 0x00, 0x06);
+		break;
+		
+		default:break;	
+	}
+//	if(SysStatus.SysMode ==0)		//Study Mode
+//		{
+//			;
+//		}
+//	if(SysStatus.SysMode ==1)		//Running Mode
+//		{
+//			
+//		}
+//	if(SysStatus.SysMode ==2)		//User Set Mode
+//		{
+//			
+//		}
+//	if(SysStatus.SysMode ==3)		//Vendor Set Mode
+//		{
+//			
+//		}	
 }
 
 void Key5_response(void)
 {
-	if(SysStatus.SysMode ==0)		//Study Mode
-		{
-			;
-		}
-	if(SysStatus.SysMode ==1)		//Running Mode
-		{
-			
-		}
-	if(SysStatus.SysMode ==2)		//User Set Mode
-		{
-			
-		}
-	if(SysStatus.SysMode ==3)		//Vendor Set Mode
-		{
-			
+	switch(SysStatus.ManuLevel)
+	{
+		case 0:		//Motor direction confirm page, no action
+		break;
+		
+		case 1:		//down limit study page, send "MoveDown" signal to mainmachine 
+		//setNetworkData(FuncPara_Motor_DIRT_AddrL, FuncPara_Motor_DIRT_AddrH, Motor_Dirt_RVS, 0x00, 0x06);
+		break;
+		
+		case 2:		//Up limit study page, send "MoveDown" signal to mainmachine, (seems rarely happened)
+		break;
+		
+		case 3:		//close door delay time set page, set delaytime numbers, two functions: spot move or longpress shift
+		break;
+		
+		case 4:		//system running page, one push send one control command
+			//setNetworkData(MotionControl_AddrL, MotionControl_AddrH, MotionControl_Close, 0x00, 0x06);
+		break;
+		default: break;
 		}	
+//	if(SysStatus.SysMode ==0)		//Study Mode
+//		{
+//			;
+//		}
+//	if(SysStatus.SysMode ==1)		//Running Mode
+//		{
+//			
+//		}
+//	if(SysStatus.SysMode ==2)		//User Set Mode
+//		{
+//			
+//		}
+//	if(SysStatus.SysMode ==3)		//Vendor Set Mode
+//		{
+//			
+//		}	
 }
 
 void SysMode_Set(uchar x)	//only for system mode setting during debugging

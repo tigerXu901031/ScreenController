@@ -76,9 +76,11 @@ void Display_Page00_03_ParaArea(void);
 
 void Display_Page00_03_CDDT(void);
 
-void Display_I_current(void);
-void Display_F_frequency(void);
-void Display_RunTime(void);
+extern void Display_Encoder_Number(uchar x);
+extern void Display_I_current(void);
+extern void Display_F_frequency(void);
+extern void Display_RunTime(void);
+extern void Display_ATMT(void);
 
 void Display_Page00_00_MotorDirt(void);
 void Display_Page00_01_LLStudy(void);
@@ -89,7 +91,7 @@ void Motor_Direction_Update(void);
 void Number_Lookup_Table(uchar number);
 void Display_Full_Vertical_Line(uchar line);
 void BUTTON1_Display(uchar HanziButton);
-void Display_Encoder_Number(uchar x);
+
 
 //汉字取模设置：阴码，列行式，顺向
 extern uchar code Hanzi_1616_ST_Dian[],Hanzi_1616_ST_Ji[],Hanzi_1616_HWXH_Dian[],Hanzi_1616_HWXH_Ji[],Hanzi_1616_XST_Fan[],Hanzi_1616_XST_Hui[];
@@ -100,7 +102,7 @@ extern uchar code char_number_table[],char_cMaohao[],char_cDot[],char_capital_A[
 extern uchar code Hanzi_2424_HWZS_Dian[],Hanzi_2424_HWZS_Ji[],Hanzi_2424_HWZS_Fang[],Hanzi_2424_HWZS_Xiang[],Hanzi_2424_HWZS_Xia[],Hanzi_2424_HWZS_Xian[];
 extern uchar code Hanzi_2424_HWZS_Wei[],Hanzi_2424_HWZS_Xue[],Hanzi_2424_HWZS_Xi[],Hanzi_2424_HWZS_Shang[],Hanzi_2424_HWZS_Zhi[],Hanzi_2424_HWZS_Ke[];
 extern uchar code Hanzi_2424_HWZS_Ji1[],Hanzi_2424_HWZS_Null[],Hanzi_2424_HWZS_Guan[],Hanzi_2424_HWZS_Men[],Hanzi_2424_HWZS_Yan[],Hanzi_2424_HWZS_Shi[];
-extern uchar code Hanzi_1616_XST_Xue[], Hanzi_1616_XST_Xi[];
+extern uchar code Hanzi_1616_XST_Xue[], Hanzi_1616_XST_Xi[],Hanzi_1616_XST_Zi[],Hanzi_1616_XST_Dong[],Hanzi_1616_XST_Kai[],Hanzi_1616_XST_Guan[],Hanzi_1616_XST_Dian1[];
 
 
 

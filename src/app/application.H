@@ -4,6 +4,8 @@
 #define uchar unsigned char
 #define uint unsigned int
 
+#define Contd_keyUpDown_Time 10
+
 typedef struct{
 	uchar SysMode;
 	uchar ManuLevel;

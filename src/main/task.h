@@ -11,6 +11,7 @@
 // #include "intrins.h"
 /* test purpose only */
 #include "../drv/uartDrv.h"
+#include "../srv/parMap.h"
 
 extern void taskInit();
 extern void task1ms();

@@ -3,27 +3,27 @@
 const uint16_t polynom = 0xA001;
  
 
-// u16 CrcCal(u8 *pDataValue,u16 uiDataLen)
-// {
-//  int i;
-//  u16 uiCrcValue = 0xffff;
-//  while(uiDataLen--)
-//  {
-//   uiCrcValue^=*pDataValue++;
-//   for(i=0;i<8;i++)
-//   {
-//    if(uiCrcValue&0x0001)
-//    {
-//     uiCrcValue = (uiCrcValue>>1)^0xa001;
-//    }
-//    else
-//    {
-//     uiCrcValue >>=1;
-//    }
-//   }
-//  }
-//  return(uiCrcValue);
-// }
+uint16_t Crc16RtuCal(uint8_t *pDataValue,uint16_t uiDataLen)
+{
+	int i;
+	uint16_t uiCrcValue = 0xffff;
+	while(uiDataLen--)
+	{
+		uiCrcValue^=*pDataValue++;
+		for(i=0;i<8;i++)
+		{
+			if(uiCrcValue&0x0001)
+			{
+    			uiCrcValue = (uiCrcValue>>1)^0xa001;
+   			}
+   			else
+			{
+    			uiCrcValue >>=1;
+   			}
+  		}
+ }
+ return(uiCrcValue);
+}
 
 uint16_t crc16bitbybit(uint8_t *ptr, uint16_t len)
 {
@@ -128,10 +128,10 @@ uint16_t crc16tablefast(uint8_t *ptr, uint16_t len)
 }
 
 // /* test function */
-// uint8_t dataArr[8] = {0xff, 0x03, 0x30, 0x00, 0x00, 0x01, 0x00, 0x00};
+// uint8_t dataArr[8] = {0xff, 0x03, 0x30, 0x00, 0x00, 0x09, 0x00, 0x00};
 // int main()
 // {
 // 	uint16_t crcVal = 0;
-// 	crcVal = crc16tablefast(&dataArr[0], 8);
+// 	crcVal = Crc16RtuCal(&dataArr[0], 6);
 // 	return 1;
 // }

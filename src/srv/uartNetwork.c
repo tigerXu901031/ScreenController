@@ -31,16 +31,61 @@
 #include "uartNetwork.h"
 
 networkInfo_type networkObj;
-unsigned char msgReady = 0;
+unsigned char msgReady[busIdx_max] = {0, 0};
+msgBuf_type rxMsgBuf[busIdx_max];
+msgBuf_type txMsgBuf;
+
 
 static void crc16Calc(msgBuf_type *msgObj)
 {
+    unsigned char *msgPtr;
+    unsigned char crcH = 0;
+    unsigned char crcL = 0;
+    unsigned int crcVal = 0;
+    unsigned char msgLen = msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE];
 
+    msgPtr = &msgObj->msgByteArray[0];
+
+    /* NOTICE: some error here but just comply to the customer crc algo
+       due to the crc calculation should put the crc field into the algo
+       as well */
+    crcVal = Crc16RtuCal(msgPtr, msgLen - 2);
+    crcL = (unsigned char)(crcVal & 0x00ff);
+    crcH = (unsigned char)((crcVal >> 8) & 0x00ff);
+
+    msgObj->msgByteArray[msgLen - 1] = crcH;
+    msgObj->msgByteArray[msgLen - 2] = crcL;
 }
 
 static unsigned int isCrc16Ok(msgBuf_type *msgObj)
 {
-    return 1;
+    unsigned char *msgPtr;
+    unsigned char crcH = 0;
+    unsigned char crcL = 0;
+    unsigned int crcVal = 0;
+    unsigned char msgLen = msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE];
+    unsigned char isOk = 0;
+    
+    msgPtr = &msgObj->msgByteArray[0];
+    /* NOTICE: some error here but just comply to the customer crc algo
+       due to the crc calculation should put the crc field into the algo
+       as well 
+       this */
+    crcVal = Crc16RtuCal(msgPtr, msgLen - 2);
+
+    crcL = (unsigned char)(crcVal & 0x00ff);
+    crcH = (unsigned char)((crcVal >> 8) & 0x00ff);
+
+    if((crcL == msgObj->msgByteArray[msgLen - 2]) && (crcH == msgObj->msgByteArray[msgLen - 1]))
+    {
+        isOk = 1;
+    }
+    else
+    {
+        isOk = 0;
+    }
+
+    return isOk;
 }
 
 // static void readMsgAssemble(msgBuf_type *msgObj, unsigned char newData, unsigned char *dataByteCnt, busIdx_type busId)
@@ -455,8 +500,9 @@ static unsigned char getRxMsgAndAssemble(msgBuf_type *msgObj)
 
     for(i = 0; i < busIdx_max; i ++)
     {
-        if(msgReady == 1)
+        if(msgReady[i] == 1)
         {   
+            msgReady[i] = 0;
             retVal = 1;
             len = uartRxFifo_Obj[i].curPtr;
             for(j = 0; j < len; j++)
@@ -465,8 +511,11 @@ static unsigned char getRxMsgAndAssemble(msgBuf_type *msgObj)
                 getFifoData(&uartRxFifo_Obj[i], ptr);
             }
 
+            /* first filling all the total length of the message */
             msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = j;
 
+            /* then accoroding to the recieved node id, message length and command to
+               filling the service id */
             switch(msgObj->msgByteArray[1])
             {
                 case MSGCMD_READOP:
@@ -577,7 +626,6 @@ static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
 
     /* used for long message */
     unsigned char longMsgDataFeildLen = 0;
-    unsigned char longMsgAddLowerByte = 0;
 
     /* check whether the message need to be converted into application data */
     if(msgObj->msgByteArray[0] == networkObj.privateNodeId)
@@ -596,6 +644,9 @@ static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
                     dataBuf->networkData[0].opData[1] = msgObj->readRepMsgObj.msgData[1];
 
                     dataBuf->dataLength = 1;
+
+                    parMapWrite(dataBuf->networkData[0].add[0], dataBuf->networkData[0].add[1], dataBuf->networkData[0].opData[0], dataBuf->networkData[0].opData[1]);
+
                     break;
 
                 case SERVICETYPE_READ_LONGRESP:
@@ -611,12 +662,13 @@ static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
                             dataBuf->networkData[i].cmd = MSGCMD_READOP;
 
                             dataBuf->networkData[i].add[0] = networkObj.reqSrv[reqIdx_readLongReq].add[0];
-                            dataBuf->networkData[i].add[1] = networkObj.reqSrv[reqIdx_readLongReq].add[1];
+                            dataBuf->networkData[i].add[1] = networkObj.reqSrv[reqIdx_readLongReq].add[1] + i;
 
                             dataBuf->networkData[i].opData[0] = msgObj->readLongRepMsgObj.msgData[2*i];
                             dataBuf->networkData[i].opData[1] = msgObj->readLongRepMsgObj.msgData[2*i+1];
 
-                            longMsgAddLowerByte ++;
+                            parMapWrite(dataBuf->networkData[0].add[0], dataBuf->networkData[0].add[1], dataBuf->networkData[0].opData[0], dataBuf->networkData[0].opData[1]);
+
                         }
                     }
                     else
@@ -642,8 +694,8 @@ static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
                     dataBuf->networkData[0].cmd = MSGCMD_READOPFAIL;
                     dataBuf->networkData[0].add[0] = msgObj->accessFailRepMsgObj.regAdd[0];
                     dataBuf->networkData[0].add[1] = msgObj->accessFailRepMsgObj.regAdd[1];
-                    dataBuf->networkData[0].opData[0] = msgObj->accessFailRepMsgObj.errVal[0];
-                    dataBuf->networkData[0].opData[1] = msgObj->accessFailRepMsgObj.errVal[1];
+                    dataBuf->networkData[0].opData[0] = msgObj->accessFailRepMsgObj.errVal;
+                    
                     break;
 
                 case SERVICETYPE_WRITE_FAIL:
@@ -651,8 +703,7 @@ static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
                     dataBuf->networkData[0].cmd = MSGCMD_WRITEOPFAIL;
                     dataBuf->networkData[0].add[0] = msgObj->accessFailRepMsgObj.regAdd[0];
                     dataBuf->networkData[0].add[1] = msgObj->accessFailRepMsgObj.regAdd[1];
-                    dataBuf->networkData[0].opData[0] = msgObj->accessFailRepMsgObj.errVal[0];
-                    dataBuf->networkData[0].opData[1] = msgObj->accessFailRepMsgObj.errVal[1];
+                    dataBuf->networkData[0].opData[0] = msgObj->accessFailRepMsgObj.errVal;
                     break;
                 default:
                     /* error happened */
@@ -747,15 +798,37 @@ static void txDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
 
 static void rxServiceHandler(msgBuf_type *msgObj)
 {
+    unsigned char *ptr;
+    /* clear the long frame read service request set by the previous sent message */
+    if(msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] == SERVICETYPE_READ_LONGRESP)
+    {
+        *ptr = &networkObj.reqSrv[reqIdx_readLongReq];
+        clearDataBlock(ptr, sizeof(networkObj.reqSrv[reqIdx_readLongReq]));
+    }
+    /* clear the normal read service request set by the previous sent message */
+    else if(msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] == SERVICETYPE_READ_RESP)
+    {
 
+    }
+    /* clear the normal write service request set by the previous sent message */
+    else if(msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] == SERVICETYPE_WRITE_REQ)
+    {
+
+    }
+    else
+    {
+        /* code */
+    }
 }
 
 static void txServiceHandler(msgBuf_type *msgObj)
 {
     msgBuf_type longFrameBuf;
-    unsigned char longFrameCnt = 0;
+    static unsigned char longFrameCnt = 0;
 
     clearDataBlock(&longFrameBuf, sizeof(longFrameBuf));
+
+    /* cyclic send the 100ms system info long frame read request */
     if(longFrameCnt == 10)
     {
         /* load the long frame content */
@@ -764,9 +837,9 @@ static void txServiceHandler(msgBuf_type *msgObj)
         longFrameBuf.msgByteArray[2] = 0x30;
         longFrameBuf.msgByteArray[3] = 0x00;
         longFrameBuf.msgByteArray[4] = 0x00;
-        longFrameBuf.msgByteArray[5] = 0x14;
-        // longFrameBuf.msgByteArray[6] = 0x00;
-        // longFrameBuf.msgByteArray[7] = 0xd4;
+        longFrameBuf.msgByteArray[5] = 0x09;
+        longFrameBuf.msgByteArray[6] = 0x9f;
+        longFrameBuf.msgByteArray[7] = 0x12;
         longFrameBuf.msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 0x08;
         longFrameCnt = 0;
 
@@ -783,8 +856,8 @@ static void txServiceHandler(msgBuf_type *msgObj)
     {
         longFrameCnt ++;
     }
-    /* set normal read and write request status */
-    
+    /* set normal read and write request status if present */
+
 }
 
 static void fetchNodeId()
@@ -812,11 +885,11 @@ static void checkMessgeRead()
             }
             if(timeoutCnt[i] >= 3)
             {
-                msgReady = 1;
+                msgReady[i] = 1;
             }
             else
             {
-                msgReady = 0;
+                msgReady[i] = 0;
             }
             oldBufPtr[i] = uartRxFifo_Obj[i].curPtr;
         }
@@ -828,10 +901,41 @@ static void checkMessgeRead()
     }
 }
 
+static void sendTestMsg()
+{
+    msgBuf_type testMsgBuf;
+    /* test purpose only */
+    static unsigned char iCounter = 0;
+
+    clearDataBlock(&testMsgBuf, sizeof(testMsgBuf));
+
+    /* test purpose only */
+    if(iCounter == 10)
+    {
+        testMsgBuf.msgByteArray[0] = 0xff;
+        testMsgBuf.msgByteArray[1] = 0x03;
+        testMsgBuf.msgByteArray[2] = 0x30;
+        testMsgBuf.msgByteArray[3] = 0x00;
+        testMsgBuf.msgByteArray[4] = 0x00;
+        testMsgBuf.msgByteArray[5] = 0x01;
+        testMsgBuf.msgByteArray[6] = 0x9e;
+        testMsgBuf.msgByteArray[7] = 0xd4;
+        testMsgBuf.msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 0x08;
+        P44 = 0;
+        iCounter = 0;
+        setTxMsgAndDisassemble(&testMsgBuf, busIdx_private);
+    }
+    else
+    {
+        P44 = 1;
+        iCounter ++;
+    }
+}
+
 void networkInit()
 {
     uartDrvInit();
-
+    parMapInit();
 
 
     /* TODO:
@@ -848,17 +952,26 @@ void networkInit()
     fetchNodeId();
 }
 
-void networkUpdate()
+void network2msUpdate()
 {
     checkMessgeRead();
     uartDrvUpdate();
 }
 
+void network10msUpdate()
+{
+    /* TODO:
+        1. send the 100ms cyclic system info read request message 
+        2. set request status */
+    txServiceHandler(&txMsgBuf);
+
+    // sendTestMsg();
+}
+
 /* 10ms task */
-void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *dataL, unsigned char *dataH)
+void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *Ldata, unsigned char *Hdata, unsigned char cmd)
 {
     unsigned char i = 0;
-    msgBuf_type rxMsgBuf[busIdx_max];
     networkDataBuf_type nwDataBuf;
     clearDataBlock(&rxMsgBuf, sizeof(rxMsgBuf));
     clearDataBlock(&nwDataBuf, sizeof(nwDataBuf));
@@ -873,28 +986,29 @@ void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *dataL
         /* first forward the message that no need to do anything with it */
         networkGatewayHandler(&rxMsgBuf);
 
-        /* second handle some request by network service and do handle the
-           message without the intervene from app
-           1. Clear some requst status
-           2. Request status timeout and record the error info */
-        rxServiceHandler(&rxMsgBuf);
-
         /* message -> application operational data
            only the private communication need to be handled
            in the application, other messages has already be
            forward by the gateway function */
         rxDataHandler(&rxMsgBuf[busIdx_private], &nwDataBuf);
+
+        /* handle some request by network service and do handle the
+           message without the intervene from app
+           1. Clear some requst status
+           2. Request status timeout and record the error info */
+        rxServiceHandler(&rxMsgBuf);
     }
+
+    parMapRead(addH, addL, Hdata, Ldata);
 }
 
 /* 10ms task */
-void setNetworkData(unsigned char addL, unsigned char addH, unsigned char *dataL, unsigned char *dataH, unsigned char cmd)
+void setNetworkData(unsigned char addL, unsigned char addH, unsigned char *Ldata, unsigned char *Hdata, unsigned char cmd)
 {
     networkDataBuf_type nwDataBuf;
-    msgBuf_type txMsgBuf;
-    /* test purpose only */
-    static unsigned char iCounter = 0;
 
+
+    /* clear struct data object */
     clearDataBlock(&txMsgBuf, sizeof(txMsgBuf));
     clearDataBlock(&nwDataBuf, sizeof(nwDataBuf));
 
@@ -904,35 +1018,19 @@ void setNetworkData(unsigned char addL, unsigned char addH, unsigned char *dataL
           with multiple data length request in the same
           10ms task cycle. */
 
-    /* application operational data -> message */
+    /* TODO: this is an temporarily solution just to eaisly
+             adapt to the app interface later will remove the
+             intermediate data structure nwDataBuf
+       application operational data -> nwDataBuf */
+    nwDataBuf.networkData[0].add[0] = addH;
+    nwDataBuf.networkData[0].add[1] = addL;
+    nwDataBuf.networkData[0].opData[0] = *Hdata;
+    nwDataBuf.networkData[0].opData[1] = *Ldata;
+    nwDataBuf.networkData[0].cmd = cmd;
+    nwDataBuf.dataLength = 1;
+
+    /* nwDataBuf -> message */
     txDataHandler(&txMsgBuf, &nwDataBuf);
-
-    /* TODO:
-        1. send the 100ms cyclic system info read request message 
-        2. set request status */
-    txServiceHandler(&nwDataBuf);
-
-    /* test purpose only */
-    clearDataBlock(&txMsgBuf, sizeof(txMsgBuf));
-    if(iCounter == 10)
-    {
-        txMsgBuf.msgByteArray[0] = 0xff;
-        txMsgBuf.msgByteArray[1] = 0x03;
-        txMsgBuf.msgByteArray[2] = 0x30;
-        txMsgBuf.msgByteArray[3] = 0x00;
-        txMsgBuf.msgByteArray[4] = 0x00;
-        txMsgBuf.msgByteArray[5] = 0x01;
-        txMsgBuf.msgByteArray[6] = 0x9e;
-        txMsgBuf.msgByteArray[7] = 0xd4;
-        txMsgBuf.msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 0x08;
-        P44 = 0;
-        iCounter = 0;
-    }
-    else
-    {
-        P44 = 1;
-        iCounter ++;
-    }
 
     /* put to the message to the uart send buffer
        each cycle one message */
