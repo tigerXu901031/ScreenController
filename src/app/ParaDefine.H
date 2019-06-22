@@ -488,6 +488,12 @@
 #define	LMO_DownLMT_Confirmed									0x05
 #define	LMO_POS_Learning_Finished							0x06
 
+#define	System_Status_Init	0x00
+#define	System_Status_Learn	0x01
+#define	System_Status_Run	0x02
+#define	System_Status_SingleMv	0x03
+#define	System_Status_Repair	0x04
+
 
 typedef struct{
 	uchar i;

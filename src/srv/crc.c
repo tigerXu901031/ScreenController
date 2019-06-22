@@ -128,7 +128,9 @@ uint16_t crc16tablefast(uint8_t *ptr, uint16_t len)
 }
 
 // /* test function */
-// uint8_t dataArr[8] = {0xff, 0x03, 0x30, 0x00, 0x00, 0x09, 0x00, 0x00};
+// uint8_t dataArr[8] = {0xFF, 0x03, 0x30, 0x00, 0x00, 0x12, 0x00, 0x00};
+
+// FF 03 12 00 00 00 00 00 00 0C 0E 00 00 00 00 00 00 00 01 00 00 8C 6B
 // int main()
 // {
 // 	uint16_t crcVal = 0;

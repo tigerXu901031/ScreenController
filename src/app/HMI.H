@@ -103,7 +103,7 @@ extern uchar code Hanzi_2424_HWZS_Dian[],Hanzi_2424_HWZS_Ji[],Hanzi_2424_HWZS_Fa
 extern uchar code Hanzi_2424_HWZS_Wei[],Hanzi_2424_HWZS_Xue[],Hanzi_2424_HWZS_Xi[],Hanzi_2424_HWZS_Shang[],Hanzi_2424_HWZS_Zhi[],Hanzi_2424_HWZS_Ke[];
 extern uchar code Hanzi_2424_HWZS_Ji1[],Hanzi_2424_HWZS_Null[],Hanzi_2424_HWZS_Guan[],Hanzi_2424_HWZS_Men[],Hanzi_2424_HWZS_Yan[],Hanzi_2424_HWZS_Shi[];
 extern uchar code Hanzi_1616_XST_Xue[], Hanzi_1616_XST_Xi[],Hanzi_1616_XST_Zi[],Hanzi_1616_XST_Dong[],Hanzi_1616_XST_Kai[],Hanzi_1616_XST_Guan[],Hanzi_1616_XST_Dian1[];
-
+extern uchar code Hanzi_1616_XST_Ting[],Hanzi_1616_XST_Zhi[],Hanzi_1616_XST_Men[];
 
 
 

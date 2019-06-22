@@ -88,8 +88,8 @@ void task10ms()
     //     P44 = 1;
     //     iCounter ++;
     // }
-
-    getNetworkData(testPar[0].add[1], testPar[0].add[0], &testPar[0].opData[0], &testPar[0].opData[1], testPar[0].cmd);
+    // unsigned char dummyAgingCnt = 0;
+    // getNetworkData(testPar[0].add[1], testPar[0].add[0], &testPar[0].opData[0], &testPar[0].opData[1], &testPar[0].cmd, &dummyAgingCnt);
     // getNetworkData(testPar[1].add[1], testPar[1].add[0], &testPar[1].opData[0], &testPar[1].opData[1], testPar[1].cmd);
     // getNetworkData(testPar[2].add[1], testPar[2].add[0], &testPar[2].opData[0], &testPar[2].opData[1], testPar[2].cmd);
     // getNetworkData(testPar[3].add[1], testPar[3].add[0], &testPar[3].opData[0], &testPar[3].opData[1], testPar[3].cmd);
@@ -113,7 +113,9 @@ void task10ms()
 
     network10msUpdate();
 
+    AppFunRun();		//application program
+
     // setNetworkData(&testSetNwData);
 
-	// AppFunRun();		//application program
+	
 }

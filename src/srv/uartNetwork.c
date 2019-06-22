@@ -66,7 +66,7 @@ static unsigned int isCrc16Ok(msgBuf_type *msgObj)
     unsigned char msgLen = msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE];
     unsigned char isOk = 0;
     
-    msgPtr = &msgObj->msgByteArray[0];
+    msgPtr = (unsigned char *)msgObj;
     /* NOTICE: some error here but just comply to the customer crc algo
        due to the crc calculation should put the crc field into the algo
        as well 
@@ -564,12 +564,12 @@ static unsigned char getRxMsgAndAssemble(msgBuf_type *msgObj)
                     retVal = 0;
                     break;
             }
-            msgObj ++;
         }
         else
         {
             retVal = 0;
         }
+        msgObj ++;
     }
     return retVal;
 }
@@ -624,13 +624,15 @@ static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
     unsigned char serviceType;
     unsigned char i = 0;
 
+    unsigned char *ptr1, *ptr2;
+
     /* used for long message */
     unsigned char longMsgDataFeildLen = 0;
 
     /* check whether the message need to be converted into application data */
     if(msgObj->msgByteArray[0] == networkObj.privateNodeId)
     {
-        if(isCrc16Ok(&msgObj))
+        if(isCrc16Ok(msgObj))
         {
             serviceType = msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE];
             switch (serviceType)
@@ -645,7 +647,9 @@ static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
 
                     dataBuf->dataLength = 1;
 
-                    parMapWrite(dataBuf->networkData[0].add[0], dataBuf->networkData[0].add[1], dataBuf->networkData[0].opData[0], dataBuf->networkData[0].opData[1]);
+                    ptr1 = &(dataBuf->networkData[0].opData[0]);
+                    ptr2 = &(dataBuf->networkData[0].opData[1]);
+                    parMapWrite(dataBuf->networkData[0].add[0], dataBuf->networkData[0].add[1], ptr1, ptr2);
 
                     break;
 
@@ -654,7 +658,7 @@ static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
                     {
                         /* TODO: check the recieved length and to the last request length whether it is the
                            same, and whether the recieved data length equal to the length byte encoded length */
-                        longMsgDataFeildLen = (msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] - 4) / 2;
+                        longMsgDataFeildLen = (msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] - 4) / 2;
 
                         dataBuf->dataLength = longMsgDataFeildLen;
                         for(i = 0; i < longMsgDataFeildLen; i ++)
@@ -667,7 +671,9 @@ static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
                             dataBuf->networkData[i].opData[0] = msgObj->readLongRepMsgObj.msgData[2*i];
                             dataBuf->networkData[i].opData[1] = msgObj->readLongRepMsgObj.msgData[2*i+1];
 
-                            parMapWrite(dataBuf->networkData[0].add[0], dataBuf->networkData[0].add[1], dataBuf->networkData[0].opData[0], dataBuf->networkData[0].opData[1]);
+                            ptr1 = &(dataBuf->networkData[i].opData[0]);
+                            ptr2 = &(dataBuf->networkData[i].opData[1]);
+                            parMapWrite(dataBuf->networkData[i].add[0], dataBuf->networkData[i].add[1], ptr1, ptr2);
 
                         }
                     }
@@ -837,16 +843,16 @@ static void txServiceHandler(msgBuf_type *msgObj)
         longFrameBuf.msgByteArray[2] = 0x30;
         longFrameBuf.msgByteArray[3] = 0x00;
         longFrameBuf.msgByteArray[4] = 0x00;
-        longFrameBuf.msgByteArray[5] = 0x09;
-        longFrameBuf.msgByteArray[6] = 0x9f;
-        longFrameBuf.msgByteArray[7] = 0x12;
+        longFrameBuf.msgByteArray[5] = 0x12;
+        longFrameBuf.msgByteArray[6] = 0xdf;
+        longFrameBuf.msgByteArray[7] = 0x19;
         longFrameBuf.msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 0x08;
         longFrameCnt = 0;
 
         /* register the long frame request */
         networkObj.reqSrv[reqIdx_readLongReq].srvId = SERVICETYPE_READ_LONGREQ;
         networkObj.reqSrv[reqIdx_readLongReq].add[0] = 0x30;
-        networkObj.reqSrv[reqIdx_readLongReq].add[0] = 0x00;
+        networkObj.reqSrv[reqIdx_readLongReq].add[1] = 0x00;
         networkObj.reqSrv[reqIdx_readLongReq].longFrameLen = 20;
 
         /* put in the FIFO buffer and send out */
@@ -965,11 +971,13 @@ void network10msUpdate()
         2. set request status */
     txServiceHandler(&txMsgBuf);
 
+    parMapUpdate();
+
     // sendTestMsg();
 }
 
 /* 10ms task */
-void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *Ldata, unsigned char *Hdata, unsigned char cmd)
+void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *Ldata, unsigned char *Hdata, unsigned char *cmd, unsigned char *agingCnt)
 {
     unsigned char i = 0;
     networkDataBuf_type nwDataBuf;
@@ -999,11 +1007,11 @@ void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *Ldata
         rxServiceHandler(&rxMsgBuf);
     }
 
-    parMapRead(addH, addL, Hdata, Ldata);
+    parMapRead(addH, addL, Hdata, Ldata, agingCnt);
 }
 
 /* 10ms task */
-void setNetworkData(unsigned char addL, unsigned char addH, unsigned char *Ldata, unsigned char *Hdata, unsigned char cmd)
+void setNetworkData(unsigned char addL, unsigned char addH, unsigned char *Ldata, unsigned char *Hdata, unsigned char *cmd, unsigned char *agingCnt)
 {
     networkDataBuf_type nwDataBuf;
 

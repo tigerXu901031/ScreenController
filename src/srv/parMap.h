@@ -6,13 +6,15 @@
 typedef struct{
     unsigned char cmd;
     unsigned char add[2];
-    unsigned char opData[2];  
+    unsigned char opData[2];
+    unsigned char agingCnt;
 }InterfaceData_type;
 
 extern InterfaceData_type parMap[PAR_MAP_LENGTH];
 
 extern void parMapInit();
-extern void parMapRead(unsigned char addH, unsigned char addL, unsigned char *Hdata, unsigned char *Ldata);
-extern void parMapWrite(unsigned char addH, unsigned char addL, unsigned char Hdata, unsigned char Ldata);
+extern void parMapRead(unsigned char addH, unsigned char addL, unsigned char *Hdata, unsigned char *Ldata, unsigned char *agingCnt);
+extern void parMapWrite(unsigned char addH, unsigned char addL, unsigned char *Hdata, unsigned char *Ldata);
+extern void parMapUpdate();
 
 #endif

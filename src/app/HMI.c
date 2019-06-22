@@ -1,10 +1,13 @@
 #include "../app/HMI.H"
 #include "../drv/19296p1.H"
+#include "../app/application.H"
+#include "../app/ParaDefine.H"
 
 
 Machine_Parameters_Def Motor_Parameter;
 
 uchar char_num[16];
+
 
 void Display_Full_Line(uchar ucLine, uchar ucUpDown)
 {
@@ -83,304 +86,305 @@ void Number_Lookup_Table(uchar number)
 void Display_Encoder_Number(uchar x)
 {
 	uint encoder;
-	uchar getDataBufH, getDataBufL;
-	//	p1 = &getDataBufH;
-	//	p2 = &getDataBufL;
-	//void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *dataL, unsigned char *dataH, unsigned char *cmd)
-	//getNetworkData(MonitorPara_Position_AddrL, MonitorPara_Position_AddrH, &getDataBufL, &getDataBufH, &CMD);
-	Motor_Parameter.E_encoder = (getDataBufH >> 8) + getDataBufL;
-	encoder = Motor_Parameter.E_encoder;
-	encoder = 63408;		//example for display demo only
-	
-	if(encoder>10000)			//���λ
+	GetDataFromMaster(MonitorPara_Position_AddrH, MonitorPara_Position_AddrL);
+	if(RD_FinishFlag)
 		{
-			Motor_Parameter.E_Digit1 = encoder/10000;
-			encoder %= 10000;	
-		}
-		else {Motor_Parameter.E_Digit1 = 0;}
-		
-	if(encoder>1000)		//��2λ
-		{
-			Motor_Parameter.E_Digit2 = encoder/1000;
-			encoder %= 1000;	
-		}
-		else {Motor_Parameter.E_Digit2 = 0;}
-		
-	if(encoder>100)		//��3λ
-		{
-			Motor_Parameter.E_Digit3 = encoder/100;
-			encoder %= 100;	
-		}
-		else {Motor_Parameter.E_Digit3 = 0;}
-		
-	if(encoder>10)		//��4λ
-		{
-			Motor_Parameter.E_Digit4 = encoder/10;
-			encoder %= 10;	
-		}
-		else {Motor_Parameter.E_Digit4 = 0;}
+			Motor_Parameter.E_encoder = (DataBufH >> 8) + DataBufL;
+			encoder = Motor_Parameter.E_encoder;
+			if(encoder>10000)			//���λ
+				{
+					Motor_Parameter.E_Digit1 = encoder/10000;
+					encoder %= 10000;	
+				}
+				else {Motor_Parameter.E_Digit1 = 0;}
+				
+			if(encoder>1000)		//��2λ
+				{
+					Motor_Parameter.E_Digit2 = encoder/1000;
+					encoder %= 1000;	
+				}
+				else {Motor_Parameter.E_Digit2 = 0;}
+				
+			if(encoder>100)		//��3λ
+				{
+					Motor_Parameter.E_Digit3 = encoder/100;
+					encoder %= 100;	
+				}
+				else {Motor_Parameter.E_Digit3 = 0;}
+				
+			if(encoder>10)		//��4λ
+				{
+					Motor_Parameter.E_Digit4 = encoder/10;
+					encoder %= 10;	
+				}
+				else {Motor_Parameter.E_Digit4 = 0;}
+					
+			Motor_Parameter.E_Digit5 = encoder;		//��5λ
 			
-	Motor_Parameter.E_Digit5 = encoder;		//��5λ
-	
-	Number_Lookup_Table(Motor_Parameter.E_Digit1);
-	if(x==1)
-		{
-			CHAR_Display_16x8(57, 1,char_num, 1);
-		}
-		else if(x==2)
-			{
-				CHAR_Display_16x8(57, 2,char_num, 0);
-			}
-				else{;}
-	
-	Number_Lookup_Table(Motor_Parameter.E_Digit2);
-	if(x==1)
-		{
-			CHAR_Display_16x8(65, 1,char_num, 1);
-		}
-		else if(x==2)
-			{
-				CHAR_Display_16x8(65, 2,char_num, 0);
-			}
-				else{;}	
-
-	Number_Lookup_Table(Motor_Parameter.E_Digit3);
-	if(x==1)
-		{
-			CHAR_Display_16x8(73, 1,char_num, 1);
-		}
-		else if(x==2)
-			{
-				CHAR_Display_16x8(73, 2,char_num, 0);
-			}
-				else{;}	
-
-	Number_Lookup_Table(Motor_Parameter.E_Digit4);
-	if(x==1)
-		{
-			CHAR_Display_16x8(81, 1,char_num, 1);
-		}
-		else if(x==2)
-			{
-				CHAR_Display_16x8(81, 2,char_num, 0);
-			}
-				else{;}		
-
-	Number_Lookup_Table(Motor_Parameter.E_Digit5);
-	if(x==1)
-		{
-			CHAR_Display_16x8(89, 1,char_num, 1);
-		}
-		else if(x==2)
-			{
-				CHAR_Display_16x8(89, 2,char_num, 0);
-			}
-				else{;}		 
+			Number_Lookup_Table(Motor_Parameter.E_Digit1);
+			if(x==1)
+				{
+					CHAR_Display_16x8(57, 1,char_num, 1);
+				}
+				else if(x==2)
+					{
+						CHAR_Display_16x8(57, 2,char_num, 0);
+					}
+						else{;}
+			
+			Number_Lookup_Table(Motor_Parameter.E_Digit2);
+			if(x==1)
+				{
+					CHAR_Display_16x8(65, 1,char_num, 1);
+				}
+				else if(x==2)
+					{
+						CHAR_Display_16x8(65, 2,char_num, 0);
+					}
+						else{;}	
+  		
+			Number_Lookup_Table(Motor_Parameter.E_Digit3);
+			if(x==1)
+				{
+					CHAR_Display_16x8(73, 1,char_num, 1);
+				}
+				else if(x==2)
+					{
+						CHAR_Display_16x8(73, 2,char_num, 0);
+					}
+						else{;}	
+  		
+			Number_Lookup_Table(Motor_Parameter.E_Digit4);
+			if(x==1)
+				{
+					CHAR_Display_16x8(81, 1,char_num, 1);
+				}
+				else if(x==2)
+					{
+						CHAR_Display_16x8(81, 2,char_num, 0);
+					}
+						else{;}		
+  		
+			Number_Lookup_Table(Motor_Parameter.E_Digit5);
+			if(x==1)
+				{
+					CHAR_Display_16x8(89, 1,char_num, 1);
+				}
+				else if(x==2)
+					{
+						CHAR_Display_16x8(89, 2,char_num, 0);
+					}
+						else{;}	
+				}
+				else
+					{;}
 }
 
 void Display_RunTime(void)
 {
 	uint runtime;
-	uchar getDataBufH, getDataBufL;
-	//	p1 = &getDataBufH;
-	//	p2 = &getDataBufL;
-	//void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *dataL, unsigned char *dataH)
-	//getNetworkData(FuncPara_AutoCloseDoor_DelayT_AddrL, FuncPara_AutoCloseDoor_DelayT_AddrH, &getDataBufL, &getDataBufH);
-	Motor_Parameter.RT_runtime = (getDataBufH >> 8) + getDataBufL;
-	runtime = Motor_Parameter.RT_runtime;
-	runtime = 12356;		//example for display demo only
-	
-	if(runtime>10000)			//���λ
+	GetDataFromMaster(MonitorPara_RunTimeL_AddrH, MonitorPara_RunTimeL_AddrL);
+	if(RD_FinishFlag)
 		{
-			Motor_Parameter.RT_Digit1 = runtime/10000;
-			runtime %= 10000;	
-		}
-		else {Motor_Parameter.RT_Digit1 = 0;}
-		
-	if(runtime>1000)		//��2λ
-		{
-			Motor_Parameter.RT_Digit2 = runtime/1000;
-			runtime %= 1000;	
-		}
-		else {Motor_Parameter.RT_Digit2 = 0;}
-		
-	if(runtime>100)		//��3λ
-		{
-			Motor_Parameter.RT_Digit3 = runtime/100;
-			runtime %= 100;	
-		}
-		else {Motor_Parameter.RT_Digit3 = 0;}
-		
-	if(runtime>10)		//��4λ
-		{
-			Motor_Parameter.RT_Digit4 = runtime/10;
-			runtime %= 10;	
-		}
-		else {Motor_Parameter.RT_Digit4 = 0;}
+			Motor_Parameter.RT_runtime = (DataBufH >> 8) + DataBufL;
+			runtime = Motor_Parameter.RT_runtime;
+			if(runtime>10000)			//���λ
+				{
+					Motor_Parameter.RT_Digit1 = runtime/10000;
+					runtime %= 10000;	
+				}
+				else {Motor_Parameter.RT_Digit1 = 0;}
+				
+			if(runtime>1000)		//��2λ
+				{
+					Motor_Parameter.RT_Digit2 = runtime/1000;
+					runtime %= 1000;	
+				}
+				else {Motor_Parameter.RT_Digit2 = 0;}
+				
+			if(runtime>100)		//��3λ
+				{
+					Motor_Parameter.RT_Digit3 = runtime/100;
+					runtime %= 100;	
+				}
+				else {Motor_Parameter.RT_Digit3 = 0;}
+				
+			if(runtime>10)		//��4λ
+				{
+					Motor_Parameter.RT_Digit4 = runtime/10;
+					runtime %= 10;	
+				}
+				else {Motor_Parameter.RT_Digit4 = 0;}
+					
+			Motor_Parameter.RT_Digit5 = runtime;		//��5λ
 			
-	Motor_Parameter.RT_Digit5 = runtime;		//��5λ
-	
-	Number_Lookup_Table(Motor_Parameter.RT_Digit1);
-	CHAR_Display_16x8(57, 3,char_num, 0); 
-
-	Number_Lookup_Table(Motor_Parameter.RT_Digit2);
-	CHAR_Display_16x8(65, 3,char_num, 0); 
-
-	Number_Lookup_Table(Motor_Parameter.RT_Digit3);
-	CHAR_Display_16x8(73, 3,char_num, 0); 
-
-	Number_Lookup_Table(Motor_Parameter.RT_Digit4);
-	CHAR_Display_16x8(81, 3,char_num, 0); 
-
-	Number_Lookup_Table(Motor_Parameter.RT_Digit5);
-	CHAR_Display_16x8(89, 3,char_num, 0); 		
+			Number_Lookup_Table(Motor_Parameter.RT_Digit1);
+			CHAR_Display_16x8(57, 3,char_num, 0); 
+  		
+			Number_Lookup_Table(Motor_Parameter.RT_Digit2);
+			CHAR_Display_16x8(65, 3,char_num, 0); 
+  		
+			Number_Lookup_Table(Motor_Parameter.RT_Digit3);
+			CHAR_Display_16x8(73, 3,char_num, 0); 
+  		
+			Number_Lookup_Table(Motor_Parameter.RT_Digit4);
+			CHAR_Display_16x8(81, 3,char_num, 0); 
+  		
+			Number_Lookup_Table(Motor_Parameter.RT_Digit5);
+			CHAR_Display_16x8(89, 3,char_num, 0); 
+		}
+		else
+			{;}		
 }
 
 void Display_I_current(void)
 {
 	uint current_data;
-	uchar getDataBufH, getDataBufL;
-	//	p1 = &getDataBufH;
-	//	p2 = &getDataBufL;
-	//void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *dataL, unsigned char *dataH)
-	//getNetworkData(MonitorPara_CurrentFBK_AddrL, MonitorPara_CurrentFBK_AddrH, &getDataBufL, &getDataBufH);
-	Motor_Parameter.I_current = (getDataBufH >> 8) + getDataBufL;
-	current_data = Motor_Parameter.I_current;
-	current_data = 12345;		//example for display demo only
-	
-	if(current_data>10000)			//���λ
+	GetDataFromMaster(MonitorPara_CurrentFBK_AddrH, MonitorPara_CurrentFBK_AddrL);
+	if(RD_FinishFlag)
 		{
-			Motor_Parameter.I_Digit1 = current_data/10000;
-			current_data %= 10000;	
-		}
-		else {Motor_Parameter.I_Digit1 = 0;}
-		
-	if(current_data>1000)		//��2λ
-		{
-			Motor_Parameter.I_Digit2 = current_data/1000;
-			current_data %= 1000;	
-		}
-		else {Motor_Parameter.I_Digit2 = 0;}
-		
-	if(current_data>100)		//��3λ
-		{
-			Motor_Parameter.I_Digit3 = current_data/100;
-			current_data %= 100;	
-		}
-		else {Motor_Parameter.I_Digit3 = 0;}
-		
-	if(current_data>10)		//��4λ
-		{
-			Motor_Parameter.I_Digit4 = current_data/10;
-			current_data %= 10;	
-		}
-		else {Motor_Parameter.I_Digit4 = 0;}
+			Motor_Parameter.I_current = (DataBufH >> 8) + DataBufL;
+			current_data = Motor_Parameter.I_current;
+//			current_data = 12345;		//example for display demo only
+			if(current_data>10000)			//���λ
+				{
+					Motor_Parameter.I_Digit1 = current_data/10000;
+					current_data %= 10000;	
+				}
+				else {Motor_Parameter.I_Digit1 = 0;}
+				
+			if(current_data>1000)		//��2λ
+				{
+					Motor_Parameter.I_Digit2 = current_data/1000;
+					current_data %= 1000;	
+				}
+				else {Motor_Parameter.I_Digit2 = 0;}
+				
+			if(current_data>100)		//��3λ
+				{
+					Motor_Parameter.I_Digit3 = current_data/100;
+					current_data %= 100;	
+				}
+				else {Motor_Parameter.I_Digit3 = 0;}
+				
+			if(current_data>10)		//��4λ
+				{
+					Motor_Parameter.I_Digit4 = current_data/10;
+					current_data %= 10;	
+				}
+				else {Motor_Parameter.I_Digit4 = 0;}
+					
+			Motor_Parameter.I_Digit5 = current_data;		//��5λ
 			
-	Motor_Parameter.I_Digit5 = current_data;		//��5λ
-	
-	Number_Lookup_Table(Motor_Parameter.I_Digit1);
-	CHAR_Display_16x8(129, 1,char_num, 1); 			//���Ϻ�
-
-	Number_Lookup_Table(Motor_Parameter.I_Digit2);
-	CHAR_Display_16x8(137, 1,char_num, 1); 			//���Ϻ� 
-
-	Number_Lookup_Table(Motor_Parameter.I_Digit3);
-	CHAR_Display_16x8(145, 1,char_num, 1); 			//���Ϻ� 
-
-	Number_Lookup_Table(Motor_Parameter.I_Digit4);
-	CHAR_Display_16x8(161, 1,char_num, 1); 			//���Ϻ� 
-
-	Number_Lookup_Table(Motor_Parameter.I_Digit5);
-	CHAR_Display_16x8(169, 1,char_num, 1); 			//���Ϻ� 
+			Number_Lookup_Table(Motor_Parameter.I_Digit1);
+			CHAR_Display_16x8(129, 1,char_num, 1); 			//���Ϻ�
+  		
+			Number_Lookup_Table(Motor_Parameter.I_Digit2);
+			CHAR_Display_16x8(137, 1,char_num, 1); 			//���Ϻ� 
+  		
+			Number_Lookup_Table(Motor_Parameter.I_Digit3);
+			CHAR_Display_16x8(145, 1,char_num, 1); 			//���Ϻ� 
+  		
+			Number_Lookup_Table(Motor_Parameter.I_Digit4);
+			CHAR_Display_16x8(161, 1,char_num, 1); 			//���Ϻ� 
+  		
+			Number_Lookup_Table(Motor_Parameter.I_Digit5);
+			CHAR_Display_16x8(169, 1,char_num, 1); 			//���Ϻ� 
+		}
+		else
+			{;}
 }
 
 void Display_F_frequency(void)
 {
 	uint frequency_data;
-	Motor_Parameter.F_frequency = 62503;
-
-	frequency_data = Motor_Parameter.F_frequency;
-
-	if(frequency_data>10000)			//���λ
+	GetDataFromMaster(MonitorPara_FreqSET_AddrH, MonitorPara_FreqSET_AddrL);
+	if(RD_FinishFlag)
 		{
-			Motor_Parameter.F_Digit1 = frequency_data/10000;
-			frequency_data %= 10000;	
-		}
-		else {Motor_Parameter.F_Digit1 = 0;}
-		
-	if(frequency_data>1000)		//��2λ
-		{
-			Motor_Parameter.F_Digit2 = frequency_data/1000;
-			frequency_data %= 1000;	
-		}
-		else {Motor_Parameter.F_Digit2 = 0;}
-		
-	if(frequency_data>100)		//��3λ
-		{
-			Motor_Parameter.F_Digit3 = frequency_data/100;
-			frequency_data %= 100;	
-		}
-		else {Motor_Parameter.F_Digit3 = 0;}
-		
-	if(frequency_data>10)		//��4λ
-		{
-			Motor_Parameter.F_Digit4 = frequency_data/10;
-			frequency_data %= 10;	
-		}
-		else {Motor_Parameter.F_Digit4 = 0;}
+			Motor_Parameter.F_frequency = (DataBufH >> 8) + DataBufL;
+			frequency_data = Motor_Parameter.I_current;
+			if(frequency_data>10000)			//���λ
+				{
+					Motor_Parameter.F_Digit1 = frequency_data/10000;
+					frequency_data %= 10000;	
+				}
+				else {Motor_Parameter.F_Digit1 = 0;}
+				
+			if(frequency_data>1000)		//��2λ
+				{
+					Motor_Parameter.F_Digit2 = frequency_data/1000;
+					frequency_data %= 1000;	
+				}
+				else {Motor_Parameter.F_Digit2 = 0;}
+				
+			if(frequency_data>100)		//��3λ
+				{
+					Motor_Parameter.F_Digit3 = frequency_data/100;
+					frequency_data %= 100;	
+				}
+				else {Motor_Parameter.F_Digit3 = 0;}
+				
+			if(frequency_data>10)		//��4λ
+				{
+					Motor_Parameter.F_Digit4 = frequency_data/10;
+					frequency_data %= 10;	
+				}
+				else {Motor_Parameter.F_Digit4 = 0;}
+					
+			Motor_Parameter.F_Digit5 = frequency_data;		//��5λ
 			
-	Motor_Parameter.F_Digit5 = frequency_data;		//��5λ
-	
-	Number_Lookup_Table(Motor_Parameter.F_Digit1);
-	CHAR_Display_16x8(129, 3,char_num, 0); 			//���Ϻ�
-
-	Number_Lookup_Table(Motor_Parameter.F_Digit2);
-	CHAR_Display_16x8(137, 3,char_num, 0); 			//���Ϻ� 
-
-	Number_Lookup_Table(Motor_Parameter.F_Digit3);
-	CHAR_Display_16x8(145, 3,char_num, 0); 			//���Ϻ� 
-
-	Number_Lookup_Table(Motor_Parameter.F_Digit4);
-	CHAR_Display_16x8(161, 3,char_num, 0); 			//���Ϻ� 
-
-	Number_Lookup_Table(Motor_Parameter.F_Digit5);
-	CHAR_Display_16x8(169, 3,char_num, 0); 			//���Ϻ� 
+			Number_Lookup_Table(Motor_Parameter.F_Digit1);
+			CHAR_Display_16x8(129, 3,char_num, 0); 			//���Ϻ�
+  		
+			Number_Lookup_Table(Motor_Parameter.F_Digit2);
+			CHAR_Display_16x8(137, 3,char_num, 0); 			//���Ϻ� 
+  		
+			Number_Lookup_Table(Motor_Parameter.F_Digit3);
+			CHAR_Display_16x8(145, 3,char_num, 0); 			//���Ϻ� 
+  		
+			Number_Lookup_Table(Motor_Parameter.F_Digit4);
+			CHAR_Display_16x8(161, 3,char_num, 0); 			//���Ϻ� 
+  		
+			Number_Lookup_Table(Motor_Parameter.F_Digit5);
+			CHAR_Display_16x8(169, 3,char_num, 0); 			//���Ϻ� 
+		}
+		else
+			{;}
 }
 
 void Display_ATMT(void)
 {
 	uchar panelmode;
-	uchar getDataBufH, getDataBufL;
-	//	p1 = &getDataBufH;
-	//	p2 = &getDataBufL;
-	//void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *dataL, unsigned char *dataH, unsigned char *cmd)
-	//getNetworkData(FuncPara_TP_Mode1_AddrL, FuncPara_TP_Mode1_AddrH, &getDataBufL, &getDataBufH, 0x03);
-	panelmode = getDataBufL;
-	panelmode = 0x00;
-	switch(panelmode)
-	{
-		case 0:		//AutoMode
-			Hanzi_Disp_16x16(97, 6, Hanzi_1616_XST_Zi, 0);
-			Hanzi_Disp_16x16(113, 6, Hanzi_1616_XST_Dong, 0);
-			break;
-		case 1:		//OpenAT, CloseMT
-			
-			break;
-		case 2:		//OpenMT, CloseAT
-			
-			break;
-		case 3:		//OpenMT, CloseMT
-			
-			break;
-	}
-	//seperate line
-	display_8x1(97,6,0xFF);
-	display_8x1(97,7,0xFF);
-	display_8x1(97,8,0xFF);
-	display_8x1(97,9,0xFF);	
+	
+	GetDataFromMaster(FuncPara_TP_Mode1_AddrH, FuncPara_TP_Mode1_AddrL);
+	if(RD_FinishFlag)
+		{
+			panelmode = DataBufL;
+			switch(panelmode)
+			{
+				case 0:		//AutoMode
+					Hanzi_Disp_16x16(97, 6, Hanzi_1616_XST_Zi, 0);
+					Hanzi_Disp_16x16(113, 6, Hanzi_1616_XST_Dong, 0);
+					break;
+				case 1:		//OpenAT, CloseMT
+					
+					break;
+				case 2:		//OpenMT, CloseAT
+					
+					break;
+				case 3:		//OpenMT, CloseMT
+					
+					break;
+			}
+			//seperate line
+			display_8x1(97,6,0xFF);
+			display_8x1(97,7,0xFF);
+			display_8x1(97,8,0xFF);
+			display_8x1(97,9,0xFF);
+		}
+		else
+			{;}	
 }
-
-
 
 void Motor_Direction_Update(void)
 {
@@ -781,6 +785,19 @@ uchar code Hanzi_1616_XST_Guan[]={
 uchar code Hanzi_1616_XST_Dian1[]={
 0x00,0x00,0x03,0x02,0x02,0x02,0xFE,0x12,0x12,0x12,0x12,0x13,0x10,0x10,0x00,0x00,
 0x01,0x02,0xEC,0x20,0x20,0x28,0x26,0x20,0x28,0x26,0x20,0xE0,0x08,0x07,0x00,0x00};/*"点",0*/
+
+uchar code Hanzi_1616_XST_Ting[]={
+0x01,0x06,0x1F,0xE0,0x00,0x20,0x2E,0x2A,0xAA,0x6A,0x2A,0x2A,0x2E,0x20,0x00,0x00,
+0x00,0x00,0xFF,0x00,0xC0,0x80,0xA0,0xA2,0xA1,0xBE,0xA0,0xA0,0xA0,0x80,0xC0,0x00};/*"停",0*/
+
+uchar code Hanzi_1616_XST_Zhi[]={
+0x00,0x00,0x00,0x0F,0x00,0x00,0x00,0xFF,0x02,0x02,0x02,0x02,0x02,0x00,0x00,0x00,
+0x02,0x02,0x02,0xFE,0x02,0x02,0x02,0xFE,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x00};/*"止",0*/
+
+uchar code Hanzi_1616_XST_Men[]={
+0x00,0x1F,0x80,0x60,0x00,0x00,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x7F,0x00,0x00,
+0x00,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x02,0x01,0xFE,0x00,0x00};/*"门",0*/
+
 
 uchar code char_number_table[]={
 0x00,0x00,0x0F,0x1F,0x10,0x16,0x1F,0x0F,0x00,0x00,0xE0,0xF0,0xD0,0x10,0xF0,0xE0,/*"0",0*/
