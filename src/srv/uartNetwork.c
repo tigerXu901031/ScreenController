@@ -1034,7 +1034,7 @@ void setNetworkData(unsigned char addL, unsigned char addH, unsigned char *Ldata
     nwDataBuf.networkData[0].add[1] = addL;
     nwDataBuf.networkData[0].opData[0] = *Hdata;
     nwDataBuf.networkData[0].opData[1] = *Ldata;
-    nwDataBuf.networkData[0].cmd = cmd;
+    nwDataBuf.networkData[0].cmd = *cmd;
     nwDataBuf.dataLength = 1;
 
     /* nwDataBuf -> message */
