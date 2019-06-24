@@ -843,9 +843,9 @@ static void txServiceHandler(msgBuf_type *msgObj)
         longFrameBuf.msgByteArray[2] = 0x30;
         longFrameBuf.msgByteArray[3] = 0x00;
         longFrameBuf.msgByteArray[4] = 0x00;
-        longFrameBuf.msgByteArray[5] = 0x12;
+        longFrameBuf.msgByteArray[5] = 0x0A;
         longFrameBuf.msgByteArray[6] = 0xdf;
-        longFrameBuf.msgByteArray[7] = 0x19;
+        longFrameBuf.msgByteArray[7] = 0x13;
         longFrameBuf.msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 0x08;
         longFrameCnt = 0;
 
