@@ -827,45 +827,6 @@ static void rxServiceHandler(msgBuf_type *msgObj)
     }
 }
 
-static void txServiceHandler(msgBuf_type *msgObj)
-{
-    msgBuf_type longFrameBuf;
-    static unsigned char longFrameCnt = 0;
-
-    clearDataBlock(&longFrameBuf, sizeof(longFrameBuf));
-
-    /* cyclic send the 100ms system info long frame read request */
-    if(longFrameCnt == 10)
-    {
-        /* load the long frame content */
-        longFrameBuf.msgByteArray[0] = 0xff;
-        longFrameBuf.msgByteArray[1] = 0x03;
-        longFrameBuf.msgByteArray[2] = 0x30;
-        longFrameBuf.msgByteArray[3] = 0x00;
-        longFrameBuf.msgByteArray[4] = 0x00;
-        longFrameBuf.msgByteArray[5] = 0x12;
-        longFrameBuf.msgByteArray[6] = 0xdf;
-        longFrameBuf.msgByteArray[7] = 0x19;
-        longFrameBuf.msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 0x08;
-        longFrameCnt = 0;
-
-        /* register the long frame request */
-        networkObj.reqSrv[reqIdx_readLongReq].srvId = SERVICETYPE_READ_LONGREQ;
-        networkObj.reqSrv[reqIdx_readLongReq].add[0] = 0x30;
-        networkObj.reqSrv[reqIdx_readLongReq].add[1] = 0x00;
-        networkObj.reqSrv[reqIdx_readLongReq].longFrameLen = 20;
-
-        /* put in the FIFO buffer and send out */
-        setTxMsgAndDisassemble(&longFrameBuf, busIdx_private);
-    }
-    else
-    {
-        longFrameCnt ++;
-    }
-    /* set normal read and write request status if present */
-
-}
-
 static void fetchNodeId()
 {
     networkObj.privateNodeId = 0xff;
@@ -927,59 +888,17 @@ static void sendTestMsg()
         testMsgBuf.msgByteArray[6] = 0x9e;
         testMsgBuf.msgByteArray[7] = 0xd4;
         testMsgBuf.msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 0x08;
-        P44 = 0;
         iCounter = 0;
         setTxMsgAndDisassemble(&testMsgBuf, busIdx_private);
     }
     else
     {
-        P44 = 1;
         iCounter ++;
     }
 }
 
-void networkInit()
+static void rxUpdate()
 {
-    uartDrvInit();
-    parMapInit();
-
-
-    /* TODO:
-       Fetch the public node ID from the door controller 
-       if the fetch operation is failed then the initialization
-       will fail 
-       Fetch Node ID procedure:
-       1. Send an read (public ID) request to the main controller
-       2. Recieve the valid id and then regard this aid as the public
-          id at this operation cycle.
-       3. If the ID is not valid or if the ID was not received then
-          set an fail status and stay in the init phase
-    */
-    fetchNodeId();
-}
-
-void network2msUpdate()
-{
-    checkMessgeRead();
-    uartDrvUpdate();
-}
-
-void network10msUpdate()
-{
-    /* TODO:
-        1. send the 100ms cyclic system info read request message 
-        2. set request status */
-    txServiceHandler(&txMsgBuf);
-
-    parMapUpdate();
-
-    // sendTestMsg();
-}
-
-/* 10ms task */
-void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *Ldata, unsigned char *Hdata, unsigned char *cmd, unsigned char *agingCnt)
-{
-    unsigned char i = 0;
     networkDataBuf_type nwDataBuf;
     clearDataBlock(&rxMsgBuf, sizeof(rxMsgBuf));
     clearDataBlock(&nwDataBuf, sizeof(nwDataBuf));
@@ -1006,11 +925,108 @@ void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *Ldata
            2. Request status timeout and record the error info */
         rxServiceHandler(&rxMsgBuf);
     }
+}
 
+void networkInit()
+{
+    uartDrvInit();
+    parMapInit();
+
+
+    /* TODO:
+       Fetch the public node ID from the door controller 
+       if the fetch operation is failed then the initialization
+       will fail 
+       Fetch Node ID procedure:
+       1. Send an read (public ID) request to the main controller
+       2. Recieve the valid id and then regard this aid as the public
+          id at this operation cycle.
+       3. If the ID is not valid or if the ID was not received then
+          set an fail status and stay in the init phase
+    */
+    fetchNodeId();
+}
+
+void longFrameHandler()
+{
+    msgBuf_type longFrameBuf;
+    static unsigned char longFrameCnt = 0;
+
+    clearDataBlock(&longFrameBuf, sizeof(longFrameBuf));
+
+    /* cyclic send the 100ms system info long frame read request */
+    if(longFrameCnt == 1)
+    {
+        /* load the long frame content */
+        longFrameBuf.msgByteArray[0] = 0xFF;
+        longFrameBuf.msgByteArray[1] = 0x03;
+        longFrameBuf.msgByteArray[2] = 0x30;
+        longFrameBuf.msgByteArray[3] = 0x00;
+        longFrameBuf.msgByteArray[4] = 0x00;
+        longFrameBuf.msgByteArray[5] = 0x09;
+        longFrameBuf.msgByteArray[6] = 0x12;
+        longFrameBuf.msgByteArray[7] = 0x9F;
+        longFrameBuf.msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 0x08;
+        longFrameCnt = 0;
+
+        /* register the long frame request */
+        networkObj.reqSrv[reqIdx_readLongReq].srvId = SERVICETYPE_READ_LONGREQ;
+        networkObj.reqSrv[reqIdx_readLongReq].add[0] = 0x30;
+        networkObj.reqSrv[reqIdx_readLongReq].add[1] = 0x00;
+        networkObj.reqSrv[reqIdx_readLongReq].longFrameLen = 20;
+
+        /* put in the FIFO buffer and send out */
+        setTxMsgAndDisassemble(&longFrameBuf, busIdx_private);
+    }
+    else
+    {
+        /* load the long frame content */
+        longFrameBuf.msgByteArray[0] = 0xFF;
+        longFrameBuf.msgByteArray[1] = 0x03;
+        longFrameBuf.msgByteArray[2] = 0x30;
+        longFrameBuf.msgByteArray[3] = 0x09;
+        longFrameBuf.msgByteArray[4] = 0x00;
+        longFrameBuf.msgByteArray[5] = 0x09;
+        longFrameBuf.msgByteArray[6] = 0x4F;
+        longFrameBuf.msgByteArray[7] = 0x19;
+        longFrameBuf.msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 0x08;
+        
+        /* register the long frame request */
+        networkObj.reqSrv[reqIdx_readLongReq].srvId = SERVICETYPE_READ_LONGREQ;
+        networkObj.reqSrv[reqIdx_readLongReq].add[0] = 0x30;
+        networkObj.reqSrv[reqIdx_readLongReq].add[1] = 0x09;
+        networkObj.reqSrv[reqIdx_readLongReq].longFrameLen = 20;
+
+        /* put in the FIFO buffer and send out */
+        setTxMsgAndDisassemble(&longFrameBuf, busIdx_private);
+        longFrameCnt ++;
+    }
+
+    /* set normal read and write request status if present */
+
+}
+
+void network2msUpdate()
+{
+    checkMessgeRead();
+    uartDrvUpdate();
+}
+
+void network50msUpdate()
+{
+    rxUpdate();
+    
+    parMapUpdate();
+
+}
+
+/* read interface function invoked by app */
+void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *Ldata, unsigned char *Hdata, unsigned char *cmd, unsigned char *agingCnt)
+{
     parMapRead(addH, addL, Hdata, Ldata, agingCnt);
 }
 
-/* 10ms task */
+/* wrtie interface function invoked by app */
 void setNetworkData(unsigned char addL, unsigned char addH, unsigned char *Ldata, unsigned char *Hdata, unsigned char *cmd, unsigned char *agingCnt)
 {
     networkDataBuf_type nwDataBuf;

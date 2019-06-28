@@ -16,8 +16,8 @@ void taskInit()
     P53 = 0;		//RS485_DR_2
     networkInit();
     timerInit();
-    timer10ms_Enable();
-    timer1ms_Enable();
+    timer25ms_Enable();
+    timer2ms_Enable();
 }
 
 /* test purpose only */
@@ -29,7 +29,7 @@ const unsigned char testReadLongRepMsg[39] = {0xFF, 0x03, 0x30, 0x00, 0x04, 0x01
                                               0x29, 0x30, 0x31, 0x32, 0xcc, 0xcc};
 const unsigned char testWriteRepMsg[8] = {0x01, 0x06, 0xF0, 0x99, 0x32, 0x55, 0x55, 0xAA};
 const unsigned char testReadFailMsg[8] = {0xFF, 0x83, 0xF0, 0x99, 0x88, 0x55, 0x55, 0xAA};
-void task1ms()
+void task2ms()
 {
 
     // static unsigned char testCnt = 0;
@@ -58,9 +58,14 @@ unsigned char testRecByte[2] = {0, 0};
 
 InterfaceData_type testPar[20];
 
-void task10ms()
+void task25ms()
 {
+    unsigned char dummyCnt;
+    unsigned char dummyCmd = 0x06;
+    unsigned char dummyDatL = 0x02;
+    unsigned char dummyDatH = 0;
 
+    static unsigned char taskCnt = 0;
     /* test purpose only */
 
     // static unsigned char iCounter = 0;
@@ -111,11 +116,24 @@ void task10ms()
     // getNetworkData(testPar[19].add[1], testPar[19].add[0], &testPar[19].opData[0], &testPar[19].opData[1], testPar[19].cmd);
 
 
-    network10msUpdate();
-
-    AppFunRun();		//application program
+    // setNetworkData(0x00, 0x20, &dummyDatL, &dummyDatH, &dummyCmd, &dummyCnt);
+    // getNetworkData(0x0D, 0x30, &dummyDatL, &dummyDatH, &dummyCmd, &dummyCnt);
 
     // setNetworkData(&testSetNwData);
-
-	
+    if(taskCnt == 0)
+    {
+        longFrameHandler();
+        
+        taskCnt ++;
+    }
+    else if(taskCnt == 2)
+    {
+        network50msUpdate();
+        // AppFunRun();
+        taskCnt = 0;
+    }
+    else
+    {
+        taskCnt ++;
+    }
 }

@@ -14,8 +14,8 @@
 #include "../srv/parMap.h"
 
 extern void taskInit();
-extern void task1ms();
-extern void task10ms();
+extern void task2ms();
+extern void task25ms();
 
 /*  */
 extern void IO_INIT();

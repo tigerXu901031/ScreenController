@@ -3,10 +3,10 @@
 
 #include "STC8.h"
 
-extern void timer10ms_Enable(void);
-extern void timer10ms_Disable(void);
-extern void timer1ms_Enable(void);
-extern void timer1ms_Disable(void);
+extern void timer25ms_Enable(void);
+extern void timer25ms_Disable(void);
+extern void timer2ms_Enable(void);
+extern void timer2ms_Disable(void);
 
 extern void timerInit();
 

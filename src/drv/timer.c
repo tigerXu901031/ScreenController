@@ -2,10 +2,13 @@
 
 static void timer4Init(void)
 {
-    /* 10ms @ 24Mhz */
+    /* 25ms @ 24Mhz */
 	T4T3M &= 0x0F;		// Fosc / 12T, timer output disable
-	T4L = 0xE0;			// set initial lower byte value for timer
-	T4H = 0xB1;			// set initial higher byte value for timer 
+	// T4L = 0xE0;			// set initial lower byte value for timer
+	// T4H = 0xB1;			// set initial higher byte value for timer 
+
+	T4L = 0xB0;		//设置定时初值
+	T4H = 0x3C;		//设置定时初值
 }
 
 static void timer0Init(void)
@@ -20,25 +23,25 @@ static void timer0Init(void)
     ET0 = 1;        // enable interupt
 }
 
-void timer10ms_Enable(void)
+void timer25ms_Enable(void)
 {
 	T4T3M |= 0x80;		/* timer 4 start counting */ 
 	IE2 |= ET4;            /*  */ 
 }
 
-void timer10ms_Disable(void)
+void timer25ms_Disable(void)
 {
 	T4T3M &= 0x7F;		/* timer 4 stop counting */ 
 	IE2 &= ~ET4;
 }
 
-void timer1ms_Enable(void)
+void timer2ms_Enable(void)
 {
 	T4T3M |= 0x80;		/* timer 0 start counting */ 
 	IE2 |= ET4;            /*  */ 
 }
 
-void timer1ms_Disable(void)
+void timer2ms_Disable(void)
 {
 	T4T3M &= 0x7F;		/* timer 0 stop counting */ 
 	IE2 &= ~ET4;

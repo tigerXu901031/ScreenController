@@ -130,7 +130,8 @@ typedef struct{
 
 extern void networkInit();
 extern void network2msUpdate();
-extern void network10msUpdate();
+extern void network50msUpdate();
+extern void longFrameHandler();
 extern void getNetworkData(unsigned char addL, unsigned char addH, unsigned char *Ldata, unsigned char *Hdata, unsigned char *cmd, unsigned char *agingCnt);
 extern void setNetworkData(unsigned char addL, unsigned char addH, unsigned char *Ldata, unsigned char *Hdata, unsigned char *cmd, unsigned char *agingCnt);
 
