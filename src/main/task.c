@@ -130,6 +130,10 @@ void task25ms()
     {
         network50msUpdate();
         // AppFunRun();
+        taskCnt ++;
+    }
+    else if(taskCnt == 3)
+    {
         taskCnt = 0;
     }
     else

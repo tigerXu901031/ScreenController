@@ -964,8 +964,8 @@ void longFrameHandler()
         longFrameBuf.msgByteArray[3] = 0x00;
         longFrameBuf.msgByteArray[4] = 0x00;
         longFrameBuf.msgByteArray[5] = 0x09;
-        longFrameBuf.msgByteArray[6] = 0x12;
-        longFrameBuf.msgByteArray[7] = 0x9F;
+        longFrameBuf.msgByteArray[6] = 0x9F;
+        longFrameBuf.msgByteArray[7] = 0x12;
         longFrameBuf.msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 0x08;
         longFrameCnt = 0;
 
@@ -988,7 +988,7 @@ void longFrameHandler()
         longFrameBuf.msgByteArray[4] = 0x00;
         longFrameBuf.msgByteArray[5] = 0x09;
         longFrameBuf.msgByteArray[6] = 0x4F;
-        longFrameBuf.msgByteArray[7] = 0x19;
+        longFrameBuf.msgByteArray[7] = 0x10;
         longFrameBuf.msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 0x08;
         
         /* register the long frame request */
