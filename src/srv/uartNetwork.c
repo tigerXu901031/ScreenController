@@ -853,10 +853,11 @@ static void checkMessgeRead()
             if(timeoutCnt[i] >= 3)
             {
                 msgReady[i] = 1;
+                // timeoutCnt[i] = 0;
             }
             else
             {
-                msgReady[i] = 0;
+                // msgReady[i] = 0;
             }
             oldBufPtr[i] = uartRxFifo_Obj[i].curPtr;
         }
