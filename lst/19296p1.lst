@@ -1,4 +1,4 @@
-C51 COMPILER V9.00   19296P1                                                               06/15/2019 16:38:34 PAGE 1   
+C51 COMPILER V9.00   19296P1                                                               07/03/2019 08:06:54 PAGE 1   
 
 
 C51 COMPILER V9.00, COMPILATION OF MODULE 19296P1
@@ -14,779 +14,550 @@ line level    source
    4          改编：Bruce Dong
    5          2019.5.15
    6          */
-   7          #include <STC8.H>
-   8          //#include <intrins.h>
-   9          //#include <chinese_code.h>
+   7          #include "../drv/STC8.H"
+   8          #include "../drv/19296p1.H"
+   9          //#include "../app/HMI.H"
   10          
-  11          
-  12          #define uchar unsigned char
-  13          #define uint unsigned int
-  14          #define ulong unsigned long
-  15          
-  16          #define Disp_UP                         0x01
-  17          #define Disp_Down                       0x02
-  18          #define Disp_Left                       0x04
-  19          #define Disp_Right              0x08
-  20          #define Disp_Reverse    0x10
-  21          
-  22          
-  23          
-  24          //Development Board Connection
-  25          //sbit LCD19296_CS1 = P3^7; 
-  26          //sbit LCD19296_RST = P3^6; 
-  27          //sbit LCD19296_RS = P3^5; 
-  28          //sbit LCD19296_RD = P3^4; 
-  29          //sbit LCD19296_WR = P0^7; 
-  30          
-  31          //V1 temporary connection
-  32          sbit LCD19296_IF0       = P4^1;
-  33          sbit LCD19296_CS1 = P3^7; 
-  34          sbit LCD19296_RST = P2^0; 
-  35          sbit LCD19296_RS = P3^6; 
-  36          sbit LCD19296_RD = P5^1; 
-  37          sbit LCD19296_WR = P5^0; 
-  38          
-  39          //V2 connection
-  40          //sbit LCD19296_CS1 = P4^1; 
-  41          //sbit LCD19296_RST = P5^0; 
-  42          //sbit LCD19296_RS = P3^7; 
-  43          //sbit LCD19296_RD = P3^6; 
-  44          //sbit LCD19296_WR = P5^1; 
-  45          //另外P2.0~2.7 对应DB0~DB7*/
-  46          //sbit key=P2^0; /*按键接口，P2.0 口与GND 之间接一个按键*/
-  47          
-  48          uchar code Char1608_Up[], Char1608_Down[], Char1608_Left[], Char1608_Right[];
-  49          uchar code Hanzi1616_Up[], Hanzi1616_Down[], Hanzi1616_Left[], Hanzi1616_Right[];
-  50          
-  51          uchar code Hanzi_2424_XST_Dian[], Hanzi_2424_XST_Ji[],Hanzi_2424_XST_Fang[], Hanzi_2424_XST_Xiang[];
-  52          
-  53          
+  11          //Development Board Connection
+  12          //sbit LCD19296_CS1 = P3^7; 
+  13          //sbit LCD19296_RST = P3^6; 
+  14          //sbit LCD19296_RS = P3^5; 
+  15          //sbit LCD19296_RD = P3^4; 
+  16          //sbit LCD19296_WR = P0^7; 
+  17          
+  18          //V1 temporary connection
+  19          sbit LCD19296_IF0       = P4^1;
+  20          sbit LCD19296_CS1 = P3^7; 
+  21          sbit LCD19296_RST = P2^0; 
+  22          sbit LCD19296_RS = P3^6; 
+  23          sbit LCD19296_RD = P5^1; 
+  24          sbit LCD19296_WR = P5^0; 
+  25          
+  26          //V2 connection
+  27          //sbit LCD19296_CS1 = P4^1; 
+  28          //sbit LCD19296_RST = P5^0; 
+  29          //sbit LCD19296_RS = P3^7; 
+  30          //sbit LCD19296_RD = P3^6; 
+  31          //sbit LCD19296_WR = P5^1; 
+  32          //另外P2.0~2.7 对应DB0~DB7*/
+  33          //sbit key=P2^0; /*按键接口，P2.0 口与GND 之间接一个按键*/
+  34          
+  35          //extern uchar code Char1608_Up[], Char1608_Down[], Char1608_Left[], Char1608_Right[];
+  36          //extern uchar code Hanzi1616_Up[], Hanzi1616_Down[], Hanzi1616_Left[], Hanzi1616_Right[];
+  37          //
+  38          //extern uchar code Hanzi_2424_XST_Dian[], Hanzi_2424_XST_Ji[],Hanzi_2424_XST_Fang[], Hanzi_2424_XST_Xiang
+             -[];
+  39          
+  40          /*延时：1 毫秒的i 倍*/
+  41          void delay(int i)
+  42          {
+  43   1              int j,k;
+  44   1              for(j=0;j<i;j++)
+  45   1              for(k=0;k<110;k++);
+  46   1      }
+  47          /*延时：1us 的i 倍*/
+  48          void delay_us(int i)
+  49          {
+  50   1              int j,k;
+  51   1              for(j=0;j<i;j++)
+  52   1              for(k=0;k<1;k++);
+  53   1      }
+C51 COMPILER V9.00   19296P1                                                               07/03/2019 08:06:54 PAGE 2   
+
   54          
-C51 COMPILER V9.00   19296P1                                                               06/15/2019 16:38:34 PAGE 2   
-
-  55          /*延时：1 毫秒的i 倍*/
-  56          void delay(int i)
+  55          //temporary send data function
+  56          void LCD_Send_PData(uchar data2send)
   57          {
-  58   1              int j,k;
-  59   1              for(j=0;j<i;j++)
-  60   1              for(k=0;k<110;k++);
-  61   1      }
-  62          /*延时：1us 的i 倍*/
-  63          void delay_us(int i)
-  64          {
-  65   1              int j,k;
-  66   1              for(j=0;j<i;j++)
-  67   1              for(k=0;k<1;k++);
-  68   1      }
-  69          
-  70          ///*等待一个按键，我的主板是用P2.0 与GND 之间接一个按键*/
-  71          //void waitkey()
-  72          //{
-  73          //      repeat:
-  74          //      if (key==1) goto repeat;
-  75          //      else delay(2000);
-  76          //}
-  77          
-  78          //temporary send data function
-  79          void LCD_Send_PData(uchar data2send)
-  80          {
-  81   1      //      uchar temp1;
-  82   1      //      temp1 = data2send<<1;
-  83   1      //      P2 = temp1;
-  84   1              if((data2send&0x80)==0)
-  85   1                      {P35 = 0;}              //D7
-  86   1                      else
-  87   1                              {P35 = 1;}
-  88   1              if((data2send&0x40)==0)
-  89   1                      {P27 = 0;}
-  90   1                      else
-  91   1                              {P27 = 1;}
-  92   1              if((data2send&0x20)==0)
-  93   1                      {P26 = 0;}
-  94   1                      else
-  95   1                              {P26 = 1;}
-  96   1              if((data2send&0x10)==0)
-  97   1                      {P25 = 0;}
-  98   1                      else
-  99   1                              {P25 = 1;}
- 100   1              if((data2send&0x08)==0)
- 101   1                      {P24 = 0;}
- 102   1                      else
- 103   1                              {P24 = 1;}
- 104   1              if((data2send&0x04)==0)
- 105   1                      {P23 = 0;}
- 106   1                      else
- 107   1                              {P23 = 1;}
- 108   1              if((data2send&0x02)==0)
- 109   1                      {P22 = 0;}
- 110   1                      else
- 111   1                              {P22 = 1;}
- 112   1              if((data2send&0x01)==0)
- 113   1                      {P21 = 0;}
- 114   1                      else
- 115   1                              {P21 = 1;}
- 116   1      }
-C51 COMPILER V9.00   19296P1                                                               06/15/2019 16:38:34 PAGE 3   
+  58   1      //      uchar temp1;
+  59   1      //      temp1 = data2send<<1;
+  60   1      //      P2 = temp1;
+  61   1              if((data2send&0x80)==0)
+  62   1                      {P35 = 0;}              //D7
+  63   1                      else
+  64   1                              {P35 = 1;}
+  65   1              if((data2send&0x40)==0)
+  66   1                      {P27 = 0;}
+  67   1                      else
+  68   1                              {P27 = 1;}
+  69   1              if((data2send&0x20)==0)
+  70   1                      {P26 = 0;}
+  71   1                      else
+  72   1                              {P26 = 1;}
+  73   1              if((data2send&0x10)==0)
+  74   1                      {P25 = 0;}
+  75   1                      else
+  76   1                              {P25 = 1;}
+  77   1              if((data2send&0x08)==0)
+  78   1                      {P24 = 0;}
+  79   1                      else
+  80   1                              {P24 = 1;}
+  81   1              if((data2send&0x04)==0)
+  82   1                      {P23 = 0;}
+  83   1                      else
+  84   1                              {P23 = 1;}
+  85   1              if((data2send&0x02)==0)
+  86   1                      {P22 = 0;}
+  87   1                      else
+  88   1                              {P22 = 1;}
+  89   1              if((data2send&0x01)==0)
+  90   1                      {P21 = 0;}
+  91   1                      else
+  92   1                              {P21 = 1;}
+  93   1      }
+  94          
+  95          
+  96          
+  97          
+  98          //=============transfer command to LCM===============
+  99          void SEND_CMD_LCD(uchar data1)
+ 100          {
+ 101   1              LCD19296_CS1=0;
+ 102   1              LCD19296_RS=0;
+ 103   1              
+ 104   1              LCD19296_RD=0;
+ 105   1              delay_us(1);
+ 106   1              LCD19296_WR=0;
+ 107   1      //      P2=data1;
+ 108   1              LCD_Send_PData(data1);
+ 109   1              LCD19296_RD=1;
+ 110   1              delay_us(1);
+ 111   1              LCD19296_CS1=1;
+ 112   1              LCD19296_RD=0;
+ 113   1      }
+ 114          
+ 115          //-----------transfer data to LCM---------------
+C51 COMPILER V9.00   19296P1                                                               07/03/2019 08:06:54 PAGE 3   
 
- 117          
- 118          
- 119          
- 120          
- 121          //=============transfer command to LCM===============
- 122          void SEND_CMD_LCD(uchar data1)
- 123          {
- 124   1              LCD19296_CS1=0;
- 125   1              LCD19296_RS=0;
- 126   1              
- 127   1              LCD19296_RD=0;
- 128   1              delay_us(1);
- 129   1              LCD19296_WR=0;
- 130   1      //      P2=data1;
- 131   1              LCD_Send_PData(data1);
- 132   1              LCD19296_RD=1;
- 133   1              delay_us(1);
- 134   1              LCD19296_CS1=1;
- 135   1              LCD19296_RD=0;
- 136   1      }
- 137          
- 138          //-----------transfer data to LCM---------------
- 139          void SEND_DATA_LCD(uchar data1)
- 140          {
- 141   1              LCD19296_CS1=0;
- 142   1              LCD19296_RS=1;
- 143   1              LCD19296_RD=0;
- 144   1              delay_us(1);
- 145   1              LCD19296_WR=0;
- 146   1      //      P2=data1;
- 147   1              LCD_Send_PData(data1);
- 148   1              LCD19296_RD=1;
- 149   1              delay_us(1);
- 150   1              LCD19296_CS1=1;
- 151   1              LCD19296_RD=0;
- 152   1      }
- 153          
- 154          void INIT_LCD()
- 155          {
- 156   1              LCD19296_IF0 = 0;
- 157   1              LCD19296_RST=0;
- 158   1              delay(100);
- 159   1              LCD19296_RST=1;
- 160   1              delay(100);
- 161   1              SEND_CMD_LCD(0x30); //EXT=0
- 162   1              SEND_CMD_LCD(0x94); //Sleep out
- 163   1              SEND_CMD_LCD(0x31); //EXT=1
- 164   1              SEND_CMD_LCD(0xD7); //Autoread disable
- 165   1              SEND_DATA_LCD(0X9F); //
- 166   1              SEND_CMD_LCD(0x32); //Analog SET
- 167   1              SEND_DATA_LCD(0x00); //OSC Frequency adjustment
- 168   1              SEND_DATA_LCD(0x01); //Frequency on booster capacitors->6KHz
- 169   1              SEND_DATA_LCD(0x03); //Bias=1/11
- 170   1              SEND_CMD_LCD(0x20); // Gray Level
- 171   1              SEND_DATA_LCD(0x01);
- 172   1              
- 173   1              SEND_DATA_LCD(0x03);
- 174   1              SEND_DATA_LCD(0x05);
- 175   1              SEND_DATA_LCD(0x07);
- 176   1              SEND_DATA_LCD(0x09);
- 177   1              SEND_DATA_LCD(0x0b);
- 178   1              SEND_DATA_LCD(0x0d);
-C51 COMPILER V9.00   19296P1                                                               06/15/2019 16:38:34 PAGE 4   
+ 116          void SEND_DATA_LCD(uchar data1)
+ 117          {
+ 118   1              LCD19296_CS1=0;
+ 119   1              LCD19296_RS=1;
+ 120   1              LCD19296_RD=0;
+ 121   1              delay_us(1);
+ 122   1              LCD19296_WR=0;
+ 123   1      //      P2=data1;
+ 124   1              LCD_Send_PData(data1);
+ 125   1              LCD19296_RD=1;
+ 126   1              delay_us(1);
+ 127   1              LCD19296_CS1=1;
+ 128   1              LCD19296_RD=0;
+ 129   1      }
+ 130          
+ 131          void INIT_LCD()
+ 132          {
+ 133   1              LCD19296_IF0 = 0;
+ 134   1              LCD19296_RST=0;
+ 135   1              delay(100);
+ 136   1              LCD19296_RST=1;
+ 137   1              delay(100);
+ 138   1              SEND_CMD_LCD(0x30); //EXT=0
+ 139   1              SEND_CMD_LCD(0x94); //Sleep out
+ 140   1              SEND_CMD_LCD(0x31); //EXT=1
+ 141   1              SEND_CMD_LCD(0xD7); //Autoread disable
+ 142   1              SEND_DATA_LCD(0X9F); //
+ 143   1              SEND_CMD_LCD(0x32); //Analog SET
+ 144   1              SEND_DATA_LCD(0x00); //OSC Frequency adjustment
+ 145   1              SEND_DATA_LCD(0x01); //Frequency on booster capacitors->6KHz
+ 146   1              SEND_DATA_LCD(0x03); //Bias=1/11
+ 147   1              SEND_CMD_LCD(0x20); // Gray Level
+ 148   1              SEND_DATA_LCD(0x01);
+ 149   1              
+ 150   1              SEND_DATA_LCD(0x03);
+ 151   1              SEND_DATA_LCD(0x05);
+ 152   1              SEND_DATA_LCD(0x07);
+ 153   1              SEND_DATA_LCD(0x09);
+ 154   1              SEND_DATA_LCD(0x0b);
+ 155   1              SEND_DATA_LCD(0x0d);
+ 156   1              SEND_DATA_LCD(0x10);
+ 157   1              SEND_DATA_LCD(0x11);
+ 158   1              SEND_DATA_LCD(0x13);
+ 159   1              SEND_DATA_LCD(0x15);
+ 160   1              SEND_DATA_LCD(0x17);
+ 161   1              SEND_DATA_LCD(0x19);
+ 162   1              SEND_DATA_LCD(0x1b);
+ 163   1              SEND_DATA_LCD(0x1d);
+ 164   1              SEND_DATA_LCD(0x1f);
+ 165   1              SEND_CMD_LCD(0x30); //EXT=0
+ 166   1              SEND_CMD_LCD(0x75); //Page Address setting
+ 167   1              
+ 168   1              SEND_DATA_LCD(0X00); // XS=0
+ 169   1              SEND_DATA_LCD(0X14); // XE=159 0x28
+ 170   1              SEND_CMD_LCD(0x15); //Clumn Address setting
+ 171   1              SEND_DATA_LCD(0X00); // XS=0
+ 172   1              SEND_DATA_LCD(0Xff); // XE=256
+ 173   1              SEND_CMD_LCD(0xBC); //Data scan direction
+ 174   1              SEND_DATA_LCD(0x00); //MX.MY=Normal
+ 175   1              SEND_DATA_LCD(0xA6);
+ 176   1              SEND_CMD_LCD(0xCA); //Display Control
+ 177   1              SEND_DATA_LCD(0X00); //
+C51 COMPILER V9.00   19296P1                                                               07/03/2019 08:06:54 PAGE 4   
 
- 179   1              SEND_DATA_LCD(0x10);
- 180   1              SEND_DATA_LCD(0x11);
- 181   1              SEND_DATA_LCD(0x13);
- 182   1              SEND_DATA_LCD(0x15);
- 183   1              SEND_DATA_LCD(0x17);
- 184   1              SEND_DATA_LCD(0x19);
- 185   1              SEND_DATA_LCD(0x1b);
- 186   1              SEND_DATA_LCD(0x1d);
- 187   1              SEND_DATA_LCD(0x1f);
- 188   1              SEND_CMD_LCD(0x30); //EXT=0
- 189   1              SEND_CMD_LCD(0x75); //Page Address setting
- 190   1              
- 191   1              SEND_DATA_LCD(0X00); // XS=0
- 192   1              SEND_DATA_LCD(0X14); // XE=159 0x28
- 193   1              SEND_CMD_LCD(0x15); //Clumn Address setting
- 194   1              SEND_DATA_LCD(0X00); // XS=0
- 195   1              SEND_DATA_LCD(0Xff); // XE=256
- 196   1              SEND_CMD_LCD(0xBC); //Data scan direction
- 197   1              SEND_DATA_LCD(0x00); //MX.MY=Normal
- 198   1              SEND_DATA_LCD(0xA6);
- 199   1              SEND_CMD_LCD(0xCA); //Display Control
- 200   1              SEND_DATA_LCD(0X00); //
- 201   1              SEND_DATA_LCD(0X9F); //Duty=160
- 202   1              SEND_DATA_LCD(0X20); //Nline=off
- 203   1              SEND_CMD_LCD(0xF0); //Display Mode
- 204   1              SEND_DATA_LCD(0X10); //10=Monochrome Mode,11=4Gray
- 205   1              
- 206   1              SEND_CMD_LCD(0x81); //EV control
- 207   1      //      SEND_DATA_LCD(0x3a); //VPR[5-0]
- 208   1              SEND_DATA_LCD(0x30); //VPR[5-0]
- 209   1              SEND_DATA_LCD(0x03); //粗调对比度
- 210   1              SEND_CMD_LCD(0x20); //Power control
- 211   1              SEND_DATA_LCD(0x0B); //D0=regulator ; D1=follower ; D3=booste, on:1 off:0
- 212   1              delay_us(100);
- 213   1              SEND_CMD_LCD(0xAF); //Display on
- 214   1      }
- 215          
- 216          /*写LCD 行列地址：X 为起始的列地址，Y 为起始的行地址，x_total,y_total 分别为列地址及行地址的起点到终点的差
+ 178   1              SEND_DATA_LCD(0X9F); //Duty=160
+ 179   1              SEND_DATA_LCD(0X20); //Nline=off
+ 180   1              SEND_CMD_LCD(0xF0); //Display Mode
+ 181   1              SEND_DATA_LCD(0X10); //10=Monochrome Mode,11=4Gray
+ 182   1              
+ 183   1              SEND_CMD_LCD(0x81); //EV control
+ 184   1      //      SEND_DATA_LCD(0x3a); //VPR[5-0]
+ 185   1              SEND_DATA_LCD(0x30); //VPR[5-0]
+ 186   1              SEND_DATA_LCD(0x03); //粗调对比度
+ 187   1              SEND_CMD_LCD(0x20); //Power control
+ 188   1              SEND_DATA_LCD(0x0B); //D0=regulator ; D1=follower ; D3=booste, on:1 off:0
+ 189   1              delay_us(100);
+ 190   1              SEND_CMD_LCD(0xAF); //Display on
+ 191   1      }
+ 192          
+ 193          /*写LCD 行列地址：X 为起始的列地址，Y 为起始的行地址，x_total,y_total 分别为列地址及行地址的起点到终点的差
              -值 */
- 217          void lcd_address(uchar x,uchar y,x_total,y_total)
- 218          {
- 219   1              x=x-1;
- 220   1              y=y+7;
- 221   1              SEND_CMD_LCD(0x15); //Set Column Address
- 222   1              SEND_DATA_LCD(x);
- 223   1              SEND_DATA_LCD(x+x_total-1);
- 224   1              SEND_CMD_LCD(0x75); //Set Page Address
- 225   1              SEND_DATA_LCD(y);
- 226   1              SEND_DATA_LCD(y+y_total-1);
- 227   1              SEND_CMD_LCD(0x30);
- 228   1              SEND_CMD_LCD(0x5c);
- 229   1      }
- 230          
- 231          /*写LCD 行列地址：X 为起始的列地址，Y 为起始的行地址，x_total,y_total 分别为列地址及行地址的起点到终点的差
+ 194          void lcd_address(uchar x,uchar y,x_total,y_total)
+ 195          {
+ 196   1              x=x-1;
+ 197   1              y=y+7;
+ 198   1              SEND_CMD_LCD(0x15); //Set Column Address
+ 199   1              SEND_DATA_LCD(x);
+ 200   1              SEND_DATA_LCD(x+x_total-1);
+ 201   1              SEND_CMD_LCD(0x75); //Set Page Address
+ 202   1              SEND_DATA_LCD(y);
+ 203   1              SEND_DATA_LCD(y+y_total-1);
+ 204   1              SEND_CMD_LCD(0x30);
+ 205   1              SEND_CMD_LCD(0x5c);
+ 206   1      }
+ 207          
+ 208          /*写LCD 行列地址：X 为起始的列地址，Y 为起始的行地址，x_total,y_total 分别为列地址及行地址的起点到终点的差
              -值 */
- 232          void SET_LCD_DISP_AREA(uchar Column, uchar Page, Column_Total,Page_Total)
- 233          {
- 234   1              Column = Column - 1;
- 235   1              Page = Page + 7;
- 236   1              SEND_CMD_LCD(0x15); //Set Column Address
- 237   1              SEND_DATA_LCD(Column);
- 238   1              Column += Column_Total;
-C51 COMPILER V9.00   19296P1                                                               06/15/2019 16:38:34 PAGE 5   
+ 209          void SET_LCD_DISP_AREA(uchar Column, uchar Page, Column_Total,Page_Total)
+ 210          {
+ 211   1              Column = Column - 1;
+ 212   1              Page = Page + 7;
+ 213   1              SEND_CMD_LCD(0x15); //Set Column Address
+ 214   1              SEND_DATA_LCD(Column);
+ 215   1              Column += Column_Total;
+ 216   1              Column -= 1;
+ 217   1              SEND_DATA_LCD(Column);
+ 218   1              SEND_CMD_LCD(0x75); //Set Page Address
+ 219   1              SEND_DATA_LCD(Page);
+ 220   1              Page += Page_Total;
+ 221   1              Page -= 1;
+ 222   1              SEND_DATA_LCD(Page);
+ 223   1              SEND_CMD_LCD(0x30);
+ 224   1              SEND_CMD_LCD(0x5c);
+ 225   1      }
+ 226          
+ 227          /*清屏*/
+ 228          void clear_screen(void)
+ 229          {
+ 230   1              uchar i,j;
+ 231   1              lcd_address(0,0,193,13);
+ 232   1              for(i=0;i<13;i++)
+ 233   1              {
+ 234   2                      for(j=0;j<193;j++)
+ 235   2                      {
+ 236   3                              SEND_DATA_LCD(0x00);
+ 237   3                      }
+C51 COMPILER V9.00   19296P1                                                               07/03/2019 08:06:54 PAGE 5   
 
- 239   1              Column -= 1;
- 240   1              SEND_DATA_LCD(Column);
- 241   1              SEND_CMD_LCD(0x75); //Set Page Address
- 242   1              SEND_DATA_LCD(Page);
- 243   1              Page += Page_Total;
- 244   1              Page -= 1;
- 245   1              SEND_DATA_LCD(Page);
- 246   1              SEND_CMD_LCD(0x30);
- 247   1              SEND_CMD_LCD(0x5c);
- 248   1      }
- 249          
- 250          /*清屏*/
- 251          void clear_screen()
- 252          {
- 253   1              uchar i,j;
- 254   1              lcd_address(0,0,193,13);
- 255   1              for(i=0;i<13;i++)
- 256   1              {
- 257   2                      for(j=0;j<193;j++)
- 258   2                      {
- 259   3                              SEND_DATA_LCD(0x00);
- 260   3                      }
- 261   2              }
- 262   1      }
- 263          
- 264          void display_8x8(uchar column, uchar page,uchar *text) 
- 265          { 
- 266   1        uchar i; 
- 267   1        lcd_address(column,page,8,1); 
- 268   1          for(i=0;i<8;i++) 
- 269   1          {
- 270   2              SEND_DATA_LCD(*text);
- 271   2              text++; 
- 272   2          } 
- 273   1      }
- 274          
- 275          void display_8x1(uchar column, uchar page,uchar text) 
- 276          { 
- 277   1        lcd_address(column,page,1,1); 
- 278   1        SEND_DATA_LCD(text);
- 279   1      }
- 280          
- 281          //void display_16x8(uchar column, uchar page,uchar *text) 
- 282          //{ 
- 283          //  uchar i; 
- 284          //  lcd_address(column,page,8,2); 
- 285          //    for(i=0;i<16;i++) 
- 286          //    {
- 287          //      SEND_DATA_LCD(*text);
- 288          //      text++; 
- 289          //    } 
- 290          //}
- 291          
- 292          void CHAR_Display_16x8(uchar Column, uchar Page,uchar *dp, uchar Disp_Para) 
- 293          { 
- 294   1        uchar i, Char1608[16], *p1, *p2;
- 295   1              SET_LCD_DISP_AREA(Column, Page, 8, 2); 
- 296   1              
- 297   1              p1 = Char1608;
- 298   1              for(i=0;i<16;i++)
- 299   1                      {*(p1+i) = *(dp+i);}
- 300   1              
-C51 COMPILER V9.00   19296P1                                                               06/15/2019 16:38:34 PAGE 6   
+ 238   2              }
+ 239   1      }
+ 240          
+ 241          void display_8x8(uchar column, uchar page,uchar *text) 
+ 242          { 
+ 243   1        uchar i; 
+ 244   1        lcd_address(column,page,8,1); 
+ 245   1          for(i=0;i<8;i++) 
+ 246   1          {
+ 247   2              SEND_DATA_LCD(*text);
+ 248   2              text++; 
+ 249   2          } 
+ 250   1      }
+ 251          
+ 252          void display_8x1(uchar column, uchar page,uchar text) 
+ 253          { 
+ 254   1        lcd_address(column,page,1,1); 
+ 255   1        SEND_DATA_LCD(text);
+ 256   1      }
+ 257          
+ 258          //void display_16x8(uchar column, uchar page,uchar *text) 
+ 259          //{ 
+ 260          //  uchar i; 
+ 261          //  lcd_address(column,page,8,2); 
+ 262          //    for(i=0;i<16;i++) 
+ 263          //    {
+ 264          //      SEND_DATA_LCD(*text);
+ 265          //      text++; 
+ 266          //    } 
+ 267          //}
+ 268          
+ 269          void CHAR_Display_16x8(uchar Column, uchar Page,uchar *dp, uchar Disp_Para) 
+ 270          { 
+ 271   1        uchar i, Char1608[16], *p1, *p2;
+ 272   1              SET_LCD_DISP_AREA(Column, Page, 8, 2); 
+ 273   1              
+ 274   1              p1 = Char1608;
+ 275   1              for(i=0;i<16;i++)
+ 276   1                      {*(p1+i) = *(dp+i);}
+ 277   1              
+ 278   1      //判断上横
+ 279   1              if((Disp_Para & Disp_UP)>0)
+ 280   1                      {
+ 281   2                                      p2 = Char1608_Up;
+ 282   2                                      for(i=0;i<16;i++)
+ 283   2                                      {*(p1+i)|=*(p2+i);}
+ 284   2                      }
+ 285   1                      else
+ 286   1                              {;}
+ 287   1      
+ 288   1      //判断下横
+ 289   1              if((Disp_Para & Disp_Down)>0)
+ 290   1                      {
+ 291   2                                      p2 = Char1608_Down;
+ 292   2                                      for(i=0;i<16;i++)
+ 293   2                                      {*(p1+i)|=*(p2+i);}
+ 294   2                      }
+ 295   1                      else
+ 296   1                              {;}
+ 297   1      
+ 298   1      //判断左竖
+ 299   1              if((Disp_Para & Disp_Left)>0)
+C51 COMPILER V9.00   19296P1                                                               07/03/2019 08:06:54 PAGE 6   
 
- 301   1      //判断上横
- 302   1              if((Disp_Para & Disp_UP)>0)
- 303   1                      {
- 304   2                                      p2 = Char1608_Up;
- 305   2                                      for(i=0;i<16;i++)
- 306   2                                      {*(p1+i)|=*(p2+i);}
- 307   2                      }
- 308   1                      else
- 309   1                              {;}
- 310   1      
- 311   1      //判断下横
- 312   1              if((Disp_Para & Disp_Down)>0)
- 313   1                      {
- 314   2                                      p2 = Char1608_Down;
- 315   2                                      for(i=0;i<16;i++)
- 316   2                                      {*(p1+i)|=*(p2+i);}
- 317   2                      }
- 318   1                      else
- 319   1                              {;}
- 320   1      
- 321   1      //判断左竖
- 322   1              if((Disp_Para & Disp_Left)>0)
- 323   1                      {
- 324   2                                      p2 = Char1608_Left;
- 325   2                                      for(i=0;i<16;i++)
- 326   2                                      {*(p1+i)|=*(p2+i);}
- 327   2                      }
- 328   1                      else
- 329   1                              {;}
- 330   1      
- 331   1      //判断右竖
- 332   1              if((Disp_Para & Disp_Right)>0)
- 333   1                      {
- 334   2                                      p2 = Char1608_Right;
- 335   2                                      for(i=0;i<16;i++)
- 336   2                                      {*(p1+i)|=*(p2+i);}
- 337   2                      }
- 338   1                      else
- 339   1                              {;}
- 340   1      
- 341   1          for(i=0;i<16;i++) 
- 342   1          {
- 343   2              SEND_DATA_LCD(*(p1+i));
- 344   2          } 
- 345   1      }
- 346          
- 347          ///*显示16*16 点阵的汉字或等同于16*16 点阵的图像*/
- 348          //void disp_16x16(uchar x,uchar y,uchar *dp)
- 349          //{
- 350          //      uchar i,j;
- 351          //      lcd_address(x,y,16,2);
- 352          //      for(i=0;i<2;i++)
- 353          //      {
- 354          //              for(j=0;j<16;j++)
- 355          //              {
- 356          //                      SEND_DATA_LCD(*dp);
- 357          //                      dp++;
- 358          //              }
- 359          //      }
- 360          //}
- 361          
- 362          /*显示16*16 点阵的汉字*/
-C51 COMPILER V9.00   19296P1                                                               06/15/2019 16:38:34 PAGE 7   
+ 300   1                      {
+ 301   2                                      p2 = Char1608_Left;
+ 302   2                                      for(i=0;i<16;i++)
+ 303   2                                      {*(p1+i)|=*(p2+i);}
+ 304   2                      }
+ 305   1                      else
+ 306   1                              {;}
+ 307   1      
+ 308   1      //判断右竖
+ 309   1              if((Disp_Para & Disp_Right)>0)
+ 310   1                      {
+ 311   2                                      p2 = Char1608_Right;
+ 312   2                                      for(i=0;i<16;i++)
+ 313   2                                      {*(p1+i)|=*(p2+i);}
+ 314   2                      }
+ 315   1                      else
+ 316   1                              {;}
+ 317   1      
+ 318   1          for(i=0;i<16;i++) 
+ 319   1          {
+ 320   2              SEND_DATA_LCD(*(p1+i));
+ 321   2          } 
+ 322   1      }
+ 323          
+ 324          ///*显示16*16 点阵的汉字或等同于16*16 点阵的图像*/
+ 325          //void disp_16x16(uchar x,uchar y,uchar *dp)
+ 326          //{
+ 327          //      uchar i,j;
+ 328          //      lcd_address(x,y,16,2);
+ 329          //      for(i=0;i<2;i++)
+ 330          //      {
+ 331          //              for(j=0;j<16;j++)
+ 332          //              {
+ 333          //                      SEND_DATA_LCD(*dp);
+ 334          //                      dp++;
+ 335          //              }
+ 336          //      }
+ 337          //}
+ 338          
+ 339          /*显示16*16 点阵的汉字*/
+ 340          /*形参说明：bit0：上横线，bit1：下横线，bit2：左竖线，bit3：右竖线，bit4：光标，bit5：反显*/
+ 341          /*      bit  7 6 5 4 3 2 1 0    */
+ 342          /*      Para x x x x x x x x    */
+ 343          
+ 344          void Hanzi_Disp_16x16(uchar Column, uchar Page, uchar *dp, uchar Disp_Para)
+ 345          {
+ 346   1              uchar i, Hanzi1616[32], *p1, *p2;
+ 347   1              SET_LCD_DISP_AREA(Column, Page, 16, 2);
+ 348   1      
+ 349   1              p1 = Hanzi1616;
+ 350   1              for(i=0;i<32;i++)
+ 351   1                      {*(p1+i) = *(dp+i);}
+ 352   1              
+ 353   1      //判断上横
+ 354   1              if((Disp_Para & Disp_UP)>0)
+ 355   1                      {
+ 356   2                                      p2 = Hanzi1616_Up;
+ 357   2                                      for(i=0;i<32;i++)
+ 358   2                                      {*(p1+i)|=*(p2+i);}
+ 359   2                      }
+ 360   1                      else
+ 361   1                              {;}
+C51 COMPILER V9.00   19296P1                                                               07/03/2019 08:06:54 PAGE 7   
 
- 363          /*形参说明：bit0：上横线，bit1：下横线，bit2：左竖线，bit3：右竖线，bit4：光标，bit5：反显*/
- 364          /*      bit  7 6 5 4 3 2 1 0    */
- 365          /*      Para x x x x x x x x    */
- 366          
- 367          void Hanzi_Disp_16x16(uchar Column, uchar Page, uchar *dp, uchar Disp_Para)
- 368          {
- 369   1              uchar i, Hanzi1616[32], *p1, *p2;
- 370   1              SET_LCD_DISP_AREA(Column, Page, 16, 2);
- 371   1      
- 372   1              p1 = Hanzi1616;
- 373   1              for(i=0;i<32;i++)
- 374   1                      {*(p1+i) = *(dp+i);}
- 375   1              
- 376   1      //判断上横
- 377   1              if((Disp_Para & Disp_UP)>0)
- 378   1                      {
- 379   2                                      p2 = Hanzi1616_Up;
- 380   2                                      for(i=0;i<32;i++)
- 381   2                                      {*(p1+i)|=*(p2+i);}
- 382   2                      }
- 383   1                      else
- 384   1                              {;}
- 385   1      
- 386   1      //判断下横
- 387   1              if((Disp_Para & Disp_Down)>0)
- 388   1                      {
- 389   2                                      p2 = Hanzi1616_Down;
- 390   2                                      for(i=0;i<32;i++)
- 391   2                                      {*(p1+i)|=*(p2+i);}
- 392   2                      }
- 393   1                      else
- 394   1                              {;}
- 395   1      
- 396   1      //判断左竖
- 397   1              if((Disp_Para & Disp_Left)>0)
- 398   1                      {
- 399   2                                      p2 = Hanzi1616_Left;
- 400   2                                      for(i=0;i<32;i++)
- 401   2                                      {*(p1+i)|=*(p2+i);}
- 402   2                      }
- 403   1                      else
- 404   1                              {;}
- 405   1      
- 406   1      //判断右竖
- 407   1              if((Disp_Para & Disp_Right)>0)
- 408   1                      {
- 409   2                                      p2 = Hanzi1616_Right;
- 410   2                                      for(i=0;i<32;i++)
- 411   2                                      {*(p1+i)|=*(p2+i);}
- 412   2                      }
- 413   1                      else
- 414   1                              {;}
- 415   1      
- 416   1      //最终显示
- 417   1              for(i=0;i<32;i++)
- 418   1              {
- 419   2                      SEND_DATA_LCD(*(p1+i));
- 420   2              }
- 421   1      }
- 422          
- 423          /*显示24*24 点阵的汉字或等同于24*24 点阵的图像*/
- 424          void disp_24x24(int x,int y,uchar *dp)
-C51 COMPILER V9.00   19296P1                                                               06/15/2019 16:38:34 PAGE 8   
+ 362   1      
+ 363   1      //判断下横
+ 364   1              if((Disp_Para & Disp_Down)>0)
+ 365   1                      {
+ 366   2                                      p2 = Hanzi1616_Down;
+ 367   2                                      for(i=0;i<32;i++)
+ 368   2                                      {*(p1+i)|=*(p2+i);}
+ 369   2                      }
+ 370   1                      else
+ 371   1                              {;}
+ 372   1      
+ 373   1      //判断左竖
+ 374   1              if((Disp_Para & Disp_Left)>0)
+ 375   1                      {
+ 376   2                                      p2 = Hanzi1616_Left;
+ 377   2                                      for(i=0;i<32;i++)
+ 378   2                                      {*(p1+i)|=*(p2+i);}
+ 379   2                      }
+ 380   1                      else
+ 381   1                              {;}
+ 382   1      
+ 383   1      //判断右竖
+ 384   1              if((Disp_Para & Disp_Right)>0)
+ 385   1                      {
+ 386   2                                      p2 = Hanzi1616_Right;
+ 387   2                                      for(i=0;i<32;i++)
+ 388   2                                      {*(p1+i)|=*(p2+i);}
+ 389   2                      }
+ 390   1                      else
+ 391   1                              {;}
+ 392   1      
+ 393   1      //最终显示
+ 394   1              for(i=0;i<32;i++)
+ 395   1              {
+ 396   2                      SEND_DATA_LCD(*(p1+i));
+ 397   2              }
+ 398   1      }
+ 399          
+ 400          /*显示24*24 点阵的汉字或等同于24*24 点阵的图像*/
+ 401          void disp_24x24(int x,int y,uchar *dp)
+ 402          {
+ 403   1              uchar i;
+ 404   1              lcd_address(x,y,24,3);
+ 405   1              for(i=0;i<72;i++)
+ 406   1              {
+ 407   2                      SEND_DATA_LCD(*(dp+i));
+ 408   2              }
+ 409   1      }
+ 410          
+ 411          /////*显示32*32 点阵的汉字或等同于32*32 点阵的图像*/
+ 412          ////void disp_32x32(int x,int y,uchar *dp)
+ 413          ////{
+ 414          ////    uchar i,j;
+ 415          ////    lcd_address(x,y,32,4);
+ 416          ////    for(i=0;i<4;i++)
+ 417          ////    {
+ 418          ////            for(j=0;j<32;j++)
+ 419          ////            {
+ 420          ////                    SEND_DATA_LCD(*dp);
+ 421          ////                    dp++;
+ 422          ////            }
+ 423          ////    }
+C51 COMPILER V9.00   19296P1                                                               07/03/2019 08:06:54 PAGE 8   
 
- 425          {
- 426   1              uchar i;
- 427   1              lcd_address(x,y,24,3);
- 428   1              for(i=0;i<72;i++)
- 429   1              {
- 430   2                      SEND_DATA_LCD(*(dp+i));
- 431   2              }
- 432   1      }
- 433          
- 434          /////*显示32*32 点阵的汉字或等同于32*32 点阵的图像*/
- 435          ////void disp_32x32(int x,int y,uchar *dp)
- 436          ////{
- 437          ////    uchar i,j;
- 438          ////    lcd_address(x,y,32,4);
- 439          ////    for(i=0;i<4;i++)
- 440          ////    {
- 441          ////            for(j=0;j<32;j++)
- 442          ////            {
- 443          ////                    SEND_DATA_LCD(*dp);
- 444          ////                    dp++;
- 445          ////            }
- 446          ////    }
- 447          ////}
- 448          ////
- 449          /////*显示48*48 点阵的汉字或图像*/
- 450          ////void disp_48x48(uchar x,uchar y,char *dp)
- 451          ////{
- 452          ////    uchar i,j;
- 453          ////    lcd_address(x,y,48,6);
- 454          ////    for(i=0;i<6;i++)
- 455          ////    {
- 456          ////            for(j=0;j<48;j++)
- 457          ////            {
- 458          ////                    SEND_DATA_LCD(*dp);
- 459          ////                    dp++;
- 460          ////            }
- 461          ////    }
- 462          ////}
- 463          ////
- 464          /////*显示64*48 点阵的汉字或图像*/
- 465          ////void disp_64x48(uchar x,uchar y,char *dp)
- 466          ////{
- 467          ////    uchar i,j;
- 468          ////    lcd_address(x,y,55,6);
- 469          ////    for(i=0;i<6;i++)
- 470          ////    {
- 471          ////            for(j=0;j<55;j++)
- 472          ////            {
- 473          ////                    SEND_DATA_LCD(*dp);
- 474          ////                    dp++;
- 475          ////            }
- 476          ////    }
- 477          ////}
- 478          ////
- 479          /////*显示96*24 点阵的图像*/
- 480          ////void disp_96x24(uchar x,uchar y,char *dp)
- 481          ////{
- 482          ////    uchar i,j; 
- 483          ////    lcd_address(x,y,96,3);
- 484          ////    for(i=0;i<3;i++)
- 485          ////    {
- 486          ////            for(j=0;j<96;j++)
-C51 COMPILER V9.00   19296P1                                                               06/15/2019 16:38:34 PAGE 9   
+ 424          ////}
+ 425          ////
+ 426          /////*显示48*48 点阵的汉字或图像*/
+ 427          ////void disp_48x48(uchar x,uchar y,char *dp)
+ 428          ////{
+ 429          ////    uchar i,j;
+ 430          ////    lcd_address(x,y,48,6);
+ 431          ////    for(i=0;i<6;i++)
+ 432          ////    {
+ 433          ////            for(j=0;j<48;j++)
+ 434          ////            {
+ 435          ////                    SEND_DATA_LCD(*dp);
+ 436          ////                    dp++;
+ 437          ////            }
+ 438          ////    }
+ 439          ////}
+ 440          ////
+ 441          /////*显示64*48 点阵的汉字或图像*/
+ 442          ////void disp_64x48(uchar x,uchar y,char *dp)
+ 443          ////{
+ 444          ////    uchar i,j;
+ 445          ////    lcd_address(x,y,55,6);
+ 446          ////    for(i=0;i<6;i++)
+ 447          ////    {
+ 448          ////            for(j=0;j<55;j++)
+ 449          ////            {
+ 450          ////                    SEND_DATA_LCD(*dp);
+ 451          ////                    dp++;
+ 452          ////            }
+ 453          ////    }
+ 454          ////}
+ 455          ////
+ 456          /////*显示96*24 点阵的图像*/
+ 457          ////void disp_96x24(uchar x,uchar y,char *dp)
+ 458          ////{
+ 459          ////    uchar i,j; 
+ 460          ////    lcd_address(x,y,96,3);
+ 461          ////    for(i=0;i<3;i++)
+ 462          ////    {
+ 463          ////            for(j=0;j<96;j++)
+ 464          ////            {
+ 465          ////                    SEND_DATA_LCD(*dp);
+ 466          ////                    dp++;
+ 467          ////            }
+ 468          ////    }
+ 469          ////}
+ 470          ////
+ 471          /////*显示196*96 点阵的图像*/
+ 472          ////void disp_192x96(uchar x,uchar y,char *dp)
+ 473          ////{
+ 474          ////    uchar i,j; 
+ 475          ////    lcd_address(x,y,192,12);
+ 476          ////    for(i=0;i<12;i++)
+ 477          ////    {
+ 478          ////            for(j=0;j<192;j++)
+ 479          ////            {
+ 480          ////                    SEND_DATA_LCD(*dp);
+ 481          ////                    dp++;
+ 482          ////            }
+ 483          ////    }
+ 484          ////}
+ 485          
+C51 COMPILER V9.00   19296P1                                                               07/03/2019 08:06:54 PAGE 9   
 
- 487          ////            {
- 488          ////                    SEND_DATA_LCD(*dp);
- 489          ////                    dp++;
- 490          ////            }
- 491          ////    }
- 492          ////}
- 493          ////
- 494          /////*显示196*96 点阵的图像*/
- 495          ////void disp_192x96(uchar x,uchar y,char *dp)
- 496          ////{
- 497          ////    uchar i,j; 
- 498          ////    lcd_address(x,y,192,12);
- 499          ////    for(i=0;i<12;i++)
- 500          ////    {
- 501          ////            for(j=0;j<192;j++)
- 502          ////            {
- 503          ////                    SEND_DATA_LCD(*dp);
- 504          ////                    dp++;
- 505          ////            }
- 506          ////    }
- 507          ////}
- 508          
+ 486          //特殊符号（取字模方式：阴码，列行式，顺向
+ 487          
+ 488          uchar code Char0808_Up[]={0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80};/*"上横"*/
+ 489          
+ 490          uchar code Char0808_Down[]={0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"下横"*/
+ 491          
+ 492          uchar code Char0808_Left[]={0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"左竖"*/
+ 493          
+ 494          uchar code Char0808_Right[]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"右竖"*/
+ 495          
+ 496          uchar code Char0808_UpDown[]={0x81,0x81,0x81,0x81,0x81,0x81,0x81,0x81};/*"上横+下横"*/
+ 497          
+ 498          uchar code Char1608_Up[]={
+ 499          0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"上横"*/
+ 500          
+ 501          uchar code Char1608_Down[]={
+ 502          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"下横"*/
+ 503          
+ 504          uchar code Char1608_Left[]={
+ 505          0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"左竖"*/
+ 506          
+ 507          uchar code Char1608_Right[]={
+ 508          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"右竖"*/
  509          
- 510          //特殊符号（取字模方式：阴码，列行式，顺向
- 511          
- 512          uchar code Char0808_Up[]={0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80};/*"上横"*/
+ 510          uchar code Hanzi1616_Up[]={
+ 511          0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,
+ 512          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"上横"*/
  513          
- 514          uchar code Char0808_Down[]={0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"下横"*/
- 515          
- 516          uchar code Char0808_Left[]={0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"左竖"*/
+ 514          uchar code Hanzi1616_Down[]={
+ 515          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+ 516          0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"下横"*/
  517          
- 518          uchar code Char0808_Right[]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"右竖"*/
- 519          
- 520          uchar code Char0808_UpDown[]={0x81,0x81,0x81,0x81,0x81,0x81,0x81,0x81};/*"上横+下横"*/
+ 518          uchar code Hanzi1616_Left[]={
+ 519          0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+ 520          0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"左竖"*/
  521          
- 522          uchar code Char1608_Up[]={
- 523          0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"上横"*/
- 524          
- 525          uchar code Char1608_Down[]={
- 526          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"下横"*/
- 527          
- 528          uchar code Char1608_Left[]={
- 529          0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"左竖"*/
- 530          
- 531          uchar code Char1608_Right[]={
- 532          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"右竖"*/
- 533          
- 534          uchar code Hanzi1616_Up[]={
- 535          0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,
- 536          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"上横"*/
- 537          
- 538          uchar code Hanzi1616_Down[]={
- 539          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
- 540          0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"下横"*/
- 541          
- 542          uchar code Hanzi1616_Left[]={
- 543          0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
- 544          0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"左竖"*/
- 545          
- 546          uchar code Hanzi1616_Right[]={
- 547          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,
- 548          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"右竖"*/
-C51 COMPILER V9.00   19296P1                                                               06/15/2019 16:38:34 PAGE 10  
-
- 549          
- 550          
- 551          //汉字取模设置：阴码，列行式，顺向
- 552          uchar code Hanzi_1616_ST_Dian[]={
- 553          0x00,0x00,0x1F,0x11,0x11,0x11,0x11,0xFF,0x11,0x11,0x11,0x11,0x1F,0x00,0x00,0x00,
- 554          0x00,0x00,0xF8,0x10,0x10,0x10,0x10,0xFE,0x11,0x11,0x11,0x11,0xF9,0x01,0x0F,0x00};/*"电",0*/
- 555          
- 556          uchar code Hanzi_1616_ST_Ji[]={
- 557          0x08,0x08,0x0B,0xFF,0x09,0x08,0x00,0x7F,0x40,0x40,0x40,0x7F,0x00,0x00,0x00,0x00,
- 558          0x20,0xC0,0x00,0xFF,0x00,0xC1,0x06,0xF8,0x00,0x00,0x00,0xFC,0x02,0x02,0x1E,0x00};/*"机",1*/
- 559          
- 560          
- 561          uchar code Hanzi_1616_HWXH_Dian[]={
- 562          0x00,0x00,0x0F,0x09,0x09,0x09,0x09,0x3F,0x09,0x09,0x09,0x09,0x09,0x0F,0x00,0x00,
- 563          0x00,0x00,0xF0,0x20,0x20,0x20,0x20,0xFE,0x22,0x22,0x22,0x22,0x22,0xF2,0x0C,0x00};/*"电",0*/
- 564          
- 565          uchar code Hanzi_1616_HWXH_Ji[]={
- 566          0x00,0x04,0x04,0x05,0x3F,0x05,0x04,0x04,0x1F,0x10,0x10,0x10,0x1F,0x00,0x00,0x00,
- 567          0x00,0x30,0x60,0x80,0xFE,0x02,0xC2,0x4C,0xF0,0x00,0x00,0x00,0xFE,0x02,0x06,0x04};/*"机",1*/
- 568          
- 569          uchar code Hanzi_1616_XST_Fan[]={
- 570          0x00,0x02,0x02,0x42,0x33,0x00,0x00,0x3F,0x24,0x25,0x24,0x44,0x44,0xC5,0x46,0x00,
- 571          0x00,0x00,0x02,0x04,0xF8,0x04,0x1A,0xE2,0x0A,0x12,0xA2,0x42,0xA2,0x12,0x0A,0x02};/*"返",0*/
- 572          
- 573          uchar code Hanzi_1616_XST_Hui[]={
- 574          0x00,0x00,0x00,0x7F,0x40,0x40,0x4F,0x48,0x48,0x48,0x4F,0x40,0x40,0x7F,0x00,0x00,
- 575          0x00,0x00,0x00,0xFE,0x04,0x04,0xE4,0x24,0x24,0x24,0xE4,0x04,0x04,0xFE,0x00,0x00};/*"回",0*/
- 576          
- 577          uchar code Hanzi_1616_XST_Que[]={
- 578          0x20,0x21,0x27,0x3A,0x22,0x23,0x04,0x08,0x17,0xE4,0x24,0x27,0x2C,0x34,0x07,0x00,
- 579          0x40,0x80,0xFE,0x08,0x08,0xFC,0x01,0x06,0xF8,0x90,0x90,0xFC,0x92,0x91,0xFE,0x00};/*"确",0*/
- 580          
- 581          uchar code Hanzi_1616_XST_Ding[]={
- 582          0x08,0x30,0x22,0x22,0x22,0x22,0xA2,0x63,0x22,0x22,0x22,0x22,0x22,0x28,0x30,0x00,
- 583          0x01,0x02,0x04,0x78,0x04,0x02,0x02,0xFE,0x22,0x22,0x22,0x22,0x22,0x02,0x02,0x00};/*"定",0*/
- 584          
- 585          uchar code Hanzi_1616_XST_Ren[]={
- 586          0x02,0x02,0x42,0x33,0x00,0x00,0x00,0x00,0x00,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,
- 587          0x00,0x00,0x00,0xFC,0x09,0x12,0x04,0x18,0xE0,0x00,0xE0,0x18,0x04,0x02,0x01,0x00};/*"认",0*/
- 588          
- 589          uchar code Hanzi_1616_XST_Fan1[]={
- 590          0x00,0x00,0x00,0x3F,0x24,0x24,0x27,0x24,0x24,0x44,0x44,0x44,0xC5,0x46,0x00,0x00,
- 591          0x00,0x02,0x0C,0xF1,0x01,0x02,0x02,0xC4,0x28,0x10,0x28,0x44,0x82,0x02,0x01,0x01};/*"反",0*/
- 592          
- 593          uchar code Hanzi_1616_XST_Zheng[]={
- 594          0x00,0x00,0x40,0x40,0x43,0x40,0x40,0x40,0x7F,0x41,0x41,0x41,0x41,0x41,0x40,0x00,
- 595          0x00,0x02,0x02,0x02,0xFE,0x02,0x02,0x02,0xFE,0x02,0x02,0x02,0x02,0x02,0x02,0x02};/*"正",0*/
- 596          
- 597          uchar code Hanzi_1616_XST_Xiang[]={
- 598          0x00,0x1F,0x10,0x10,0x30,0x53,0x92,0x12,0x12,0x13,0x10,0x10,0x10,0x1F,0x00,0x00,
- 599          0x00,0xFF,0x00,0x00,0x00,0xF8,0x10,0x10,0x10,0xF8,0x00,0x02,0x01,0xFE,0x00,0x00};/*"向",0*/
- 600          
- 601          uchar code Hanzi_1616_XST_Bian[]={
- 602          0x00,0x04,0x0C,0x35,0xC6,0x0C,0x00,0x3F,0x24,0xA4,0x64,0x24,0x24,0x24,0x3C,0x00,
- 603          0x00,0x44,0xE6,0x44,0x48,0x4A,0x1C,0xE0,0xFF,0x90,0xFE,0x90,0xFC,0x91,0xFF,0x00};/*"编",0*/
- 604          
- 605          uchar code Hanzi_1616_XST_Ma[]={
- 606          0x20,0x21,0x27,0x3A,0x22,0x23,0x00,0x40,0x4F,0x41,0x41,0x41,0x7F,0x01,0x01,0x00,
- 607          0x40,0x80,0xFE,0x08,0x08,0xFC,0x00,0x10,0x10,0x10,0x10,0x12,0x11,0x02,0xFC,0x00};/*"码",0*/
- 608          
- 609          uchar code Hanzi_1616_XST_Qi[]={
- 610          0x01,0x01,0x79,0x49,0x49,0x49,0x79,0x07,0x01,0x79,0x4D,0x4B,0x49,0x79,0x01,0x00,
-C51 COMPILER V9.00   19296P1                                                               06/15/2019 16:38:34 PAGE 11  
-
- 611          0x10,0x10,0x2F,0x29,0x49,0x49,0x8F,0x00,0x80,0x4F,0x49,0x29,0x29,0x1F,0x10,0x00};/*"器",0*/
- 612          
- 613          uchar code Hanzi_1616_XST_Yun[]={
- 614          0x02,0x02,0x42,0x33,0x00,0x04,0x44,0x44,0x45,0x46,0x44,0x44,0x44,0x04,0x00,0x00,
- 615          0x00,0x02,0x04,0xF8,0x04,0x22,0x72,0xA2,0x22,0x22,0x22,0xA2,0x62,0x32,0x02,0x00};/*"运",0*/
- 616          
- 617          uchar code Hanzi_1616_XST_Xing[]={
- 618          0x00,0x08,0x11,0x23,0xCC,0x00,0x02,0x42,0x42,0x42,0x43,0x42,0x42,0x42,0x02,0x00,
- 619          0x40,0x80,0x00,0xFF,0x00,0x00,0x00,0x00,0x02,0x01,0xFE,0x00,0x00,0x00,0x00,0x00};/*"行",0*/
- 620          
- 621          uchar code Hanzi_1616_XST_Shu[]={
- 622          0x09,0x4A,0x2C,0x08,0xFF,0x08,0x2C,0x4A,0x01,0x0E,0xF1,0x10,0x10,0x1F,0x10,0x00,
- 623          0x41,0x59,0x6A,0xC6,0x44,0x4A,0x71,0x00,0x01,0x02,0xCC,0x30,0xCC,0x02,0x01,0x00};/*"数",0*/
- 624          
- 625          uchar code Hanzi_1616_XST_Cai[]={
- 626          0x20,0x20,0x22,0x23,0xF2,0x22,0x22,0x23,0x24,0x24,0xF4,0x2D,0x24,0x20,0x20,0x00,
- 627          0x02,0x22,0x24,0x24,0xA8,0x30,0x20,0x7F,0x20,0x30,0xA8,0x24,0x24,0x22,0x02,0x00};/*"菜",0*/
- 628          
- 629          uchar code Hanzi_1616_XST_Dan[]={
- 630          0x00,0x00,0x1F,0x92,0x52,0x32,0x12,0x1F,0x12,0x32,0x52,0x92,0x1F,0x00,0x00,0x00,
- 631          0x08,0x08,0xC8,0x48,0x48,0x48,0x48,0xFF,0x48,0x48,0x48,0x48,0xC8,0x08,0x08,0x00};/*"单",0*/
- 632          
- 633          
- 634          
- 635          uchar code char_number_table[]={
- 636          0x00,0x00,0x0F,0x1F,0x10,0x16,0x1F,0x0F,0x00,0x00,0xE0,0xF0,0xD0,0x10,0xF0,0xE0,/*"0",0*/
- 637          0x00,0x04,0x04,0x0C,0x1F,0x1F,0x00,0x00,0x00,0x00,0x00,0x00,0xF0,0xF0,0x00,0x00,/*"1",1*/
- 638          0x00,0x0C,0x1C,0x10,0x11,0x1F,0x0E,0x00,0x00,0x30,0x70,0xD0,0x90,0x10,0x10,0x00,/*"2",2*/
- 639          0x00,0x0C,0x1C,0x11,0x11,0x1F,0x0E,0x00,0x00,0x60,0x70,0x10,0x10,0xF0,0xE0,0x00,/*"3",3*/
- 640          0x00,0x00,0x1F,0x1F,0x00,0x07,0x07,0x00,0x00,0xC0,0xC0,0x40,0x40,0xF0,0xF0,0x40,/*"4",4*/
- 641          0x00,0x1F,0x1F,0x11,0x11,0x11,0x10,0x00,0x00,0x10,0x10,0x10,0x30,0xE0,0xC0,0x00,/*"5",5*/
- 642          0x00,0x03,0x07,0x1E,0x1A,0x13,0x01,0x00,0x00,0xE0,0xF0,0x10,0x10,0xF0,0xE0,0x00,/*"6",6*/
- 643          0x00,0x10,0x10,0x11,0x17,0x1E,0x18,0x00,0x00,0x00,0x70,0xF0,0x80,0x00,0x00,0x00,/*"7",7*/
- 644          0x00,0x0E,0x1F,0x13,0x11,0x1F,0x0E,0x00,0x00,0xE0,0xF0,0x10,0x90,0xF0,0xE0,0x00,/*"8",8*/
- 645          0x00,0x0F,0x1F,0x10,0x10,0x1F,0x0F,0x00,0x00,0x00,0x90,0xB0,0xF0,0xC0,0x80,0x00/*"9",9*/
- 646          };
- 647          
- 648          uchar code char_cMaohao[]={
- 649          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xD8,0xD8,0x00,0x00,0x00,0x00};/*":",0*/
- 650          
- 651          uchar code char_cDot[]={
- 652          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x30,0x30,0x30,0x00,0x00};/*".",0*/
- 653          
- 654          uchar code char_capital_A[]={
- 655          0x00,0x07,0x0F,0x18,0x18,0x0F,0x07,0x00,0x00,0xF0,0xF0,0x80,0x80,0xF0,0xF0,0x00};/*"A",0*/
- 656          
- 657          uchar code char_capital_H[]={
- 658          0x00,0x1F,0x1F,0x01,0x01,0x1F,0x1F,0x00,0x00,0xF0,0xF0,0x00,0x00,0xF0,0xF0,0x00};/*"H",0*/
- 659          
- 660          uchar code char_capital_I[]={
- 661          0x00,0x00,0x10,0x1F,0x1F,0x10,0x00,0x00,0x00,0x00,0x10,0xF0,0xF0,0x10,0x00,0x00};/*"I",0*/
- 662          
- 663          uchar code char_capital_F[]={
- 664          0x00,0x1F,0x1F,0x11,0x11,0x11,0x10,0x00,0x00,0xF0,0xF0,0x00,0x00,0x00,0x00,0x00};/*"F",0*/
- 665          
- 666          uchar code char_z[]={
- 667          0x00,0x04,0x04,0x04,0x05,0x07,0x06,0x00,0x00,0x30,0x70,0xD0,0x90,0x10,0x10,0x00};/*"z",0*/
- 668          
- 669          
- 670          
- 671          uchar code Hanzi_2424_HWZS_Dian[]={
- 672          0x00,0x00,0x00,0x00,0x03,0x03,0x01,0x01,0x01,0x01,0x01,0x1F,0x1F,0x01,0x01,0x01,0x01,0x03,
-C51 COMPILER V9.00   19296P1                                                               06/15/2019 16:38:34 PAGE 12  
-
- 673          0x03,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0xFF,0x11,0x11,0x11,0x11,0x11,0xFF,
- 674          0xFF,0x11,0x11,0x11,0x11,0xFF,0xFF,0x00,0x00,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0xC0,0xC0,
- 675          0x00,0x00,0x00,0x00,0x00,0xF8,0xFC,0x0C,0x0C,0x0C,0x0C,0x8C,0x8C,0x0C,0x1C,0xFC,0x18,0x00};/*"电",0*/
- 676          
- 677          uchar code Hanzi_2424_HWZS_Ji[]={
- 678          0x00,0x00,0x00,0x00,0x00,0x1F,0x0F,0x00,0x01,0x01,0x01,0x00,0x0F,0x0F,0x04,0x04,0x04,0x0F,
- 679          0x0F,0x04,0x00,0x00,0x00,0x00,0x00,0x80,0x83,0x8E,0xFC,0xFF,0xFF,0x90,0x88,0x8E,0x8C,0x00,
- 680          0xFF,0xFF,0x00,0x00,0x00,0xFF,0xFF,0x00,0x00,0x00,0x03,0x00,0x40,0x80,0x00,0x00,0x00,0xFC,
- 681          0xFC,0x00,0x04,0x08,0x10,0x60,0xC0,0x00,0x00,0x00,0x00,0xF8,0xF8,0x18,0x18,0x38,0xF8,0x10};/*"机",0*/
- 682          
- 683          uchar code Hanzi_2424_HWZS_Fang[]={
- 684          0x00,0x00,0x00,0x01,0x01,0x01,0x01,0x01,0x01,0x11,0x19,0x1D,0x0F,0x01,0x01,0x01,0x01,0x01,
- 685          0x01,0x03,0x07,0x03,0x03,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x07,0xFF,0xFC,
- 686          0x90,0x10,0x10,0x10,0x10,0x3F,0x3F,0x10,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x04,0x04,0x08,
- 687          0x18,0x30,0xE0,0xC0,0x80,0x10,0x10,0x08,0x0C,0x0C,0x3C,0xF8,0xE0,0x00,0x00,0x00,0x00,0x00};/*"方",0*/
- 688          
- 689          uchar code Hanzi_2424_HWZS_Xiang[]={
- 690          0x00,0x00,0x00,0x03,0x01,0x01,0x01,0x01,0x07,0x1D,0x19,0x11,0x01,0x01,0x01,0x01,0x01,0x01,
- 691          0x01,0x03,0x03,0x01,0x00,0x00,0x00,0x00,0x00,0xFF,0xFF,0x00,0x00,0x7F,0x3F,0x21,0x21,0x21,
- 692          0x21,0x7F,0x3F,0x20,0x00,0x00,0x00,0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0xFC,0xFC,0x00,
- 693          0x00,0xC0,0xC0,0x00,0x00,0x00,0x00,0x80,0x80,0x00,0x08,0x08,0x0C,0xFC,0xF8,0x00,0x00,0x00};/*"向",0*/
- 694          
- 695          uchar code Hanzi_2424_HWZS_Xia[]={
- 696          0x00,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x07,0x07,0x04,0x04,0x04,0x04,0x04,0x04,
- 697          0x04,0x0C,0x0C,0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0xFF,
- 698          0x20,0x20,0x10,0x18,0x1C,0x0E,0x0F,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
- 699          0x00,0x00,0x00,0x00,0xFC,0xFC,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"下",0*/
- 700          
- 701          uchar code Hanzi_2424_HWZS_Xian[]={
- 702          0x00,0x00,0x00,0x0F,0x0F,0x08,0x08,0x0B,0x0E,0x0C,0x04,0x0F,0x0F,0x08,0x08,0x08,0x08,0x08,
- 703          0x08,0x0F,0x0F,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0xFF,0x01,0xE1,0xB1,0x1F,0x0F,0x00,0xFF,
- 704          0xFF,0x90,0x90,0x9E,0x93,0x90,0x91,0xFB,0xF6,0x06,0x00,0x00,0x00,0x00,0x00,0xFC,0xFC,0x00,
- 705          0x80,0x80,0x80,0x00,0x08,0xFC,0xF8,0x18,0x10,0x20,0xA0,0xC0,0x60,0x30,0x38,0x18,0x10,0x00};/*"限",0*/
- 706          
- 707          uchar code Hanzi_2424_HWZS_Wei[]={
- 708          0x00,0x00,0x00,0x00,0x00,0x01,0x07,0x1E,0x0C,0x08,0x00,0x00,0x00,0x10,0x18,0x0E,0x06,0x00,
- 709          0x00,0x00,0x01,0x01,0x00,0x00,0x00,0x04,0x08,0x10,0x60,0xFF,0x7F,0x40,0x00,0x80,0xB0,0x9E,
- 710          0x87,0x81,0x80,0x80,0x80,0x9F,0xFE,0xF0,0xA0,0x80,0x80,0x00,0x00,0x00,0x00,0x00,0x00,0xFC,
- 711          0xFC,0x08,0x08,0x08,0x08,0x08,0xC8,0xC8,0x08,0x08,0xF8,0x88,0x08,0x08,0x18,0x38,0x18,0x08};/*"位",0*/
- 712          
- 713          uchar code Hanzi_2424_HWZS_Xue[]={
- 714          0x00,0x00,0x00,0x00,0x00,0x08,0x0E,0x07,0x03,0x00,0x10,0x0C,0x0F,0x07,0x00,0x00,0x03,0x1E,
- 715          0x0C,0x08,0x00,0x00,0x00,0x00,0x00,0x08,0x19,0x39,0xF1,0x41,0x51,0x51,0x51,0x51,0x51,0x51,
- 716          0x57,0x53,0x55,0xD9,0x59,0x71,0x59,0x51,0xE3,0xE7,0x63,0x01,0x00,0x00,0x00,0x00,0x00,0x00,
- 717          0x00,0x00,0x00,0x08,0x08,0x0C,0xFC,0xF8,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"学",0*/
- 718          
- 719          uchar code Hanzi_2424_HWZS_Xi[]={
- 720          0x00,0x00,0x00,0x00,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,
- 721          0x0F,0x0F,0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x01,0x01,0x81,0x83,0xC3,0xF3,0x72,
- 722          0x26,0x04,0x04,0x04,0x08,0x08,0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x80,0xC0,
- 723          0x80,0x80,0x00,0x00,0x00,0x00,0x10,0x10,0x10,0x18,0x1C,0x38,0xF8,0xF0,0x00,0x00,0x00,0x00};/*"习",0*/
- 724          
- 725          uchar code Hanzi_2424_HWZS_Shang[]={
- 726          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x1F,0x0F,0x0F,0x08,0x00,0x00,0x00,0x00,
- 727          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0xFF,
- 728          0xFF,0x20,0x20,0x20,0x20,0x20,0x60,0xE0,0x60,0x20,0x00,0x00,0x00,0x08,0x08,0x08,0x08,0x08,
- 729          0x08,0x08,0x08,0x08,0xF8,0xF8,0xF8,0x08,0x08,0x08,0x08,0x08,0x08,0x18,0x38,0x18,0x08,0x00};/*"上",0*/
- 730          
- 731          uchar code Hanzi_2424_HWZS_Zhi[]={
- 732          0x00,0x04,0x04,0x04,0x04,0x05,0x07,0x06,0x04,0x04,0x0C,0x1C,0x0C,0x04,0x03,0x1F,0x1C,0x08,
- 733          0x00,0x00,0x00,0x03,0x01,0x00,0x00,0x22,0x32,0x72,0xF2,0xA2,0x3F,0x3F,0xA2,0xE2,0x66,0x76,
- 734          0x0A,0x70,0xFC,0x87,0x81,0x8F,0xFF,0xF8,0xC0,0x80,0x80,0x80,0x00,0x10,0x18,0x18,0x18,0x10,
-C51 COMPILER V9.00   19296P1                                                               06/15/2019 16:38:34 PAGE 13  
-
- 735          0xF0,0xF0,0x20,0x24,0x24,0x28,0x08,0x10,0x30,0xE0,0xE0,0xF0,0x38,0x38,0x1C,0x08,0x08,0x08};/*"致",0*/
- 736          
- 737          uchar code Hanzi_2424_HWZS_Ke[]={
- 738          0x00,0x00,0x02,0x04,0x04,0x04,0x07,0x0F,0x0C,0x18,0x08,0x00,0x00,0x03,0x03,0x01,0x00,0x1F,
- 739          0x1F,0x00,0x00,0x00,0x00,0x00,0x00,0x40,0x40,0x43,0x4E,0x7C,0xFF,0xFF,0x50,0xC8,0xCE,0xC4,
- 740          0x20,0x19,0x9D,0x81,0x01,0xFF,0xFF,0x02,0x06,0x06,0x06,0x00,0x00,0x40,0x80,0x00,0x00,0x00,
- 741          0xFC,0xFC,0x00,0x80,0x80,0x80,0x80,0x00,0x00,0x00,0x00,0xFC,0xFC,0x00,0x00,0x00,0x00,0x00};/*"科",0*/
- 742          
- 743          uchar code Hanzi_2424_HWZS_Ji1[]={
- 744          0x00,0x00,0x00,0x00,0x00,0x1F,0x0F,0x00,0x01,0x01,0x01,0x01,0x01,0x01,0x1F,0x1F,0x01,0x01,
- 745          0x01,0x03,0x03,0x03,0x00,0x00,0x00,0x84,0x86,0x86,0x8C,0xFF,0xFF,0x98,0x90,0x90,0xB0,0x18,
- 746          0x17,0x11,0xF0,0xF0,0x11,0x17,0x3E,0x38,0x10,0x00,0x00,0x00,0x00,0x00,0x08,0x08,0x0C,0xFC,
- 747          0xF8,0x00,0x04,0x04,0x08,0x08,0x10,0xF0,0xE0,0xE0,0xB0,0x38,0x18,0x1C,0x1C,0x08,0x00,0x00};/*"技",0*/
- 748          
+ 522          uchar code Hanzi1616_Right[]={
+ 523          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,
+ 524          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"右竖"*/
+ 525          
+ 526          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
    CODE SIZE        =   1948    ----
-   CONSTANT SIZE    =   2080    ----
+   CONSTANT SIZE    =    232    ----
    XDATA SIZE       =   ----      97
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----

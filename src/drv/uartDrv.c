@@ -181,7 +181,7 @@ void uart3Int()
     
     if (S3CON & S3RI)
     {
-        P44 = 1;
+        // P44 = 1;
 
         uartData = S3BUF;
 
@@ -189,7 +189,7 @@ void uart3Int()
 
         S3CON &= ~S3RI;
 
-        P44 = 0;     
+        // P44 = 0;     
     }
     if (S3CON & S3TI)
     {

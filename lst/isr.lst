@@ -1,4 +1,4 @@
-C51 COMPILER V9.00   ISR                                                                   06/15/2019 19:35:37 PAGE 1   
+C51 COMPILER V9.00   ISR                                                                   07/03/2019 08:06:53 PAGE 1   
 
 
 C51 COMPILER V9.00, COMPILATION OF MODULE ISR
@@ -10,42 +10,47 @@ line level    source
 
    1          #include "isr.h"
    2          
-   3          void timer1msIsr() interrupt 1
+   3          void timer2msIsr() interrupt 1
    4          {
    5   1          /* Reload countr value and clear interrupt */
-   6   1              TL0 = 0x40;
-   7   1              TH0 = 0xA2;
+   6   1              TL0 = 0x80;
+   7   1              TH0 = 0x44;
    8   1              TF0 = 0;
    9   1          TR0 = 1;
-  10   1          task1ms();
+  10   1          task2ms();
   11   1      
   12   1      }
   13          
-  14          void timer10msIsr() interrupt 20
+  14          void timer25msIsr() interrupt 20
   15          {
   16   1          
-  17   1      
-  18   1          T4L = 0xE0;
-  19   1              T4H = 0xB1;             
-  20   1          AUXINTIF &= T4IF;
-  21   1          T4T3M &= T4R;
-  22   1          /* Reload countr value and clear interrupt */
-  23   1          task10ms();
-  24   1      }
-  25          
-  26          void uart3Isr() interrupt 17
-  27          {
-  28   1          uart3Int();
+  17   1          // P44 = 1;
+  18   1      
+  19   1          T4L = 0xB0;
+  20   1              T4H = 0x3C;     
+  21   1      
+  22   1          /* set these two bit seems not used in ISR, maybe useful later */   
+  23   1          // AUXINTIF &= T4IF;
+  24   1          // T4T3M |= T4R;
+  25   1          /* Reload countr value and clear interrupt */
+  26   1          task25ms();
+  27   1          // P44 = 0;
+  28   1      
   29   1      }
   30          
-  31          void uart4Isr() interrupt 18
+  31          void uart3Isr() interrupt 17 using 1
   32          {
-  33   1          uart4Int();
+  33   1          uart3Int();
   34   1      }
+  35          
+  36          void uart4Isr() interrupt 18
+  37          {
+  38   1          uart4Int();
+  39   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    258    ----
+   CODE SIZE        =    220    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

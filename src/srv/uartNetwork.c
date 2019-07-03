@@ -850,7 +850,7 @@ static void checkMessgeRead()
             {
                 timeoutCnt[i] = 0;
             }
-            if(timeoutCnt[i] >= 3)
+            if(timeoutCnt[i] >= 2)
             {
                 msgReady[i] = 1;
                 // timeoutCnt[i] = 0;

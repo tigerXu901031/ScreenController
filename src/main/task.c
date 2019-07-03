@@ -128,12 +128,15 @@ void task25ms()
     }
     else if(taskCnt == 2)
     {
-        network50msUpdate();
+        
         // AppFunRun();
         taskCnt ++;
     }
     else if(taskCnt == 3)
     {
+        P44 = 1;
+        network50msUpdate();
+        P44 = 0;
         taskCnt = 0;
     }
     else

@@ -1,10 +1,14 @@
+"..\bin\HMI.obj",
+"..\bin\application.obj",
 "..\bin\crc.obj",
 "..\bin\fifo.obj",
 "..\bin\uartNetwork.obj",
+"..\bin\parMap.obj",
 "..\bin\isr.obj",
 "..\bin\STARTUP.obj",
 "..\bin\timer.obj",
 "..\bin\uartDrv.obj",
+"..\bin\19296p1.obj",
 "..\bin\main.obj",
 "..\bin\task.obj" 
 TO "..\bin\Screen Controller" 

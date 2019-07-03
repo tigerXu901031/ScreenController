@@ -127,13 +127,15 @@ uint16_t crc16tablefast(uint8_t *ptr, uint16_t len)
 	return crc;
 }
 
-// /* test function */
-// uint8_t dataArr[8] = {0xFF, 0x03, 0x30, 0x00, 0x00, 0x12, 0x00, 0x00};
-
-// FF 03 12 00 00 00 00 00 00 0C 0E 00 00 00 00 00 00 00 01 00 00 8C 6B
+/* test function */
+// uint8_t dataArr[8] = {0xFF, 0x03, 0x30, 0x00, 0x00, 0x09, 0x00, 0x00};
+// uint8_t dataArr[23] = {0xFF, 0x03, 0x12, 0x01, 0x02, 0x03, 0x04, 0x05,
+// 					   0x06, 0x07, 0x08, 0x09, 0x10, 0x11, 0x12, 0x13,
+// 					   0x14, 0x15, 0x16, 0x17, 0x18, 0xA9, 0xE9};
+// // // FF 03 12 00 00 00 00 00 00 0C 0E 00 00 00 00 00 00 00 01 00 00 8C 6B
 // int main()
 // {
 // 	uint16_t crcVal = 0;
-// 	crcVal = Crc16RtuCal(&dataArr[0], 6);
+// 	crcVal = Crc16RtuCal(&dataArr[0], 21);
 // 	return 1;
 // }

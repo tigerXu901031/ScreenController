@@ -1,4 +1,4 @@
-C51 COMPILER V9.00   FIFO                                                                  06/15/2019 19:35:36 PAGE 1   
+C51 COMPILER V9.00   FIFO                                                                  07/03/2019 08:06:52 PAGE 1   
 
 
 C51 COMPILER V9.00, COMPILATION OF MODULE FIFO
@@ -27,7 +27,7 @@ line level    source
   17          */
   18          #include "fifo.h"
   19          
-  20          void clearDataBlock(unsigned int *startAdd, unsigned int length)
+  20          void clearDataBlock(unsigned char *startAdd, unsigned char length)
   21          {
   22   1          unsigned int i = 0;
   23   1          for(i = 0; i < length; i ++)
@@ -37,9 +37,9 @@ line level    source
   27   2          }
   28   1      }
   29          
-  30          void memcpy(unsigned int *destAdd,unsigned int *sourceAdd, unsigned int length)
+  30          void memcpyCus(unsigned char *destAdd,unsigned char *sourceAdd, unsigned char length)
   31          {
-  32   1          unsigned int i = 0;
+  32   1          unsigned char i = 0;
   33   1          for(i = 0; i < length; i ++)
   34   1          {
   35   2              *destAdd = *sourceAdd;
@@ -47,89 +47,94 @@ line level    source
   37   2              sourceAdd ++;
   38   2          }
   39   1      }
-*** WARNING C231 IN LINE 39 OF ..\SRC\SRV\FIFO.C: '_memcpy': attempt to redefine intrinsic function
   40          
-  41          fifo_type fifoInit(unsigned int unitLen)
+  41          fifo_type fifoInit(unsigned char unitLen)
   42          {
   43   1          fifo_type fifoObj;
   44   1          fifoObj.unitLen = unitLen;
-  45   1          fifoObj.curPtr = 0;
-  46   1      
-  47   1          return fifoObj;
-  48   1      }
-  49          
-  50          fifoSts_type getFifoData(fifo_type *fifoObj, void *newData)
-  51          {
-  52   1          fifoSts_type returnVal = readFail;
-  53   1          
-C51 COMPILER V9.00   FIFO                                                                  06/15/2019 19:35:36 PAGE 2   
+  45   1      
+  46   1          /* set the initial current data pointer at 0 */
+  47   1          fifoObj.curPtr = 0;
+  48   1      
+  49   1          /* clear all the data area */
+  50   1          clearDataBlock(&fifoObj.fifoData[0], FIFO_MAX_LENGTH);
+  51   1      
+  52   1          return fifoObj;
+  53   1      }
+  54          
+C51 COMPILER V9.00   FIFO                                                                  07/03/2019 08:06:52 PAGE 2   
 
-  54   1          unsigned int* newDataAdd = (unsigned int*)newData;
-  55   1          
-  56   1          /* If the current data pointer is higher than 0
-  57   1             it means there has valid data to output */
-  58   1          if(fifoObj->curPtr > 0)
-  59   1          {
-  60   2              /* Output the first item in FIFO */
-  61   2              memcpy(newDataAdd, &fifoObj->fifoData[0], fifoObj->unitLen);
-  62   2              
-  63   2              /* Clear the first item content */
-  64   2              clearDataBlock(&fifoObj->fifoData[0], fifoObj->unitLen);
-  65   2      
-  66   2              /* Move all the existing items to the one position forward */
-  67   2              memcpy(&fifoObj->fifoData[0], &fifoObj->fifoData[1],fifoObj->curPtr - 1);
-  68   2      
-  69   2              /* Clear the last valid item content */
-  70   2              clearDataBlock(&fifoObj->fifoData[fifoObj->curPtr], fifoObj->unitLen);
-  71   2      
-  72   2              /* Move the current pointer of the FIFO */
-  73   2              fifoObj->curPtr --;
-  74   2      
-  75   2              returnVal = readSuccess;
-  76   2          }
-  77   1          /* If the FIFO is empty then return all zero and
-  78   1          with the readFail state */
-  79   1          else{
-  80   2              clearDataBlock(newDataAdd, fifoObj->unitLen);
-  81   2              returnVal = readFail;
-  82   2          }
-  83   1          return returnVal;
-  84   1      }
-  85          
-  86          fifoSts_type setFifoData(fifo_type *fifoObj, void *newData)
-  87          {
-  88   1          fifoSts_type returnVal = writeFail;
-  89   1      
-  90   1          unsigned int* newDataAdd = (unsigned int*)newData;
-  91   1      
-  92   1          /* Check whether the FIFO has the spare space to write 
-  93   1             into the new data */
-  94   1          if((FIFO_MAX_LENGTH - (fifoObj->unitLen * fifoObj->curPtr)) >= fifoObj->unitLen)
-  95   1          {
-  96   2              memcpy(&fifoObj->fifoData[fifoObj->curPtr], newDataAdd, fifoObj->unitLen);
-  97   2              fifoObj->curPtr ++;
-  98   2              returnVal = writeSuccess;
-  99   2          }
- 100   1          /* The FIFO is full no space to write then return fail */
- 101   1          else
- 102   1          {
- 103   2              returnVal = readFail;
- 104   2          }
- 105   1          return returnVal;
- 106   1      }
+  55          fifoSts_type getFifoData(fifo_type *fifoObj, void *newData)
+  56          {
+  57   1          fifoSts_type returnVal = readFail;
+  58   1          
+  59   1          unsigned char* newDataAdd = (unsigned char*)newData;
+  60   1          
+  61   1          /* If the current data pointer is higher than 0
+  62   1             it means there has valid data to output */
+  63   1          if(fifoObj->curPtr > 0)
+  64   1          {
+  65   2              /* Output the first item in FIFO */
+  66   2              memcpyCus(newDataAdd, &fifoObj->fifoData[0], fifoObj->unitLen);
+  67   2              
+  68   2              /* Clear the first item content */
+  69   2              clearDataBlock(&fifoObj->fifoData[0], fifoObj->unitLen);
+  70   2      
+  71   2              /* Move all the existing items to the one position forward */
+  72   2              memcpyCus(&fifoObj->fifoData[0], &fifoObj->fifoData[1],fifoObj->curPtr - 1);
+  73   2      
+  74   2              /* Move the current pointer of the FIFO */
+  75   2              fifoObj->curPtr --;
+  76   2      
+  77   2              /* Clear the last valid item content */
+  78   2              clearDataBlock(&fifoObj->fifoData[fifoObj->curPtr], fifoObj->unitLen);
+  79   2      
+  80   2              returnVal = readSuccess;
+  81   2          }
+  82   1          /* If the FIFO is empty then return all zero and
+  83   1          with the readFail state */
+  84   1          else{
+  85   2              clearDataBlock(newDataAdd, fifoObj->unitLen);
+  86   2              returnVal = readFail;
+  87   2          }
+  88   1          return returnVal;
+  89   1      }
+  90          
+  91          fifoSts_type setFifoData(fifo_type *fifoObj, void *newData)
+  92          {
+  93   1          fifoSts_type returnVal = writeFail;
+  94   1      
+  95   1          unsigned char* newDataAdd = (unsigned char*)newData;
+  96   1          unsigned char* destAdd = &fifoObj->fifoData[fifoObj->curPtr];
+  97   1      
+  98   1          /* Check whether the FIFO has the spare space to write 
+  99   1             into the new data */
+ 100   1          if((FIFO_MAX_LENGTH - (fifoObj->unitLen * fifoObj->curPtr)) >= fifoObj->unitLen)
+ 101   1          {
+ 102   2              memcpyCus(destAdd, newDataAdd, fifoObj->unitLen);
+ 103   2              fifoObj->curPtr ++;
+ 104   2              returnVal = writeSuccess;
+ 105   2          }
+ 106   1          /* The FIFO is full no space to write then return fail */
+ 107   1          else
+ 108   1          {
+ 109   2              returnVal = readFail;
+ 110   2          }
+ 111   1          return returnVal;
+ 112   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    640    ----
+   CODE SIZE        =    557    ----
+C51 COMPILER V9.00   FIFO                                                                  07/03/2019 08:06:52 PAGE 3   
+
    CONSTANT SIZE    =   ----    ----
-   XDATA SIZE       =   ----     233
+   XDATA SIZE       =   ----     131
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
-C51 COMPILER V9.00   FIFO                                                                  06/15/2019 19:35:36 PAGE 3   
-
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

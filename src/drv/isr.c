@@ -14,7 +14,7 @@ void timer2msIsr() interrupt 1
 void timer25msIsr() interrupt 20
 {
     
-    P44 = 1;
+    // P44 = 1;
 
     T4L = 0xB0;
 	T4H = 0x3C;	
@@ -24,7 +24,7 @@ void timer25msIsr() interrupt 20
     // T4T3M |= T4R;
     /* Reload countr value and clear interrupt */
     task25ms();
-    P44 = 0;
+    // P44 = 0;
 
 }
 
