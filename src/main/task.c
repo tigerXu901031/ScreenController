@@ -120,27 +120,62 @@ void task25ms()
     // getNetworkData(0x0D, 0x30, &dummyDatL, &dummyDatH, &dummyCmd, &dummyCnt);
 
     // setNetworkData(&testSetNwData);
-    if(taskCnt == 0)
+    switch(taskCnt)
     {
-        longFrameHandler();
+        /* 0 - 25ms */
+        case 0:
+            longFrameHandler();
+            taskCnt ++;
+            break;
+        /* 25 - 50ms */    
+        case 1:
+            taskCnt ++;
+            break;
+        /* 50 - 75ms */
+        case 2:
+            // AppFunRun();
+            taskCnt ++;
+            break;
+        /* 75 - 100ms */
+        case 3:
+            setNetworkData(0x00, 0x20, &dummyDatL, &dummyDatH, &dummyCmd, &dummyCnt);
+            taskCnt ++;
+            break;
+        /* 100 - 125ms */
+        case 4:
+            taskCnt ++;
+            break;
+        /* 125 - 150ms */
+        case 5:
+            P44 = 1;
+            network50msUpdate();
+            P44 = 0;
+            taskCnt = 0;
+        default:
+            /* unknown error */
+            break;
+    }
+    // if(taskCnt == 0)
+    // {
+    //     longFrameHandler();
         
-        taskCnt ++;
-    }
-    else if(taskCnt == 2)
-    {
-        
-        // AppFunRun();
-        taskCnt ++;
-    }
-    else if(taskCnt == 3)
-    {
-        P44 = 1;
-        network50msUpdate();
-        P44 = 0;
-        taskCnt = 0;
-    }
-    else
-    {
-        taskCnt ++;
-    }
+    //     taskCnt ++;
+    // }
+    // else if(taskCnt == 2)
+    // {
+    //     setNetworkData(0x00, 0x20, &dummyDatL, &dummyDatH, &dummyCmd, &dummyCnt);
+    //     // AppFunRun();
+    //     taskCnt ++;
+    // }
+    // else if(taskCnt == 3)
+    // {
+    //     P44 = 1;
+    //     network50msUpdate();
+    //     P44 = 0;
+    //     taskCnt = 0;
+    // }
+    // else
+    // {
+    //     taskCnt ++;
+    // }
 }

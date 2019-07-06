@@ -31,12 +31,12 @@
 #include "uartNetwork.h"
 
 networkInfo_type networkObj;
-unsigned char msgReady[busIdx_max] = {0, 0};
+unsigned char msgStandbyLen[busIdx_max][3] = {{0,0,0}, {0,0,0}};
 msgBuf_type rxMsgBuf[busIdx_max];
 msgBuf_type txMsgBuf;
 
 
-static void crc16Calc(msgBuf_type *msgObj)
+static void crc16Calc(msg_type *msgObj)
 {
     unsigned char *msgPtr;
     unsigned char crcH = 0;
@@ -57,7 +57,7 @@ static void crc16Calc(msgBuf_type *msgObj)
     msgObj->msgByteArray[msgLen - 2] = crcL;
 }
 
-static unsigned int isCrc16Ok(msgBuf_type *msgObj)
+static unsigned int isCrc16Ok(msg_type *msgObj)
 {
     unsigned char *msgPtr;
     unsigned char crcH = 0;
@@ -494,76 +494,92 @@ static unsigned char getRxMsgAndAssemble(msgBuf_type *msgObj)
 {
     unsigned char i = 0;
     unsigned char j = 0;
+    unsigned char k = 0;
+    unsigned char l = 0;
     unsigned char len = 0;
     unsigned char *ptr;
     unsigned char retVal = 0;
 
     for(i = 0; i < busIdx_max; i ++)
     {
-        if(msgReady[i] == 1)
+        if(msgStandbyLen[i][0] > 0)
         {   
-            msgReady[i] = 0;
             retVal = 1;
-            len = uartRxFifo_Obj[i].curPtr;
-            for(j = 0; j < len; j++)
+            // msgStandbyLen[i] = 0;
+            
+            // len = uartRxFifo_Obj[i].curPtr;
+            /* load the message from the fifo buffer into the message specific format buffer */
+            while(msgStandbyLen[i][j] != 0)
             {
-                ptr = &msgObj->msgByteArray[j];
-                getFifoData(&uartRxFifo_Obj[i], ptr);
+                clearDataBlock(&msgObj->msgArr[j], 50);
+                len = msgStandbyLen[i][j];
+                for(k = 0; k < len; k++)
+                {
+                    ptr = &msgObj->msgArr[j].msgByteArray[k];
+                    getFifoData(&uartRxFifo_Obj[i], ptr);
+                }
+                msgStandbyLen[i][j] = 0;
+                /* first filling all the total length of the message */
+                msgObj->msgArr[j].msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = k;
+                j ++;
             }
+            msgObj->validMsgNum = j;
 
-            /* first filling all the total length of the message */
-            msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = j;
-
-            /* then accoroding to the recieved node id, message length and command to
-               filling the service id */
-            switch(msgObj->msgByteArray[1])
+            /* resolve the message data format into the singal address, data format */
+            for(l = 0; l < msgObj->validMsgNum; l++)
             {
-                case MSGCMD_READOP:
-                    if(msgObj->msgByteArray[0] == busIdx_public)
-                    {
-                        msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_READ_REQ;
-                    }
-                    else if(msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] == 8)
-                    {
-                        msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_READ_RESP;
-                    }
-                    else if(msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] > 8)
-                    {
-                        msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_READ_LONGRESP;
-                    }
-                    else
-                    {
-                        /* Message wrong due to some reason */
-                    }
-                    break;
-                case MSGCMD_WRITEOP:
-                    if(msgObj->msgByteArray[0] == busIdx_public)
-                    {
-                        msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_WRITE_REQ;
-                    }
-                    else if(msgObj->msgByteArray[0] == busIdx_private)
-                    {
-                        msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_WRITE_RESP;
-                    }
-                    else
-                    {
-                        /* message format wrong */
-                    }
-                    break;
-                case MSGCMD_READOPFAIL:
-                    msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_READ_FAIL;
-                    break;
-                case MSGCMD_WRITEOPFAIL:
-                    msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_WRITE_FAIL;
-                    break;
-                case MSGCMD_HEARTBEAT:
-                    msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_HEART_BEAT;
-                    break;
-                default:
-                    /* message unknown do not return fail in this case */
-                    retVal = 0;
-                    break;
+                /* then accoroding to the recieved node id, message length and command to
+                   filling the service id */
+                switch(msgObj->msgArr[l].msgByteArray[1])
+                {
+                    case MSGCMD_READOP:
+                        if(msgObj->msgArr[l].msgByteArray[0] == networkObj.publicNodeId)
+                        {
+                            msgObj->msgArr[l].msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_READ_REQ;
+                        }
+                        else if(msgObj->msgArr[l].msgByteArray[DATAARRAY_MSGLENGTH_BYTE] == 8)
+                        {
+                            msgObj->msgArr[l].msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_READ_RESP;
+                        }
+                        else if(msgObj->msgArr[l].msgByteArray[DATAARRAY_MSGLENGTH_BYTE] > 8)
+                        {
+                            msgObj->msgArr[l].msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_READ_LONGRESP;
+                        }
+                        else
+                        {
+                            /* Message wrong due to some reason */
+                        }
+                        break;
+                    case MSGCMD_WRITEOP:
+                        if(msgObj->msgArr[l].msgByteArray[0] == networkObj.publicNodeId)
+                        {
+                            msgObj->msgArr[l].msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_WRITE_REQ;
+                        }
+                        else if(msgObj->msgArr[l].msgByteArray[0] == networkObj.privateNodeId)
+                        {
+                            msgObj->msgArr[l].msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_WRITE_RESP;
+                        }
+                        else
+                        {
+                            /* message format wrong */
+                        }
+                        break;
+                    case MSGCMD_READOPFAIL:
+                        msgObj->msgArr[l].msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_READ_FAIL;
+                        break;
+                    case MSGCMD_WRITEOPFAIL:
+                        msgObj->msgArr[l].msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_WRITE_FAIL;
+                        break;
+                    case MSGCMD_HEARTBEAT:
+                        msgObj->msgArr[l].msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_HEART_BEAT;
+                        break;
+                    default:
+                        /* message unknown do not return fail in this case */
+                        retVal = 0;
+                        break;
+                }
             }
+            
         }
         else
         {
@@ -574,7 +590,7 @@ static unsigned char getRxMsgAndAssemble(msgBuf_type *msgObj)
     return retVal;
 }
 
-static void setTxMsgAndDisassemble(msgBuf_type *msgObj, busIdx_type busId)
+static void setTxMsgAndDisassemble(msg_type *msgObj, busIdx_type busId)
 {
     /* convert the general message type into byte sequence in buffer */
     unsigned char i = 0;
@@ -588,7 +604,7 @@ static void setTxMsgAndDisassemble(msgBuf_type *msgObj, busIdx_type busId)
     }
 }
 
-static void networkGatewayHandler(msgBuf_type *msgObj)
+static void networkGatewayHandler(msg_type *msgObj, unsigned char busIdx)
 {
     /* 
        All the message recieved from public bus has same the public node id
@@ -596,28 +612,23 @@ static void networkGatewayHandler(msgBuf_type *msgObj)
 
        All the message revieved from private bus 
     */
-   unsigned char i = 0;
-   for(i = 0; i < busIdx_max; i ++)
+   if(busIdx == ((unsigned char)busIdx_public) && (msgObj->msgByteArray[0] == networkObj.publicNodeId))
    {
-       if(i == ((unsigned char)busIdx_public) && (msgObj->msgByteArray[0] == networkObj.publicNodeId))
-       {
-               /* forward the message to the private bus */
-               setTxMsgAndDisassemble(msgObj, busIdx_private);
-       }
-       else if(i == ((unsigned char)busIdx_private) && (msgObj->msgByteArray[0] == networkObj.publicNodeId))
-       {
-               /* forward the message to the public bus */
-               setTxMsgAndDisassemble(msgObj, busIdx_public);
-       }
-       else
-       {
-           /* something wrong here */
-       }
-       msgObj ++;
+           /* forward the message to the private bus */
+           setTxMsgAndDisassemble(msgObj, busIdx_private);
+   }
+   else if(busIdx == ((unsigned char)busIdx_private) && (msgObj->msgByteArray[0] == networkObj.publicNodeId))
+   {
+           /* forward the message to the public bus */
+           setTxMsgAndDisassemble(msgObj, busIdx_public);
+   }
+   else
+   {
+       /* something wrong here */
    }
 }
 
-static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
+static void rxDataHandler(msg_type *msgObj, networkDataBuf_type *dataBuf)
 {
     /* do crc check only for private communication 
     no need the gateway message */
@@ -728,7 +739,7 @@ static void rxDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
     }
 }
 
-static void readReqMsgTxPreprocess(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
+static void readReqMsgTxPreprocess(msg_type *msgObj, networkDataBuf_type *dataBuf)
 {
     /* TODO: now only considering normal 2-byte data read request message
        long frame read request havent been handled */
@@ -747,7 +758,7 @@ static void readReqMsgTxPreprocess(msgBuf_type *msgObj, networkDataBuf_type *dat
     crc16Calc(msgObj);
 }
 
-static void writeReqMsgTxPreprocess(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
+static void writeReqMsgTxPreprocess(msg_type *msgObj, networkDataBuf_type *dataBuf)
 {
     msgObj->writeAccessMsgObj.nodeId = networkObj.privateNodeId;
 
@@ -765,7 +776,7 @@ static void writeReqMsgTxPreprocess(msgBuf_type *msgObj, networkDataBuf_type *da
     crc16Calc(msgObj);
 }
 
-static void txDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
+static void txDataHandler(msg_type *msgObj, networkDataBuf_type *dataBuf)
 {
     /* process the data from application and convert the operational data to message
        1. fill all the operational data to the message
@@ -802,7 +813,7 @@ static void txDataHandler(msgBuf_type *msgObj, networkDataBuf_type *dataBuf)
 }
 
 
-static void rxServiceHandler(msgBuf_type *msgObj)
+static void rxServiceHandler(msg_type *msgObj)
 {
     unsigned char *ptr;
     /* clear the long frame read service request set by the previous sent message */
@@ -837,12 +848,14 @@ static void checkMessgeRead()
 {
     static unsigned char oldBufPtr[busIdx_max] = {0, 0};
     static unsigned char timeoutCnt[busIdx_max] = {0, 0};
+    static unsigned char lastMsgLen[busIdx_max] = {0, 0};
     unsigned char i = 0;
+    unsigned char j = 0;
     for(i = 0; i < busIdx_max; i ++)
     {
         if(uartRxFifo_Obj[i].curPtr > 0)
         {
-            if(oldBufPtr[i] == uartRxFifo_Obj[i].curPtr)
+            if((oldBufPtr[i] == uartRxFifo_Obj[i].curPtr) && (uartRxFifo_Obj[i].curPtr != lastMsgLen[i]))
             {
                 timeoutCnt[i] ++;
             }
@@ -850,14 +863,20 @@ static void checkMessgeRead()
             {
                 timeoutCnt[i] = 0;
             }
-            if(timeoutCnt[i] >= 2)
+
+            if(timeoutCnt[i] == 3)
             {
-                msgReady[i] = 1;
-                // timeoutCnt[i] = 0;
+                while(msgStandbyLen[i][j] != 0)
+                {
+                    j ++;
+                }
+                msgStandbyLen[i][j] = uartRxFifo_Obj[i].curPtr - lastMsgLen[i];
+                lastMsgLen[i] = msgStandbyLen[i][j] + lastMsgLen[i];
+                timeoutCnt[i] = 0;
             }
             else
             {
-                // msgReady[i] = 0;
+
             }
             oldBufPtr[i] = uartRxFifo_Obj[i].curPtr;
         }
@@ -865,13 +884,14 @@ static void checkMessgeRead()
         {
              oldBufPtr[i] = 0;
              timeoutCnt[i] = 0;
+             lastMsgLen[i] = 0;
         }
     }
 }
 
 static void sendTestMsg()
 {
-    msgBuf_type testMsgBuf;
+    msg_type testMsgBuf;
     /* test purpose only */
     static unsigned char iCounter = 0;
 
@@ -900,8 +920,10 @@ static void sendTestMsg()
 
 static void rxUpdate()
 {
+    unsigned char i = 0, j = 0;
     networkDataBuf_type nwDataBuf;
-    clearDataBlock(&rxMsgBuf, sizeof(rxMsgBuf));
+    // clearDataBlock(&rxMsgBuf, sizeof(rxMsgBuf));
+    rxMsgBuf[0].validMsgNum = 0, rxMsgBuf[1].validMsgNum = 0;
     clearDataBlock(&nwDataBuf, sizeof(nwDataBuf));
 
     /* recieve data in byte and assemble the data byte into message */
@@ -910,21 +932,27 @@ static void rxUpdate()
         /* TODO: its better to clear the rxMsgBuf after the function
            has already handled this message then the next function
            is no need to do anything */
+        for(i = 0; i < busIdx_max; i ++)
+        {
+            for(j = 0; j < rxMsgBuf[i].validMsgNum; j ++)
+            {
+                /* first forward the message that no need to do anything with it */
+                networkGatewayHandler(&rxMsgBuf[i].msgArr[j], i);
 
-        /* first forward the message that no need to do anything with it */
-        networkGatewayHandler(&rxMsgBuf);
+                /* message -> application operational data
+                   only the private communication need to be handled
+                   in the application, other messages has already be
+                   forward by the gateway function */
+                rxDataHandler(&rxMsgBuf[i].msgArr[j], &nwDataBuf);
 
-        /* message -> application operational data
-           only the private communication need to be handled
-           in the application, other messages has already be
-           forward by the gateway function */
-        rxDataHandler(&rxMsgBuf[busIdx_private], &nwDataBuf);
+                /* handle some request by network service and do handle the
+                   message without the intervene from app
+                   1. Clear some requst status
+                   2. Request status timeout and record the error info */
+                rxServiceHandler(&rxMsgBuf[i].msgArr[j]);
+            }
+        }
 
-        /* handle some request by network service and do handle the
-           message without the intervene from app
-           1. Clear some requst status
-           2. Request status timeout and record the error info */
-        rxServiceHandler(&rxMsgBuf);
     }
 }
 
@@ -950,7 +978,7 @@ void networkInit()
 
 void longFrameHandler()
 {
-    msgBuf_type longFrameBuf;
+    msg_type longFrameBuf;
     static unsigned char longFrameCnt = 0;
 
     clearDataBlock(&longFrameBuf, sizeof(longFrameBuf));
@@ -1055,7 +1083,7 @@ void setNetworkData(unsigned char addL, unsigned char addH, unsigned char *Ldata
     nwDataBuf.dataLength = 1;
 
     /* nwDataBuf -> message */
-    txDataHandler(&txMsgBuf, &nwDataBuf);
+    txDataHandler(&txMsgBuf.msgArr, &nwDataBuf);
 
     /* put to the message to the uart send buffer
        each cycle one message */

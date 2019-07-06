@@ -97,7 +97,14 @@ typedef union{
     /* the 50th byte indicate new message available
        the 49th byte indicate total data length  */
     unsigned char            msgByteArray[50];       
+}msg_type;
+
+typedef struct UARTNETWORK
+{
+    msg_type        msgArr[3];
+    unsigned char   validMsgNum;
 }msgBuf_type;
+
 
 typedef struct{
     unsigned char cmd;
