@@ -750,9 +750,10 @@ static void readReqMsgTxPreprocess(msg_type *msgObj, networkDataBuf_type *dataBu
     msgObj->readReqMsgObj.regAdd[0] = dataBuf->networkData[0].add[0];
     msgObj->readReqMsgObj.regAdd[1] = dataBuf->networkData[0].add[1];
 
-    
+    msgObj->readReqMsgObj.msgData[0] = dataBuf->networkData[0].opData[0];
+    msgObj->readReqMsgObj.msgData[1] = dataBuf->networkData[0].opData[1];
 
-    msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 6;
+    msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 8;
     msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_READ_REQ;
 
     crc16Calc(msgObj);

@@ -33,6 +33,7 @@ typedef struct{
     unsigned char nodeId;
     unsigned char cmd;
     unsigned char regAdd[2];
+    unsigned char msgData[2];
     unsigned char crc[2];
 }readReqMsg_type;
 

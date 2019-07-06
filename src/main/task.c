@@ -61,9 +61,11 @@ InterfaceData_type testPar[20];
 void task25ms()
 {
     unsigned char dummyCnt;
-    unsigned char dummyCmd = 0x06;
-    unsigned char dummyDatL = 0x02;
-    unsigned char dummyDatH = 0;
+    unsigned char dummyWriteCmd = 0x06, dummyReadCmd = 0x03;
+    unsigned char dummyWriteDataL = 0x02, dummyReadDataL = 0x00;
+    unsigned char dummyWriteDataH = 0x00, dummyReadDataH = 0x00;
+
+
 
     static unsigned char taskCnt = 0;
     /* test purpose only */
@@ -116,8 +118,8 @@ void task25ms()
     // getNetworkData(testPar[19].add[1], testPar[19].add[0], &testPar[19].opData[0], &testPar[19].opData[1], testPar[19].cmd);
 
 
-    // setNetworkData(0x00, 0x20, &dummyDatL, &dummyDatH, &dummyCmd, &dummyCnt);
-    // getNetworkData(0x0D, 0x30, &dummyDatL, &dummyDatH, &dummyCmd, &dummyCnt);
+    // setNetworkData(0x00, 0x20, &dummyWriteDataL, &dummyWriteDataH, &dummyWriteCmd, &dummyCnt);
+    // getNetworkData(0x0D, 0x30, &dummyWriteDataL, &dummyWriteDataH, &dummyWriteCmd, &dummyCnt);
 
     // setNetworkData(&testSetNwData);
     switch(taskCnt)
@@ -138,7 +140,8 @@ void task25ms()
             break;
         /* 75 - 100ms */
         case 3:
-            setNetworkData(0x00, 0x20, &dummyDatL, &dummyDatH, &dummyCmd, &dummyCnt);
+            // setNetworkData(0x00, 0x20, &dummyWriteDataL, &dummyWriteDataH, &dummyWriteCmd, &dummyCnt);
+            setNetworkData(0x01, 0xf0, &dummyReadDataL, &dummyReadDataH, &dummyReadCmd, &dummyCnt);
             taskCnt ++;
             break;
         /* 100 - 125ms */
@@ -163,7 +166,7 @@ void task25ms()
     // }
     // else if(taskCnt == 2)
     // {
-    //     setNetworkData(0x00, 0x20, &dummyDatL, &dummyDatH, &dummyCmd, &dummyCnt);
+    //     setNetworkData(0x00, 0x20, &dummyWriteDataL, &dummyWriteDataH, &dummyWriteCmd, &dummyCnt);
     //     // AppFunRun();
     //     taskCnt ++;
     // }
