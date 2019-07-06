@@ -146,6 +146,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>msgReady</ItemText>
         </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>rxMsgBuf</ItemText>
+        </Ww>
       </WatchWindow1>
       <DebugFlag>
         <trace>0</trace>
@@ -294,10 +299,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>33</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>831</TopLine>
-      <CurrentLine>853</CurrentLine>
+      <TopLine>896</TopLine>
+      <CurrentLine>915</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\src\srv\uartNetwork.c</PathWithFileName>
       <FilenameWithoutPath>uartNetwork.c</FilenameWithoutPath>
@@ -385,10 +390,10 @@
       <FileType>2</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>52</ColumnNumber>
+      <ColumnNumber>70</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1</TopLine>
-      <CurrentLine>1</CurrentLine>
+      <TopLine>76</TopLine>
+      <CurrentLine>102</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\src\drv\STARTUP.A51</PathWithFileName>
       <FilenameWithoutPath>STARTUP.A51</FilenameWithoutPath>
@@ -1873,9 +1878,9 @@
       <Documents>
         <Doc>
           <Name>..\src\srv\uartNetwork.c</Name>
-          <ColumnNumber>33</ColumnNumber>
-          <TopLine>831</TopLine>
-          <CurrentLine>853</CurrentLine>
+          <ColumnNumber>0</ColumnNumber>
+          <TopLine>896</TopLine>
+          <CurrentLine>915</CurrentLine>
         </Doc>
         <Doc>
           <Name>..\src\srv\fifo.c</Name>
@@ -1915,9 +1920,9 @@
         </Doc>
         <Doc>
           <Name>..\src\drv\STARTUP.A51</Name>
-          <ColumnNumber>52</ColumnNumber>
-          <TopLine>1</TopLine>
-          <CurrentLine>1</CurrentLine>
+          <ColumnNumber>70</ColumnNumber>
+          <TopLine>76</TopLine>
+          <CurrentLine>102</CurrentLine>
         </Doc>
       </Documents>
     </MDIGroup>

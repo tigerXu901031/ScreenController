@@ -13,9 +13,9 @@
 
 sbit KEY1 		= P1^0;
 sbit KEY2 		= P0^7;
-sbit KEY_Up 	= P0^6;
-sbit KEY_Stop = P0^5;
-sbit KEY_Down = P0^4;
+sbit KEY_Up 	= P0^4;
+sbit KEY_Stop = P0^5; 
+sbit KEY_Down = P0^6;
 
 networkDataBuf_type testNwData1;
 networkDataBuf_type testSetNwData1;
@@ -23,13 +23,18 @@ KeyStatusType KeyInPrev, KeyInCurr;
 KeyInStatusType K1, K2, K3, K4, K5;
 uchar POS_StudyFinished = 0;
 uchar Page_New = 1;
-uchar T10ms_Count, T100ms_Count=0, T1s_Count;
+uchar T10ms_Count, T100ms_Count=0, T1s_Count=0;
 uint KeyinTime1,KeyinTime2,KeyinTime3,KeyinTime4,KeyinTime5;
 uchar SetGetInterval=0;
 //uchar DataAddrH, DataAddrL;
 uchar DataBufH, DataBufL, CCMD, A_GNT, RD_FinishFlag=0;
-uchar system_run_enable = 0;
-//uchar RD_BSY=0;
+uchar SysStatusReady = 0;
+uchar RD_BSY=0;
+
+	unsigned char dummyCnt;
+    unsigned char dummyWriteCmd = 0x06, dummyReadCmd = 0x03;
+    unsigned char dummyWriteDataL = 0x02, dummyReadDataL = 0x01;
+    unsigned char dummyWriteDataH = 0x00, dummyReadDataH = 0x00;
 
 
 void SysStatusInit(SystemStatusType SysS1)
@@ -126,7 +131,8 @@ void System_Study(void)
 							Display_Encoder_Number(1);		//encoder value update
 							Display_I_current();
 							Display_F_frequency();
-							Display_RunTime();
+							Display_RunTimeL();
+							Display_RunTimeH();
 						}
 			break;
 	//	case 4:
@@ -157,16 +163,18 @@ void System_Running(void)
 {
 	if(Page_New)
 				{
-					//SysStatus.ManuLevel = 4;			//system running manu
+					SysStatus.ManuLevel = 4;			//system running manu
 					Disp_Page_RunningMode();
 					Page_New = 0;
+					RD_BSY = 0;
 				}
 					else
 						{
 							Display_Encoder_Number(1);		//encoder value update
 							Display_I_current();
 							Display_F_frequency();
-							Display_RunTime();
+							Display_RunTimeL();
+							Display_RunTimeH(); 
 							Display_ATMT();
 						}
 }
@@ -463,6 +471,8 @@ void Key1_response(void)
 		}
 if(SysStatus.SysMode ==1)		//Running Mode
 	{
+		
+		setNetworkData(FuncPara_LMT_STUDY_AddrL, FuncPara_LMT_STUDY_AddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);
 		SysStatus.SysMode = 0;		//change back to Study Mode
 		POS_StudyFinished = 0;		//unstudied
 		SysStatus.ManuLevel = 0;
@@ -565,7 +575,11 @@ void Key3_response(void)
 		break;
 		
 		case 4:		//system running page, one push send one control command
-		//setNetworkData(MotionControl_AddrL, MotionControl_AddrH, MotionControl_Open, 0x00, 0x06);
+		dummyWriteDataL = 0x02;
+		dummyWriteDataH = 0x00;
+		dummyWriteCmd = 0x06;
+		dummyCnt = 0x00;
+		setNetworkData(0x00, 0x20, &dummyWriteDataL, &dummyWriteDataH, &dummyWriteCmd, &dummyCnt);
 		DisplayOperationStatus(MotionControl_Open);
 		break;
 		default:break;	
@@ -614,7 +628,12 @@ void Key4_response(void)
 		break;
 		
 		case 4:		//system running page, one push send one control command
-			//setNetworkData(MotionControl_AddrL, MotionControl_AddrH, MotionControl_Stop, 0x00, 0x06);
+			dummyWriteDataL = 0x01;
+			dummyWriteDataH = 0x00;
+			dummyWriteCmd = 0x06;
+			dummyCnt = 0x00;
+			setNetworkData(0x00, 0x20, &dummyWriteDataL, &dummyWriteDataH, &dummyWriteCmd, &dummyCnt);
+			DisplayOperationStatus(MotionControl_Stop);
 		break;
 		
 		default:break;	
@@ -655,7 +674,12 @@ void Key5_response(void)
 		break;
 		
 		case 4:		//system running page, one push send one control command
-			//setNetworkData(MotionControl_AddrL, MotionControl_AddrH, MotionControl_Close, 0x00, 0x06);
+			dummyWriteDataL = 0x03;
+			dummyWriteDataH = 0x00;
+			dummyWriteCmd = 0x06;
+			dummyCnt = 0x00;
+			setNetworkData(0x00, 0x20, &dummyWriteDataL, &dummyWriteDataH, &dummyWriteCmd, &dummyCnt);
+			DisplayOperationStatus(MotionControl_Close); 
 		break;
 		default: break;
 		}	
@@ -701,43 +725,56 @@ void SysMode_Set(uchar x)	//only for system mode setting during debugging
 	SysStatus.SysMode = x;
 }
 
-void ClrRdParameters(void)
+void setCommParameters(uchar bufh, uchar bufl, uchar cmd, uchar aCnt)
 {
-	DataBufH = 0;
-	DataBufL = 0;
-	CCMD = 0x03;
-	A_GNT = 0x00;
-   	RD_FinishFlag = 0;
+	DataBufH = bufh;
+	DataBufL = bufl;
+	CCMD = cmd;
+	A_GNT = aCnt;
+}
+
+void agcnt_Check(void)
+{
+	if(A_GNT<=10)								//data available
+					{
+						RD_FinishFlag = 1;
+					}
+					else
+						{RD_FinishFlag = 0;}
+//	RD_FinishFlag = 1;
 }
 
 void GetDataFromMaster(uchar DaddrH, uchar DaddrL)
 {
 	if(!RD_FinishFlag)
 			{
-				if(SetGetInterval==0)
-					{
-						ClrRdParameters();
-						setNetworkData(DaddrL, DaddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);
-						SetGetInterval++;
-					}
-					else
+					if(SetGetInterval==0)							//send read command
 						{
-							getNetworkData(DaddrL, DaddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);
-							if(A_GNT<=10)
-								{RD_FinishFlag = 1;}
-								else
-									{SetGetInterval++;
-										if(SetGetInterval==5)
-											{SetGetInterval = 0;}
-												else
-													{;}
-									}
-							
+							setCommParameters(0, 0, 3, 0);		//clr read buffer
+							setNetworkData(DaddrL, DaddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);
+							SetGetInterval++;
 						}
-			}
-			else
-				{SetGetInterval = 0;}
-
+						else
+							{
+								getNetworkData(DaddrL, DaddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);				//check data availability every cycle
+								if(A_GNT<=10)								//data available
+									{
+										RD_FinishFlag = 1; 
+									}
+									else
+										{RD_FinishFlag = 0;}
+								SetGetInterval++;
+								if(SetGetInterval>8)
+									{SetGetInterval = 0;}			//allow to resend read command
+									else 
+										{;}
+							}
+				} 
+				else
+					{
+						//RD_FinishFlag = 0;      
+						SetGetInterval = 0;
+					}
 	//getNetworkData(uchar addL, uchar addH, uchar *Ldata, uchar *Hdata, uchar *cmd, uchar *agingCnt);
  	//setNetworkData(uchar addL, uchar addH, uchar *Ldata, uchar *Hdata, uchar *cmd, uchar *agingCnt);
 }
@@ -746,25 +783,12 @@ void GetDataFromMaster(uchar DaddrH, uchar DaddrL)
 //void AppFunRun(networkDataBuf_type* appDataBuf)
 void AppFunRun()
 {
-	if(!POS_StudyFinished)
-		{
-			GetDataFromMaster(MonitorPara_SysStatus_AddrH, MonitorPara_SysStatus_AddrL);
-			if(RD_FinishFlag)
-				{
-					if(DataBufL==System_Status_Run)
-						{
-							POS_StudyFinished = 1;	
-						}
-						else
-							{POS_StudyFinished = 0;}
-					system_run_enable = 1;
-				}
-				else
-					{system_run_enable = 0;}
-		}
-		else
-			{system_run_enable = 1;}
-	if(system_run_enable)
+	// SysStatusReady =1;
+	// POS_StudyFinished = 1;
+	// SysStatus.SysMode = 1;
+	// SysStatus.ManuLevel = 4;
+	
+	if(SysStatusReady)		//system status is 0x01 or 0x02
 		{
 			if(POS_StudyFinished)
 			{
@@ -789,6 +813,81 @@ void AppFunRun()
 				}
 			KeyIn_Check();
 		}
-		else
-			{;}
+		else				//communication with master check not finished
+			{
+	//				//position learning status check during first power on
+	//				if(!POS_StudyFinished)			//position learning not finished
+	//					{
+//				RD_FinishFlag = 0;
+				//setCommParameters(0, 0, 3, 0);
+				getNetworkData(MonitorPara_SysStatus_AddrL, MonitorPara_SysStatus_AddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);				//check data availability every cycle
+				//agcnt_Check();
+					if(A_GNT<=10)								//data available
+					{
+						RD_FinishFlag = 1;
+					}
+					else
+						{RD_FinishFlag = 0;}
+				if(RD_FinishFlag)								//status reading finished
+				{
+					if(DataBufL==System_Status_Run)
+						{
+							POS_StudyFinished = 1;
+							SysStatus.SysMode = 1;			
+						}
+						else
+							{
+								POS_StudyFinished = 0;
+								SysStatus.SysMode = 0;
+								SysStatus.ManuLevel = 0;
+							}
+					SysStatusReady = 1;
+					RD_FinishFlag = 0;	
+				}
+				else
+					{
+						SysStatusReady = 0;
+						RD_FinishFlag = 0;
+					}
+//						}
+//						else											//position learning finished
+//							{SysStatusReady = 1;}
+//							}
+			}
 }
+
+
+/* void AppFunRun1(void)
+{
+	if(!SysStatusReady)		//system is ready
+		{
+			RD_FinishFlag = 0;
+			GetDataFromMaster(MonitorPara_SysStatus_AddrH, MonitorPara_SysStatus_AddrL);
+				if(RD_FinishFlag)								//status reading finished
+				{
+					if(DataBufL==System_Status_Run)
+						{
+							POS_StudyFinished = 1;
+							SysStatus.SysMode = 1;
+						}
+						else
+							{
+								POS_StudyFinished = 0;
+								SysStatus.SysMode = 0;
+							}
+					SysStatusReady = 1;	
+				}
+				else
+					{SysStatusReady = 0;}
+		}
+			else
+				{
+					T1s_Count++;
+					if(T1s_Count>100)
+						{
+							SysStatusReady = 0;
+						}
+						else
+							{;}
+				}
+} */

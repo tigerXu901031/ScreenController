@@ -62,7 +62,7 @@ void task25ms()
 {
     unsigned char dummyCnt;
     unsigned char dummyWriteCmd = 0x06, dummyReadCmd = 0x03;
-    unsigned char dummyWriteDataL = 0x02, dummyReadDataL = 0x00;
+    unsigned char dummyWriteDataL = 0x02, dummyReadDataL = 0x01;
     unsigned char dummyWriteDataH = 0x00, dummyReadDataH = 0x00;
 
 
@@ -135,14 +135,14 @@ void task25ms()
             break;
         /* 50 - 75ms */
         case 2:
-            // AppFunRun();
+             AppFunRun();
             taskCnt ++;
             break;
         /* 75 - 100ms */
         case 3:
             // setNetworkData(0x00, 0x20, &dummyWriteDataL, &dummyWriteDataH, &dummyWriteCmd, &dummyCnt);
-            setNetworkData(0x01, 0xf0, &dummyReadDataL, &dummyReadDataH, &dummyReadCmd, &dummyCnt);
-            taskCnt ++;
+            //setNetworkData(0x02, 0x02, &dummyReadDataL, &dummyReadDataH, &dummyReadCmd, &dummyCnt);
+            taskCnt ++; 
             break;
         /* 100 - 125ms */
         case 4:

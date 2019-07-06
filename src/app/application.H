@@ -30,13 +30,15 @@ typedef struct{
 }KeyInStatusType;
 
 extern KeyStatusType KeyInPrev, KeyInCurr;
-extern uchar DataBufH, DataBufL, CCMD, A_GNT, RD_FinishFlag; 
-extern uchar system_run_enable;
+extern uchar DataBufH, DataBufL, CCMD, A_GNT, RD_FinishFlag, RD_BSY; 
+extern uchar SysStatusReady;
 
 extern void DummySingleFrameTestDataGenerate(uchar addrL, uchar addrH, uchar opDataL, uchar opDataH);
-extern void AppFunRun();
+extern void AppFunRun(void);
+extern void AppFunRun1(void);
 //extern void AppFunRun(networkDataBuf_type* appDataBuf);
 extern void SysStatusInit(SystemStatusType SysS1);
+extern void agcnt_Check(void);
 
 void System_Study(void);
 void System_Running(void);
@@ -52,7 +54,7 @@ void Key5_response(void);
 
 void DisplayOperationStatus(uchar x);
 extern void GetDataFromMaster(uchar DaddrH, uchar DaddrL);
-extern void ClrRdParameters(void);
+extern void setCommParameters(uchar bufh, uchar bufl, uchar cmd, uchar aCnt);
 
 
 

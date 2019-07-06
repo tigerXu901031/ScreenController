@@ -5,6 +5,7 @@
 
 #define uchar unsigned char
 #define uint unsigned int
+#define ulong unsigned long
 
 #define Up	1
 #define Down	0
@@ -40,12 +41,16 @@ typedef struct{
 	uchar E_Digit4;
 	uchar E_Digit5;
 	
-	uint RT_runtime;
+	ulong RT_runtime;
+	uint  RT_runtimeL;
+	uint  RT_runtimeH;
 	uchar RT_Digit1;
 	uchar RT_Digit2;
 	uchar RT_Digit3;
 	uchar RT_Digit4;
 	uchar RT_Digit5;
+	uchar RT_Digit6;
+	uchar RT_Digit7;
 	
 	uchar Motor_Direction;
 //	uchar Motor_Direction_Set;
@@ -75,11 +80,13 @@ void Display_Page00_01_ParaArea(void);
 void Display_Page00_03_ParaArea(void);
 
 void Display_Page00_03_CDDT(void);
+void Display_Page00_03_HMST(void);
 
 extern void Display_Encoder_Number(uchar x);
 extern void Display_I_current(void);
 extern void Display_F_frequency(void);
-extern void Display_RunTime(void);
+extern void Display_RunTimeL(void);
+extern void Display_RunTimeH(void);
 extern void Display_ATMT(void);
 
 void Display_Page00_00_MotorDirt(void);
@@ -102,6 +109,7 @@ extern uchar code char_number_table[],char_cMaohao[],char_cDot[],char_capital_A[
 extern uchar code Hanzi_2424_HWZS_Dian[],Hanzi_2424_HWZS_Ji[],Hanzi_2424_HWZS_Fang[],Hanzi_2424_HWZS_Xiang[],Hanzi_2424_HWZS_Xia[],Hanzi_2424_HWZS_Xian[];
 extern uchar code Hanzi_2424_HWZS_Wei[],Hanzi_2424_HWZS_Xue[],Hanzi_2424_HWZS_Xi[],Hanzi_2424_HWZS_Shang[],Hanzi_2424_HWZS_Zhi[],Hanzi_2424_HWZS_Ke[];
 extern uchar code Hanzi_2424_HWZS_Ji1[],Hanzi_2424_HWZS_Null[],Hanzi_2424_HWZS_Guan[],Hanzi_2424_HWZS_Men[],Hanzi_2424_HWZS_Yan[],Hanzi_2424_HWZS_Shi[];
+extern uchar code Hanzi_2424_HWZS_Hei[],Hanzi_2424_HWZS_Ma[],Hanzi_2424_HWZS_Seng[],Hanzi_2424_HWZS_Tian[];
 extern uchar code Hanzi_1616_XST_Xue[], Hanzi_1616_XST_Xi[],Hanzi_1616_XST_Zi[],Hanzi_1616_XST_Dong[],Hanzi_1616_XST_Kai[],Hanzi_1616_XST_Guan[],Hanzi_1616_XST_Dian1[];
 extern uchar code Hanzi_1616_XST_Ting[],Hanzi_1616_XST_Zhi[],Hanzi_1616_XST_Men[];
 

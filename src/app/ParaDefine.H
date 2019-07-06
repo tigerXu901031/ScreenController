@@ -8,35 +8,41 @@
 
 /***********MonitorParameters Definition************/
 //			Const Address Name					Register Address
-#define	MonitorPara_RunTimeH_AddrH						0x30
-#define	MonitorPara_RunTimeH_AddrL						0x01
+#define	MonitorPara_CurrentFBK_AddrH					0x30
+#define	MonitorPara_CurrentFBK_AddrL					0x00
 
-#define	MonitorPara_RunTimeL_AddrH						0x30
-#define	MonitorPara_RunTimeL_AddrL						0x02
+#define	MonitorPara_FreqSET_AddrH						0x30
+#define	MonitorPara_FreqSET_AddrL						0x01
 
-#define	MonitorPara_PowerONTime_AddrH					0x30
-#define	MonitorPara_PowerONTime_AddrL					0x03
-
-#define	MonitorPara_Position_AddrH						0x30
-#define	MonitorPara_Position_AddrL						0x04
-
-#define	MonitorPara_FreqFBK_AddrH							0x30
-#define	MonitorPara_FreqFBK_AddrL							0x05
-
-#define	MonitorPara_FreqSET_AddrH							0x30
-#define	MonitorPara_FreqSET_AddrL							0x06
+#define	MonitorPara_OutputPWR_AddrH						0x30
+#define	MonitorPara_OutputPWR_AddrL						0x02
 
 #define	MonitorPara_BUSVoltage_AddrH					0x30
-#define	MonitorPara_BUSVoltage_AddrL					0x07
+#define	MonitorPara_BUSVoltage_AddrL					0x03
+
+#define	MonitorPara_TorqueFBK_AddrH						0x30
+#define	MonitorPara_TorqueFBK_AddrL						0x04
+
+#define	MonitorPara_FreqFBK_AddrH						0x30
+#define	MonitorPara_FreqFBK_AddrL						0x05
+
+#define	MonitorPara_RunTimeH_AddrH						0x30
+#define	MonitorPara_RunTimeH_AddrL						0x06
+
+#define	MonitorPara_RunTimeL_AddrH						0x30
+#define	MonitorPara_RunTimeL_AddrL						0x07
 
 #define	MonitorPara_OutputVoltage_AddrH				0x30
 #define	MonitorPara_OutputVoltage_AddrL				0x08
 
-#define	MonitorPara_CurrentFBK_AddrH					0x30
-#define	MonitorPara_CurrentFBK_AddrL					0x09
+#define	MonitorPara_Position_AddrH						0x30
+#define	MonitorPara_Position_AddrL						0x09
 
-#define	MonitorPara_Fault_AddrH								0x30
-#define	MonitorPara_Fault_AddrL								0x0A
+//#define	MonitorPara_PowerONTime_AddrH				0x30
+//#define	MonitorPara_PowerONTime_AddrL				0x03
+
+#define	MonitorPara_Fault_AddrH							0x30
+#define	MonitorPara_Fault_AddrL							0x0A
 
 #define	MonitorPara_IOStatusIn_AddrH					0x30
 #define	MonitorPara_IOStatusIn_AddrL					0x0B
@@ -47,26 +53,26 @@
 #define	MonitorPara_SysStatus_AddrH						0x30
 #define	MonitorPara_SysStatus_AddrL						0x0D
 
-#define	MonitorPara_RSV1_AddrH								0x30
-#define	MonitorPara_RSV1_AddrL								0x0E
+#define	MonitorPara_ModuleTemp_AddrH					0x30
+#define	MonitorPara_ModuleTemp_AddrL					0x0E
                                           		
-#define	MonitorPara_RSV2_AddrH								0x30
-#define	MonitorPara_RSV2_AddrL								0x0F
+#define	MonitorPara_OutsideTemp_AddrH					0x30
+#define	MonitorPara_OutsideTemp_AddrL					0x0F
                                           		
-#define	MonitorPara_RSV3_AddrH								0x30
-#define	MonitorPara_RSV3_AddrL								0x10
+#define	MonitorPara_RSV3_AddrH							0x30
+#define	MonitorPara_RSV3_AddrL							0x10
+                                          	
+#define	MonitorPara_RSV4_AddrH							0x30
+#define	MonitorPara_RSV4_AddrL							0x11
+                                          	
+#define	MonitorPara_RSV5_AddrH							0x30
+#define	MonitorPara_RSV5_AddrL							0x12
+                                          	
+#define	MonitorPara_ARM_Ver_AddrH						0xF0
+#define	MonitorPara_ARM_Ver_AddrL						0x01
                                           		
-#define	MonitorPara_RSV4_AddrH								0x30
-#define	MonitorPara_RSV4_AddrL								0x11
-                                          		
-#define	MonitorPara_RSV5_AddrH								0x30
-#define	MonitorPara_RSV5_AddrL								0x12
-                                          		
-#define	MonitorPara_ARM_Ver_AddrH							0xF0
-#define	MonitorPara_ARM_Ver_AddrL							0x01
-                                          		
-#define	MonitorPara_FltClrStatus_AddrH				0xF0
-#define	MonitorPara_FltClrStatus_AddrL				0x02
+#define	MonitorPara_FltClrStatus_AddrH					0xF0
+#define	MonitorPara_FltClrStatus_AddrL					0x02
 
 #define	MonitorPara_RSV6_AddrH								0xF0
 #define	MonitorPara_RSV6_AddrL								0x03
