@@ -1,4 +1,4 @@
-C51 COMPILER V9.00   19296P1                                                               07/06/2019 19:22:55 PAGE 1   
+C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 1   
 
 
 C51 COMPILER V9.00, COMPILATION OF MODULE 19296P1
@@ -62,7 +62,7 @@ line level    source
   51   1              for(j=0;j<i;j++)
   52   1              for(k=0;k<1;k++);
   53   1      }
-C51 COMPILER V9.00   19296P1                                                               07/06/2019 19:22:55 PAGE 2   
+C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 2   
 
   54          
   55          //temporary send data function
@@ -126,7 +126,7 @@ line level    source
  113   1      }
  114          
  115          //-----------transfer data to LCM---------------
-C51 COMPILER V9.00   19296P1                                                               07/06/2019 19:22:55 PAGE 3   
+C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 3   
 
  116          void SEND_DATA_LCD(uchar data1)
  117          {
@@ -190,7 +190,7 @@ line level    source
  175   1              SEND_DATA_LCD(0xA6);
  176   1              SEND_CMD_LCD(0xCA); //Display Control
  177   1              SEND_DATA_LCD(0X00); //
-C51 COMPILER V9.00   19296P1                                                               07/06/2019 19:22:55 PAGE 4   
+C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 4   
 
  178   1              SEND_DATA_LCD(0X9F); //Duty=160
  179   1              SEND_DATA_LCD(0X20); //Nline=off
@@ -254,7 +254,7 @@ line level    source
  235   2                      {
  236   3                              SEND_DATA_LCD(0x00);
  237   3                      }
-C51 COMPILER V9.00   19296P1                                                               07/06/2019 19:22:55 PAGE 5   
+C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 5   
 
  238   2              }
  239   1      }
@@ -318,7 +318,7 @@ line level    source
  297   1      
  298   1      //判断左竖
  299   1              if((Disp_Para & Disp_Left)>0)
-C51 COMPILER V9.00   19296P1                                                               07/06/2019 19:22:55 PAGE 6   
+C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 6   
 
  300   1                      {
  301   2                                      p2 = Char1608_Left;
@@ -382,7 +382,7 @@ line level    source
  359   2                      }
  360   1                      else
  361   1                              {;}
-C51 COMPILER V9.00   19296P1                                                               07/06/2019 19:22:55 PAGE 7   
+C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 7   
 
  362   1      
  363   1      //判断下横
@@ -446,7 +446,7 @@ line level    source
  421          ////                    dp++;
  422          ////            }
  423          ////    }
-C51 COMPILER V9.00   19296P1                                                               07/06/2019 19:22:55 PAGE 8   
+C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 8   
 
  424          ////}
  425          ////
@@ -510,7 +510,7 @@ line level    source
  483          ////    }
  484          ////}
  485          
-C51 COMPILER V9.00   19296P1                                                               07/06/2019 19:22:55 PAGE 9   
+C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 9   
 
  486          //特殊符号（取字模方式：阴码，列行式，顺向
  487          

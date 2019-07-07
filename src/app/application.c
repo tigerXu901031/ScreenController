@@ -175,7 +175,7 @@ void System_Running(void)
 							Display_F_frequency();
 							Display_RunTimeL();
 							Display_RunTimeH(); 
-							Display_ATMT();
+							//Display_ATMT();		disable until single read available
 						}
 }
 
@@ -727,7 +727,7 @@ void SysMode_Set(uchar x)	//only for system mode setting during debugging
 
 void setCommParameters(uchar bufh, uchar bufl, uchar cmd, uchar aCnt)
 {
-	DataBufH = bufh;
+	DataBufH = bufh;			//databuf in read mode is data length, in write mode is data
 	DataBufL = bufl;
 	CCMD = cmd;
 	A_GNT = aCnt;
@@ -736,40 +736,40 @@ void setCommParameters(uchar bufh, uchar bufl, uchar cmd, uchar aCnt)
 void agcnt_Check(void)
 {
 	if(A_GNT<=10)								//data available
-					{
-						RD_FinishFlag = 1;
-					}
-					else
-						{RD_FinishFlag = 0;}
+	{
+		RD_FinishFlag = 1;
+	}
+		else
+			{RD_FinishFlag = 0;}
 //	RD_FinishFlag = 1;
 }
 
 void GetDataFromMaster(uchar DaddrH, uchar DaddrL)
 {
 	if(!RD_FinishFlag)
-			{
-					if(SetGetInterval==0)							//send read command
+	{
+		if(SetGetInterval==0)							//send read command
+		{
+			setCommParameters(0, 0, 3, 0);		//clr read buffer
+			setNetworkData(DaddrL, DaddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);
+			SetGetInterval++;
+		}
+			else
+				{
+					getNetworkData(DaddrL, DaddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);				//check data availability every cycle
+					if(A_GNT<=10)								//data available
 						{
-							setCommParameters(0, 0, 3, 0);		//clr read buffer
-							setNetworkData(DaddrL, DaddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);
-							SetGetInterval++;
+							RD_FinishFlag = 1; 
 						}
 						else
-							{
-								getNetworkData(DaddrL, DaddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);				//check data availability every cycle
-								if(A_GNT<=10)								//data available
-									{
-										RD_FinishFlag = 1; 
-									}
-									else
-										{RD_FinishFlag = 0;}
-								SetGetInterval++;
-								if(SetGetInterval>8)
-									{SetGetInterval = 0;}			//allow to resend read command
-									else 
-										{;}
-							}
-				} 
+							{RD_FinishFlag = 0;}
+					SetGetInterval++;
+					if(SetGetInterval>8)
+						{SetGetInterval = 0;}			//allow to resend read command
+						else 
+							{;}
+				}
+	} 
 				else
 					{
 						//RD_FinishFlag = 0;      
@@ -783,76 +783,77 @@ void GetDataFromMaster(uchar DaddrH, uchar DaddrL)
 //void AppFunRun(networkDataBuf_type* appDataBuf)
 void AppFunRun()
 {
-	// SysStatusReady =1;
-	// POS_StudyFinished = 1;
-	// SysStatus.SysMode = 1;
-	// SysStatus.ManuLevel = 4;
+	/* SysStatusReady =1;
+	POS_StudyFinished = 1;
+	SysStatus.SysMode = 1;
+	SysStatus.ManuLevel = 4; */
 	
 	if(SysStatusReady)		//system status is 0x01 or 0x02
 		{
 			if(POS_StudyFinished)
 			{
-					switch (SysStatus.SysMode)
-					{
-						case 1:				//Running Mode
-							System_Running();
-							break;
-						case 2:				//User Set Mode
-							User_Setting();
-							break;
-						case 3:				//Vendor Set Mode
-							Vendor_Setting();
-							break;
-						default:break;
-					}	
+				switch (SysStatus.SysMode)
+				{
+					case 1:				//Running Mode
+						System_Running();
+						break;
+					case 2:				//User Set Mode
+						User_Setting();
+						break;
+					case 3:				//Vendor Set Mode
+						Vendor_Setting();
+						break;
+					default:break;
+				}	
 			}
 			else
 				{
-					SysStatus.SysMode = 0;		//system in study mode
+					SysStatus.SysMode = 0;		//system in position learning mode
 					System_Study();
 				}
-			KeyIn_Check();
+			KeyIn_Check();	//check key input
 		}
 		else				//communication with master check not finished
 			{
-	//				//position learning status check during first power on
-	//				if(!POS_StudyFinished)			//position learning not finished
-	//					{
-//				RD_FinishFlag = 0;
-				//setCommParameters(0, 0, 3, 0);
+				//system status check during first power on
 				getNetworkData(MonitorPara_SysStatus_AddrL, MonitorPara_SysStatus_AddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);				//check data availability every cycle
-				//agcnt_Check();
-					if(A_GNT<=10)								//data available
-					{
-						RD_FinishFlag = 1;
-					}
-					else
-						{RD_FinishFlag = 0;}
-				if(RD_FinishFlag)								//status reading finished
+				agcnt_Check();								//check data is new or not
+				if(RD_FinishFlag)							//status reading finished
 				{
-					if(DataBufL==System_Status_Run)
-						{
-							POS_StudyFinished = 1;
-							SysStatus.SysMode = 1;			
-						}
-						else
-							{
-								POS_StudyFinished = 0;
-								SysStatus.SysMode = 0;
-								SysStatus.ManuLevel = 0;
-							}
-					SysStatusReady = 1;
+					/*
+					TODO: check different handle for different system status (mode)
+					 */
+					switch(DataBufL)
+					{
+						case 0:	//system in initiation status
+							break;
+						case 1:	//system in position learning status
+							POS_StudyFinished = 0;			//position learning not finished
+							SysStatus.SysMode = 0;			//position learning mode
+							SysStatus.ManuLevel = 0;		//display page start from 0
+							SysStatusReady = 1;				//system is ready for operation
+							break;
+						case 2:	//system in running mode status
+							POS_StudyFinished = 1;			//position learning finished
+							SysStatus.SysMode = 1;			//system run mode
+							SysStatus.ManuLevel = 4;		//display page start from 4
+							SysStatusReady = 1;				//system is ready for operation
+							break;
+						case 3:	//system in spot control mode
+							break;
+						case 4:	//system in repair status
+							break;
+						case 5:	//system in fault status
+							break;
+						default: break;
+					}
 					RD_FinishFlag = 0;	
 				}
 				else
 					{
-						SysStatusReady = 0;
-						RD_FinishFlag = 0;
+						SysStatusReady = 0;					//system not ready
+						RD_FinishFlag = 0;					//read data unvalid, reset rdflag
 					}
-//						}
-//						else											//position learning finished
-//							{SysStatusReady = 1;}
-//							}
 			}
 }
 

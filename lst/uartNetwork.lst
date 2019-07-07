@@ -1,4 +1,4 @@
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 1   
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 1   
 
 
 C51 COMPILER V9.00, COMPILATION OF MODULE UARTNETWORK
@@ -62,7 +62,7 @@ line level    source
   52   1          crcVal = Crc16RtuCal(msgPtr, msgLen - 2);
   53   1          crcL = (unsigned char)(crcVal & 0x00ff);
   54   1          crcH = (unsigned char)((crcVal >> 8) & 0x00ff);
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 2   
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 2   
 
   55   1      
   56   1          msgObj->msgByteArray[msgLen - 1] = crcH;
@@ -126,7 +126,7 @@ line level    source
  113          //             /* higher byte of the 16-bit address */
  114          //             if(busId == busIdx_public)
  115          //             {
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 3   
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 3   
 
  116          //                 serviceType = SERVICETYPE_READ_REQ;
  117          //                 msgObj->readReqMsgObj.regAdd[0] = newData;
@@ -190,7 +190,7 @@ line level    source
  175          //             {
  176          //                 /* in this case it is the lower crc byte */
  177          //                 msgObj->readReqMsgObj.crc[1] = newData;
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 4   
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 4   
 
  178          
  179          //                 /* message recieved finished */
@@ -254,7 +254,7 @@ line level    source
  237          //             {
  238          //                 if(currentDataByte <= longFrameRemainLen)
  239          //                 {
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 5   
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 5   
 
  240          //                     /* When there is long-frame message Add_H = 0x30
  241          //                        then construct the other data byte
@@ -318,7 +318,7 @@ line level    source
  298          //             /* lower crc byte */
  299          //             msgObj->writeAccessMsgObj.crc[0] = newData;
  300          //             break;
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 6   
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 6   
 
  301          //         case 8:
  302          //             /* higher crc byte */
@@ -382,7 +382,7 @@ line level    source
  359          //                 msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_WRITE_FAIL;
  360          //             }
  361          //             msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = *dataByteCnt;
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 7   
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 7   
 
  362          //             *dataByteCnt = 0;
  363          //             break;
@@ -446,7 +446,7 @@ line level    source
  420          //                 /* ensure the message buffer is clear */
  421          //                 clearDataBlock(&msgBuf[i], 50);
  422          //                 /* node index byte */
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 8   
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 8   
 
  423          //                 msgBuf[i].msgByteArray[0] = newDatBuf[i];
  424          //             }
@@ -510,7 +510,7 @@ line level    source
  482          //         }
  483          //         else
  484          //         {
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 9   
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 9   
 
  485          //             /* No new data do nothing */
  486          //         }
@@ -574,7 +574,7 @@ line level    source
  542   6                                  msgObj->msgArr[l].msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_R
              -EAD_RESP;
  543   6                              }
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 10  
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 10  
 
  544   5                              else if(msgObj->msgArr[l].msgByteArray[DATAARRAY_MSGLENGTH_BYTE] > 8)
  545   5                              {
@@ -638,7 +638,7 @@ line level    source
  597   1          unsigned char *dataPtr = 0;
  598   1          dataPtr = &msgObj->msgByteArray[0];
  599   1      
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 11  
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 11  
 
  600   1          for(i = 0; i < msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE]; i ++)
  601   1          {
@@ -702,7 +702,7 @@ line level    source
  658   4      
  659   4                          dataBuf->dataLength = 1;
  660   4      
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 12  
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 12  
 
  661   4                          ptr1 = &(dataBuf->networkData[0].opData[0]);
  662   4                          ptr2 = &(dataBuf->networkData[0].opData[1]);
@@ -766,7 +766,7 @@ line level    source
  715   4                          
  716   4                          break;
  717   4      
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 13  
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 13  
 
  718   4                      case SERVICETYPE_WRITE_FAIL:
  719   4                          dataBuf->dataLength = 1;
@@ -830,7 +830,7 @@ line level    source
  777   1          crc16Calc(msgObj);
  778   1      }
  779          
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 14  
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 14  
 
  780          static void txDataHandler(msg_type *msgObj, networkDataBuf_type *dataBuf)
  781          {
@@ -894,7 +894,7 @@ line level    source
  838   2              /* code */
  839   2          }
  840   1      }
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 15  
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 15  
 
  841          
  842          static void fetchNodeId()
@@ -958,7 +958,7 @@ line level    source
 *** WARNING C182 IN LINE 899 OF ..\SRC\SRV\UARTNETWORK.C: pointer to different objects
  900   1      
  901   1          /* test purpose only */
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 16  
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 16  
 
  902   1          if(iCounter == 10)
  903   1          {
@@ -1022,7 +1022,7 @@ line level    source
  960          void networkInit()
  961          {
  962   1          uartDrvInit();
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 17  
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 17  
 
  963   1          parMapInit();
  964   1      
@@ -1086,7 +1086,7 @@ line level    source
 1021   2              longFrameBuf.msgByteArray[7] = 0x10;
 1022   2              longFrameBuf.msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 0x08;
 1023   2              
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 18  
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 18  
 
 1024   2              /* register the long frame request */
 1025   2              networkObj.reqSrv[reqIdx_readLongReq].srvId = SERVICETYPE_READ_LONGREQ;
@@ -1150,7 +1150,7 @@ line level    source
 1078   1             application operational data -> nwDataBuf */
 1079   1          nwDataBuf.networkData[0].add[0] = addH;
 1080   1          nwDataBuf.networkData[0].add[1] = addL;
-C51 COMPILER V9.00   UARTNETWORK                                                           07/06/2019 19:22:54 PAGE 19  
+C51 COMPILER V9.00   UARTNETWORK                                                           07/07/2019 16:29:04 PAGE 19  
 
 1081   1          nwDataBuf.networkData[0].opData[0] = *Hdata;
 1082   1          nwDataBuf.networkData[0].opData[1] = *Ldata;

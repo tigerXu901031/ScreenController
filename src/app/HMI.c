@@ -87,405 +87,347 @@ void Number_Lookup_Table(uchar number)
 void Display_Encoder_Number(uchar x)
 {
 	uint encoder;
-	//setCommParameters(0, 0, 3, 0);		//set write buffer
-	RD_BSY++;
-	if(RD_BSY>5)
+	CCMD = 3;		//read
+	getNetworkData(MonitorPara_Position_AddrL, MonitorPara_Position_AddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);				//check data availability every cycle
+	agcnt_Check();
+	
+	if(RD_FinishFlag)
 		{
-			RD_BSY = 0;
-		}
-		else
-			{;}
-	if(RD_BSY==1)
-		{
-			setCommParameters(0, 0, 3, 0);
-			getNetworkData(MonitorPara_Position_AddrL, MonitorPara_Position_AddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);				//check data availability every cycle
-			agcnt_Check();
-			
-			//GetDataFromMaster(MonitorPara_Position_AddrH, MonitorPara_Position_AddrL);
-			if(RD_FinishFlag)
+			Motor_Parameter.E_encoder = (DataBufH << 8) + DataBufL;
+			encoder = Motor_Parameter.E_encoder;
+			if(encoder>10000)			//���λ
 				{
-					Motor_Parameter.E_encoder = (DataBufH << 8) + DataBufL;
-					encoder = Motor_Parameter.E_encoder;
-					if(encoder>10000)			//���λ
-						{
-							Motor_Parameter.E_Digit1 = encoder/10000;
-							encoder %= 10000;	
-						}
-						else {Motor_Parameter.E_Digit1 = 0;}
-						
-					if(encoder>1000)		//��2λ
-						{
-							Motor_Parameter.E_Digit2 = encoder/1000;
-							encoder %= 1000;	
-						}
-						else {Motor_Parameter.E_Digit2 = 0;}
-						
-					if(encoder>100)		//��3λ
-						{
-							Motor_Parameter.E_Digit3 = encoder/100;
-							encoder %= 100;	
-						}
-						else {Motor_Parameter.E_Digit3 = 0;}
-						
-					if(encoder>10)		//��4λ
-						{
-							Motor_Parameter.E_Digit4 = encoder/10;
-							encoder %= 10;	
-						}
-						else {Motor_Parameter.E_Digit4 = 0;}
-							
-					Motor_Parameter.E_Digit5 = encoder;		//��5λ
-					
-					Number_Lookup_Table(Motor_Parameter.E_Digit1);
-					if(x==1)
-						{
-							CHAR_Display_16x8(57, 1,char_num, 1);
-						}
-						else if(x==2)
-							{
-								CHAR_Display_16x8(57, 2,char_num, 0);
-							}
-								else{;}
-					
-					Number_Lookup_Table(Motor_Parameter.E_Digit2);
-					if(x==1)
-						{
-							CHAR_Display_16x8(65, 1,char_num, 1);
-						}
-						else if(x==2)
-							{
-								CHAR_Display_16x8(65, 2,char_num, 0);
-							}
-								else{;}	
-  				
-					Number_Lookup_Table(Motor_Parameter.E_Digit3);
-					if(x==1)
-						{
-							CHAR_Display_16x8(73, 1,char_num, 1);
-						}
-						else if(x==2)
-							{
-								CHAR_Display_16x8(73, 2,char_num, 0);
-							}
-								else{;}	
-  				
-					Number_Lookup_Table(Motor_Parameter.E_Digit4);
-					if(x==1)
-						{
-							CHAR_Display_16x8(81, 1,char_num, 1);
-						}
-						else if(x==2)
-							{
-								CHAR_Display_16x8(81, 2,char_num, 0);
-							}
-								else{;}		
-  				
-					Number_Lookup_Table(Motor_Parameter.E_Digit5);
-					if(x==1)
-						{
-							CHAR_Display_16x8(89, 1,char_num, 1);
-						}
-						else if(x==2)
-							{
-								CHAR_Display_16x8(89, 2,char_num, 0);
-							}
-								else{;}	
+					Motor_Parameter.E_Digit1 = encoder/10000;
+					encoder %= 10000;	
 				}
-					else
-						{;}
+				else {Motor_Parameter.E_Digit1 = 0;}
+				
+			if(encoder>1000)		//��2λ
+				{
+					Motor_Parameter.E_Digit2 = encoder/1000;
+					encoder %= 1000;	
+				}
+				else {Motor_Parameter.E_Digit2 = 0;}
+				
+			if(encoder>100)		//��3λ
+				{
+					Motor_Parameter.E_Digit3 = encoder/100;
+					encoder %= 100;	
+				}
+				else {Motor_Parameter.E_Digit3 = 0;}
+				
+			if(encoder>10)		//��4λ
+				{
+					Motor_Parameter.E_Digit4 = encoder/10;
+					encoder %= 10;	
+				}
+				else {Motor_Parameter.E_Digit4 = 0;}
+					
+			Motor_Parameter.E_Digit5 = encoder;		//��5λ
+			
+			Number_Lookup_Table(Motor_Parameter.E_Digit1);
+			if(x==1)
+				{
+					CHAR_Display_16x8(57, 1,char_num, 1);
+				}
+				else if(x==2)
+					{
+						CHAR_Display_16x8(57, 2,char_num, 0);
+					}
+						else{;}
+			
+			Number_Lookup_Table(Motor_Parameter.E_Digit2);
+			if(x==1)
+				{
+					CHAR_Display_16x8(65, 1,char_num, 1);
+				}
+				else if(x==2)
+					{
+						CHAR_Display_16x8(65, 2,char_num, 0);
+					}
+						else{;}	
+  		
+			Number_Lookup_Table(Motor_Parameter.E_Digit3);
+			if(x==1)
+				{
+					CHAR_Display_16x8(73, 1,char_num, 1);
+				}
+				else if(x==2)
+					{
+						CHAR_Display_16x8(73, 2,char_num, 0);
+					}
+						else{;}	
+  		
+			Number_Lookup_Table(Motor_Parameter.E_Digit4);
+			if(x==1)
+				{
+					CHAR_Display_16x8(81, 1,char_num, 1);
+				}
+				else if(x==2)
+					{
+						CHAR_Display_16x8(81, 2,char_num, 0);
+					}
+						else{;}		
+  		
+			Number_Lookup_Table(Motor_Parameter.E_Digit5);
+			if(x==1)
+				{
+					CHAR_Display_16x8(89, 1,char_num, 1);
+				}
+				else if(x==2)
+					{
+						CHAR_Display_16x8(89, 2,char_num, 0);
+					}
+						else{;}	
 		}
 			else
-				{RD_BSY--;}
+				{;}
 }
 
 void Display_RunTimeL(void)
 {
 	ulong runtime;
-	//setCommParameters(0, 0, 3, 0);		//set write buffer
-	RD_BSY++;
-	if(RD_BSY==5)
-		{
-			setCommParameters(0, 0, 3, 0);
-			getNetworkData(MonitorPara_RunTimeL_AddrL, MonitorPara_RunTimeL_AddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);				//check data availability every cycle
-			agcnt_Check();
-			
-			//GetDataFromMaster(MonitorPara_RunTimeL_AddrH, MonitorPara_RunTimeL_AddrL);
-			if(RD_FinishFlag)
-			{
-				Motor_Parameter.RT_runtimeL = (DataBufH << 8) + DataBufL;
-				runtime = Motor_Parameter.RT_runtimeH + Motor_Parameter.RT_runtimeL;
-				if(runtime>1000000)			//���λ
-					{
-						Motor_Parameter.RT_Digit1 = runtime/1000000;
-						runtime %= 1000000;	
-					}
-					else {Motor_Parameter.RT_Digit1 = 0;}
-					
-				if(runtime>100000)		//��2λ
-					{
-						Motor_Parameter.RT_Digit2 = runtime/100000;
-						runtime %= 100000;	
-					}
-					else {Motor_Parameter.RT_Digit2 = 0;}
-					
-				if(runtime>10000)		//��3λ
-					{
-						Motor_Parameter.RT_Digit3 = runtime/10000;
-						runtime %= 10000;	
-					}
-					else {Motor_Parameter.RT_Digit3 = 0;}
-					
-				if(runtime>1000)		//��4λ
-					{
-						Motor_Parameter.RT_Digit4 = runtime/1000;
-						runtime %= 1000;	
-					}
-					else {Motor_Parameter.RT_Digit4 = 0;}
-				if(runtime>100)		//��4λ
-					{
-						Motor_Parameter.RT_Digit5 = runtime/100;
-						runtime %= 100;	
-					}
-					else {Motor_Parameter.RT_Digit5 = 0;}
-				if(runtime>10)		//��4λ
-					{
-						Motor_Parameter.RT_Digit6 = runtime/10;
-						runtime %= 10;	
-					}
-					else {Motor_Parameter.RT_Digit6 = 0;}
-				
-				Motor_Parameter.RT_Digit7 = runtime;		//��5λ
-				
-				Number_Lookup_Table(Motor_Parameter.RT_Digit1);
-				CHAR_Display_16x8(41, 3,char_num, 0); 
-  			
-				Number_Lookup_Table(Motor_Parameter.RT_Digit2);
-				CHAR_Display_16x8(49, 3,char_num, 0); 
-  			
-				Number_Lookup_Table(Motor_Parameter.RT_Digit3);
-				CHAR_Display_16x8(57, 3,char_num, 0); 
-  			
-				Number_Lookup_Table(Motor_Parameter.RT_Digit4);
-				CHAR_Display_16x8(65, 3,char_num, 0); 
-  			
-				Number_Lookup_Table(Motor_Parameter.RT_Digit5);
-				CHAR_Display_16x8(73, 3,char_num, 0); 
-				
-				Number_Lookup_Table(Motor_Parameter.RT_Digit6);
-				CHAR_Display_16x8(81, 3,char_num, 0); 
-  			
-				Number_Lookup_Table(Motor_Parameter.RT_Digit7);
-				CHAR_Display_16x8(89, 3,char_num, 0); 
-				
-			}
-			else
-				{;}		
-		}
-		else
-			{RD_BSY--;}
-	//GetDataFromMaster(MonitorPara_RunTimeL_AddrH, MonitorPara_RunTimeL_AddrL);
-	//GetDataFromMaster(MonitorPara_RunTimeH_AddrH, MonitorPara_RunTimeH_AddrL);
+	CCMD = 3;	//read
+	getNetworkData(MonitorPara_RunTimeL_AddrL, MonitorPara_RunTimeL_AddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);				//check data availability every cycle
+	agcnt_Check();
 	
+	if(RD_FinishFlag)
+	{
+		Motor_Parameter.RT_runtimeL = (DataBufH << 8) + DataBufL;
+		runtime = Motor_Parameter.RT_runtimeH + Motor_Parameter.RT_runtimeL;
+		if(runtime>1000000)			//���λ
+			{
+				Motor_Parameter.RT_Digit1 = runtime/1000000;
+				runtime %= 1000000;	
+			}
+			else {Motor_Parameter.RT_Digit1 = 0;}
+			
+		if(runtime>100000)		//��2λ
+			{
+				Motor_Parameter.RT_Digit2 = runtime/100000;
+				runtime %= 100000;	
+			}
+			else {Motor_Parameter.RT_Digit2 = 0;}
+			
+		if(runtime>10000)		//��3λ
+			{
+				Motor_Parameter.RT_Digit3 = runtime/10000;
+				runtime %= 10000;	
+			}
+			else {Motor_Parameter.RT_Digit3 = 0;}
+			
+		if(runtime>1000)		//��4λ
+			{
+				Motor_Parameter.RT_Digit4 = runtime/1000;
+				runtime %= 1000;	
+			}
+			else {Motor_Parameter.RT_Digit4 = 0;}
+		if(runtime>100)		//��4λ
+			{
+				Motor_Parameter.RT_Digit5 = runtime/100;
+				runtime %= 100;	
+			}
+			else {Motor_Parameter.RT_Digit5 = 0;}
+		if(runtime>10)		//��4λ
+			{
+				Motor_Parameter.RT_Digit6 = runtime/10;
+				runtime %= 10;	
+			}
+			else {Motor_Parameter.RT_Digit6 = 0;}
+		
+		Motor_Parameter.RT_Digit7 = runtime;		//��5λ
+		
+		Number_Lookup_Table(Motor_Parameter.RT_Digit1);
+		CHAR_Display_16x8(41, 3,char_num, 0); 
+  	
+		Number_Lookup_Table(Motor_Parameter.RT_Digit2);
+		CHAR_Display_16x8(49, 3,char_num, 0); 
+  	
+		Number_Lookup_Table(Motor_Parameter.RT_Digit3);
+		CHAR_Display_16x8(57, 3,char_num, 0); 
+  	
+		Number_Lookup_Table(Motor_Parameter.RT_Digit4);
+		CHAR_Display_16x8(65, 3,char_num, 0); 
+  	
+		Number_Lookup_Table(Motor_Parameter.RT_Digit5);
+		CHAR_Display_16x8(73, 3,char_num, 0); 
+		
+		Number_Lookup_Table(Motor_Parameter.RT_Digit6);
+		CHAR_Display_16x8(81, 3,char_num, 0); 
+  	
+		Number_Lookup_Table(Motor_Parameter.RT_Digit7);
+		CHAR_Display_16x8(89, 3,char_num, 0); 
+		
+	}
+	else
+				{;}
 }
 
 void Display_RunTimeH(void)
 {
-	//setCommParameters(0, 0, 3, 0);		//set write buffer
-	RD_BSY++;
-	if(RD_BSY==4)
-		{
-			setCommParameters(0, 0, 3, 0);
-			getNetworkData(MonitorPara_RunTimeH_AddrL, MonitorPara_RunTimeH_AddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);				//check data availability every cycle
-			agcnt_Check();
-			//GetDataFromMaster(MonitorPara_RunTimeH_AddrH, MonitorPara_RunTimeH_AddrL);
-			if(RD_FinishFlag)
-			{
-				Motor_Parameter.RT_runtime = (DataBufH << 8) + DataBufL;
-				Motor_Parameter.RT_runtime = Motor_Parameter.RT_runtimeH<<16;
-			}
-		}
-			else
-				{RD_BSY--;}
+	
+	CCMD = 3;		//read
+	getNetworkData(MonitorPara_RunTimeH_AddrL, MonitorPara_RunTimeH_AddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);				//check data availability every cycle
+	agcnt_Check();
+	if(RD_FinishFlag)
+	{
+		Motor_Parameter.RT_runtime = (DataBufH << 8) + DataBufL;
+		Motor_Parameter.RT_runtime = Motor_Parameter.RT_runtimeH<<16;
+	}
 }
 
 void Display_I_current(void)
 {
 	uint current_data;
-	//setCommParameters(0, 0, 3, 0);		//set write buffer
-	RD_BSY++;
-	if(RD_BSY==2)
-		{
-			setCommParameters(0, 0, 3, 0);
-			getNetworkData(MonitorPara_CurrentFBK_AddrL, MonitorPara_CurrentFBK_AddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);				//check data availability every cycle
-			agcnt_Check();
-			//GetDataFromMaster(MonitorPara_CurrentFBK_AddrH, MonitorPara_CurrentFBK_AddrL);
-			if(RD_FinishFlag)
+	CCMD = 3;		//read mode
+	getNetworkData(MonitorPara_CurrentFBK_AddrL, MonitorPara_CurrentFBK_AddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);				//check data availability every cycle
+	agcnt_Check();
+	if(RD_FinishFlag)
+	{
+		Motor_Parameter.I_current = (DataBufH << 8) + DataBufL;
+		current_data = Motor_Parameter.I_current;
+		if(current_data>10000)			//���λ
 			{
-				Motor_Parameter.I_current = (DataBufH << 8) + DataBufL;
-				current_data = Motor_Parameter.I_current;
-//				current_data = 12345;		//example for display demo only
-				if(current_data>10000)			//���λ
-					{
-						Motor_Parameter.I_Digit1 = current_data/10000;
-						current_data %= 10000;	
-					}
-					else {Motor_Parameter.I_Digit1 = 0;}
-					
-				if(current_data>1000)		//��2λ
-					{
-						Motor_Parameter.I_Digit2 = current_data/1000;
-						current_data %= 1000;	
-					}
-					else {Motor_Parameter.I_Digit2 = 0;}
-					
-				if(current_data>100)		//��3λ
-					{
-						Motor_Parameter.I_Digit3 = current_data/100;
-						current_data %= 100;	
-					}
-					else {Motor_Parameter.I_Digit3 = 0;}
-					
-				if(current_data>10)		//��4λ
-					{
-						Motor_Parameter.I_Digit4 = current_data/10;
-						current_data %= 10;	
-					}
-					else {Motor_Parameter.I_Digit4 = 0;}
-						
-				Motor_Parameter.I_Digit5 = current_data;		//��5λ
+				Motor_Parameter.I_Digit1 = current_data/10000;
+				current_data %= 10000;	
+			}
+			else {Motor_Parameter.I_Digit1 = 0;}
+			
+		if(current_data>1000)		//��2λ
+			{
+				Motor_Parameter.I_Digit2 = current_data/1000;
+				current_data %= 1000;	
+			}
+			else {Motor_Parameter.I_Digit2 = 0;}
+			
+		if(current_data>100)		//��3λ
+			{
+				Motor_Parameter.I_Digit3 = current_data/100;
+				current_data %= 100;	
+			}
+			else {Motor_Parameter.I_Digit3 = 0;}
+			
+		if(current_data>10)		//��4λ
+			{
+				Motor_Parameter.I_Digit4 = current_data/10;
+				current_data %= 10;	
+			}
+			else {Motor_Parameter.I_Digit4 = 0;}
 				
-				Number_Lookup_Table(Motor_Parameter.I_Digit1);
-				CHAR_Display_16x8(129, 1,char_num, 1); 			//���Ϻ�
-  			
-				Number_Lookup_Table(Motor_Parameter.I_Digit2);
-				CHAR_Display_16x8(137, 1,char_num, 1); 			//���Ϻ� 
-  			
-				Number_Lookup_Table(Motor_Parameter.I_Digit3);
-				CHAR_Display_16x8(145, 1,char_num, 1); 			//���Ϻ� 
-  			
-				Number_Lookup_Table(Motor_Parameter.I_Digit4);
-				CHAR_Display_16x8(161, 1,char_num, 1); 			//���Ϻ� 
-  			
-				Number_Lookup_Table(Motor_Parameter.I_Digit5);
-				CHAR_Display_16x8(169, 1,char_num, 1); 			//���Ϻ� 
-			}
-			else
-				{;}
-			}
-				else
-					{RD_BSY--;}
-	//GetDataFromMaster(MonitorPara_CurrentFBK_AddrH, MonitorPara_CurrentFBK_AddrL);
+		Motor_Parameter.I_Digit5 = current_data;		//��5λ
+		
+		Number_Lookup_Table(Motor_Parameter.I_Digit1);
+		CHAR_Display_16x8(129, 1,char_num, 1); 			//���Ϻ�
+  	
+		Number_Lookup_Table(Motor_Parameter.I_Digit2);
+		CHAR_Display_16x8(137, 1,char_num, 1); 			//���Ϻ� 
+  	
+		Number_Lookup_Table(Motor_Parameter.I_Digit3);
+		CHAR_Display_16x8(145, 1,char_num, 1); 			//���Ϻ� 
+  	
+		Number_Lookup_Table(Motor_Parameter.I_Digit4);
+		CHAR_Display_16x8(161, 1,char_num, 1); 			//���Ϻ� 
+  	
+		Number_Lookup_Table(Motor_Parameter.I_Digit5);
+		CHAR_Display_16x8(169, 1,char_num, 1); 			//���Ϻ� 
+	}
+	else
+		{;}
 }
 
 void Display_F_frequency(void)
 {
 	uint frequency_data;
-	//setCommParameters(0, 0, 3, 0);		//set write buffer
-	RD_BSY++;
-	if(RD_BSY==3)
-		{
-			setCommParameters(0, 0, 3, 0);
-			getNetworkData(MonitorPara_FreqFBK_AddrL, MonitorPara_FreqFBK_AddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);				//check data availability every cycle
-			agcnt_Check();
-			//GetDataFromMaster(MonitorPara_FreqFBK_AddrH, MonitorPara_FreqFBK_AddrL);
-			if(RD_FinishFlag)
+	CCMD = 3;		//read
+	getNetworkData(MonitorPara_FreqFBK_AddrL, MonitorPara_FreqFBK_AddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);				//check data availability every cycle
+	agcnt_Check();
+	if(RD_FinishFlag)
+	{
+		Motor_Parameter.F_frequency = (DataBufH << 8) + DataBufL;
+		frequency_data = Motor_Parameter.I_current;
+		if(frequency_data>10000)			//���λ
 			{
-				Motor_Parameter.F_frequency = (DataBufH << 8) + DataBufL;
-				frequency_data = Motor_Parameter.I_current;
-				if(frequency_data>10000)			//���λ
-					{
-						Motor_Parameter.F_Digit1 = frequency_data/10000;
-						frequency_data %= 10000;	
-					}
-					else {Motor_Parameter.F_Digit1 = 0;}
-					
-				if(frequency_data>1000)		//��2λ
-					{
-						Motor_Parameter.F_Digit2 = frequency_data/1000;
-						frequency_data %= 1000;	
-					}
-					else {Motor_Parameter.F_Digit2 = 0;}
-					
-				if(frequency_data>100)		//��3λ
-					{
-						Motor_Parameter.F_Digit3 = frequency_data/100;
-						frequency_data %= 100;	
-					}
-					else {Motor_Parameter.F_Digit3 = 0;}
-					
-				if(frequency_data>10)		//��4λ
-					{
-						Motor_Parameter.F_Digit4 = frequency_data/10;
-						frequency_data %= 10;	
-					}
-					else {Motor_Parameter.F_Digit4 = 0;}
-						
-				Motor_Parameter.F_Digit5 = frequency_data;		//��5λ
-				
-				Number_Lookup_Table(Motor_Parameter.F_Digit1);
-				CHAR_Display_16x8(129, 3,char_num, 0); 			//���Ϻ�
-  			
-				Number_Lookup_Table(Motor_Parameter.F_Digit2);
-				CHAR_Display_16x8(137, 3,char_num, 0); 			//���Ϻ� 
-  			
-				Number_Lookup_Table(Motor_Parameter.F_Digit3);
-				CHAR_Display_16x8(145, 3,char_num, 0); 			//���Ϻ� 
-  			
-				Number_Lookup_Table(Motor_Parameter.F_Digit4);
-				CHAR_Display_16x8(161, 3,char_num, 0); 			//���Ϻ� 
-  			
-				Number_Lookup_Table(Motor_Parameter.F_Digit5);
-				CHAR_Display_16x8(169, 3,char_num, 0); 			//���Ϻ� 
+				Motor_Parameter.F_Digit1 = frequency_data/10000;
+				frequency_data %= 10000;	
 			}
-			else
-				{;}
-		}
-		else
-			{RD_BSY--;}
+			else {Motor_Parameter.F_Digit1 = 0;}
+			
+		if(frequency_data>1000)		//��2λ
+			{
+				Motor_Parameter.F_Digit2 = frequency_data/1000;
+				frequency_data %= 1000;	
+			}
+			else {Motor_Parameter.F_Digit2 = 0;}
+			
+		if(frequency_data>100)		//��3λ
+			{
+				Motor_Parameter.F_Digit3 = frequency_data/100;
+				frequency_data %= 100;	
+			}
+			else {Motor_Parameter.F_Digit3 = 0;}
+			
+		if(frequency_data>10)		//��4λ
+			{
+				Motor_Parameter.F_Digit4 = frequency_data/10;
+				frequency_data %= 10;	
+			}
+			else {Motor_Parameter.F_Digit4 = 0;}
+				
+		Motor_Parameter.F_Digit5 = frequency_data;		//��5λ
+		
+		Number_Lookup_Table(Motor_Parameter.F_Digit1);
+		CHAR_Display_16x8(129, 3,char_num, 0); 			//���Ϻ�
+  	
+		Number_Lookup_Table(Motor_Parameter.F_Digit2);
+		CHAR_Display_16x8(137, 3,char_num, 0); 			//���Ϻ� 
+  	
+		Number_Lookup_Table(Motor_Parameter.F_Digit3);
+		CHAR_Display_16x8(145, 3,char_num, 0); 			//���Ϻ� 
+  	
+		Number_Lookup_Table(Motor_Parameter.F_Digit4);
+		CHAR_Display_16x8(161, 3,char_num, 0); 			//���Ϻ� 
+  	
+		Number_Lookup_Table(Motor_Parameter.F_Digit5);
+		CHAR_Display_16x8(169, 3,char_num, 0); 			//���Ϻ� 
+	}
+	else
+		{;}
 }
 
 void Display_ATMT(void)
 {
 	uchar panelmode;
 	
-	RD_BSY++;
-	if(RD_BSY==6)
+	setCommParameters(0, 0, 3, 0);
+	getNetworkData(FuncPara_TP_Mode1_AddrL, FuncPara_TP_Mode1_AddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);				//check data availability every cycle
+	agcnt_Check();
+	if(RD_FinishFlag)
+	{
+		panelmode = DataBufL;
+		switch(panelmode)
 		{
-			setCommParameters(0, 0, 3, 0);
-			getNetworkData(FuncPara_TP_Mode1_AddrL, FuncPara_TP_Mode1_AddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);				//check data availability every cycle
-			agcnt_Check();
-				//GetDataFromMaster(FuncPara_TP_Mode1_AddrH, FuncPara_TP_Mode1_AddrL);
-			if(RD_FinishFlag)
-			{
-				panelmode = DataBufL;
-				switch(panelmode)
-				{
-					case 0:		//AutoMode
-						Hanzi_Disp_16x16(97, 6, Hanzi_1616_XST_Zi, 0);
-						Hanzi_Disp_16x16(113, 6, Hanzi_1616_XST_Dong, 0);
-						break;
-					case 1:		//OpenAT, CloseMT
-						
-						break;
-					case 2:		//OpenMT, CloseAT
-						
-						break;
-					case 3:		//OpenMT, CloseMT
-						
-						break;
-				}
-				//seperate line
-				display_8x1(97,6,0xFF);
-				display_8x1(97,7,0xFF);
-				display_8x1(97,8,0xFF);
-				display_8x1(97,9,0xFF);
-			}
-			else
-				{;}	
+			case 0:		//AutoMode
+				Hanzi_Disp_16x16(97, 6, Hanzi_1616_XST_Zi, 0);
+				Hanzi_Disp_16x16(113, 6, Hanzi_1616_XST_Dong, 0);
+				break;
+			case 1:		//OpenAT, CloseMT
+				
+				break;
+			case 2:		//OpenMT, CloseAT
+				
+				break;
+			case 3:		//OpenMT, CloseMT
+				
+				break;
 		}
-		else
-			{RD_BSY--;}
-
+		//seperate line
+		display_8x1(97,6,0xFF);
+		display_8x1(97,7,0xFF);
+		display_8x1(97,8,0xFF);
+		display_8x1(97,9,0xFF);
+	}
+	else
+		{;}	
 }
 
 void Motor_Direction_Update(void)
