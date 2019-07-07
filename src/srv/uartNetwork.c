@@ -31,6 +31,7 @@
 #include "uartNetwork.h"
 
 networkInfo_type networkObj;
+serviceReq_type readReqSrv;
 unsigned char msgStandbyLen[busIdx_max][3] = {{0,0,0}, {0,0,0}};
 msgBuf_type rxMsgBuf[busIdx_max];
 msgBuf_type txMsgBuf;
@@ -537,7 +538,7 @@ static unsigned char getRxMsgAndAssemble(msgBuf_type *msgObj)
                         {
                             msgObj->msgArr[l].msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_READ_REQ;
                         }
-                        else if(msgObj->msgArr[l].msgByteArray[DATAARRAY_MSGLENGTH_BYTE] == 8)
+                        else if(msgObj->msgArr[l].msgByteArray[DATAARRAY_MSGLENGTH_BYTE] == 7)
                         {
                             msgObj->msgArr[l].msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_READ_RESP;
                         }
@@ -649,19 +650,25 @@ static void rxDataHandler(msg_type *msgObj, networkDataBuf_type *dataBuf)
             switch (serviceType)
             {
                 case SERVICETYPE_READ_RESP:
-                    /* extract cmd, add, data */
-                    dataBuf->networkData[0].cmd = MSGCMD_READOP;
-                    dataBuf->networkData[0].add[0] = msgObj->readRepMsgObj.regAdd[0];
-                    dataBuf->networkData[0].add[1] = msgObj->readRepMsgObj.regAdd[1];
-                    dataBuf->networkData[0].opData[0] = msgObj->readRepMsgObj.msgData[0];
-                    dataBuf->networkData[0].opData[1] = msgObj->readRepMsgObj.msgData[1];
+                    if(readReqSrv.srvId == SERVICETYPE_READ_REQ)
+                    {
+                        for(i = 0; i < (msgObj->readRepMsgObj.dataLen / 2); i ++)
+                        {
+                            /* extract cmd, add, data */
+                            dataBuf->networkData[0].cmd = MSGCMD_READOP;
+                            dataBuf->networkData[0].add[0]      = readReqSrv.add[0];
+                            dataBuf->networkData[0].add[1]      = readReqSrv.add[1] + i;
+                            dataBuf->networkData[0].opData[0]   = msgObj->readRepMsgObj.msgData[0 + i];
+                            dataBuf->networkData[0].opData[1]   = msgObj->readRepMsgObj.msgData[1 + i];
 
-                    dataBuf->dataLength = 1;
+                            // dataBuf->dataLength = 1;
 
-                    ptr1 = &(dataBuf->networkData[0].opData[0]);
-                    ptr2 = &(dataBuf->networkData[0].opData[1]);
-                    parMapWrite(dataBuf->networkData[0].add[0], dataBuf->networkData[0].add[1], ptr1, ptr2);
+                            ptr1 = &(dataBuf->networkData[0].opData[0]);
+                            ptr2 = &(dataBuf->networkData[0].opData[1]);
+                            parMapWrite(dataBuf->networkData[0].add[0], dataBuf->networkData[0].add[1], ptr1, ptr2);
+                        }
 
+                    }
                     break;
 
                 case SERVICETYPE_READ_LONGRESP:
@@ -756,6 +763,12 @@ static void readReqMsgTxPreprocess(msg_type *msgObj, networkDataBuf_type *dataBu
     msgObj->msgByteArray[DATAARRAY_MSGLENGTH_BYTE] = 8;
     msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] = SERVICETYPE_READ_REQ;
 
+    /* register the read request service */
+    readReqSrv.srvId = SERVICETYPE_READ_REQ;
+    readReqSrv.add[0] = dataBuf->networkData[0].add[0];
+    readReqSrv.add[1] = dataBuf->networkData[0].add[1];
+    readReqSrv.dataLen = dataBuf->networkData[0].opData[1];
+
     crc16Calc(msgObj);
 }
 
@@ -826,7 +839,8 @@ static void rxServiceHandler(msg_type *msgObj)
     /* clear the normal read service request set by the previous sent message */
     else if(msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] == SERVICETYPE_READ_RESP)
     {
-
+        *ptr = &readReqSrv;
+        clearDataBlock(ptr, sizeof(readReqSrv));
     }
     /* clear the normal write service request set by the previous sent message */
     else if(msgObj->msgByteArray[DATAARRAY_NEWMSGAVAILABLE_BYTE] == SERVICETYPE_WRITE_REQ)
@@ -1003,7 +1017,7 @@ void longFrameHandler()
         networkObj.reqSrv[reqIdx_readLongReq].srvId = SERVICETYPE_READ_LONGREQ;
         networkObj.reqSrv[reqIdx_readLongReq].add[0] = 0x30;
         networkObj.reqSrv[reqIdx_readLongReq].add[1] = 0x00;
-        networkObj.reqSrv[reqIdx_readLongReq].longFrameLen = 20;
+        networkObj.reqSrv[reqIdx_readLongReq].dataLen = 20;
 
         /* put in the FIFO buffer and send out */
         setTxMsgAndDisassemble(&longFrameBuf, busIdx_private);
@@ -1025,7 +1039,7 @@ void longFrameHandler()
         networkObj.reqSrv[reqIdx_readLongReq].srvId = SERVICETYPE_READ_LONGREQ;
         networkObj.reqSrv[reqIdx_readLongReq].add[0] = 0x30;
         networkObj.reqSrv[reqIdx_readLongReq].add[1] = 0x09;
-        networkObj.reqSrv[reqIdx_readLongReq].longFrameLen = 20;
+        networkObj.reqSrv[reqIdx_readLongReq].dataLen = 20;
 
         /* put in the FIFO buffer and send out */
         setTxMsgAndDisassemble(&longFrameBuf, busIdx_private);

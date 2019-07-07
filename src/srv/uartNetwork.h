@@ -43,7 +43,7 @@ typedef struct{
 typedef struct{
     unsigned char nodeId;
     unsigned char cmd;
-    unsigned char regAdd[2];
+    unsigned char dataLen;
     unsigned char msgData[2];
     unsigned char crc[2];
 }readRepMsg_type;
@@ -121,7 +121,7 @@ typedef struct{
 typedef struct{
     unsigned char srvId;
     unsigned char add[2];
-    unsigned char longFrameLen;
+    unsigned char dataLen;
 }serviceReq_type;
 
 typedef enum{
