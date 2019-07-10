@@ -30,8 +30,9 @@ typedef struct{
 }KeyInStatusType;
 
 extern KeyStatusType KeyInPrev, KeyInCurr;
-extern uchar DataBufH, DataBufL, CCMD, A_GNT, RD_FinishFlag, RD_BSY; 
+extern uchar DataBufH, DataBufL, CCMD, A_GNT, RD_FinishFlag, UsrSetPg, VdrSetPg; 
 extern uchar SysStatusReady;
+extern uchar K5_Valid;
 
 extern void DummySingleFrameTestDataGenerate(uchar addrL, uchar addrH, uchar opDataL, uchar opDataH);
 extern void AppFunRun(void);

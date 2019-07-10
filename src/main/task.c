@@ -135,24 +135,46 @@ void task25ms()
             break;
         /* 50 - 75ms */
         case 2:
-             AppFunRun();
+			P44 = 1;
+            AppFunRun();
             taskCnt ++;
+			P44 = 0;
             break;
         /* 75 - 100ms */
         case 3:
             // setNetworkData(0x00, 0x20, &dummyWriteDataL, &dummyWriteDataH, &dummyWriteCmd, &dummyCnt);
             //setNetworkData(0x02, 0x02, &dummyReadDataL, &dummyReadDataH, &dummyReadCmd, &dummyCnt);
+/*             if (K5_Valid == 1)
+            {
+                setCommParameters(0, LMT_Set, 0x06, 0);
+		        setNetworkData(FuncPara_LMT_STUDY_AddrL, FuncPara_LMT_STUDY_AddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);
+            }
+            else
+            {
+                setCommParameters(0, LMT_Set, 0x06, 0);
+		        setNetworkData(FuncPara_LMT_STUDY_AddrL, FuncPara_LMT_STUDY_AddrH, &DataBufL, &DataBufH, &CCMD, &A_GNT);
+            } */
+            
+            
             taskCnt ++; 
             break;
         /* 100 - 125ms */
         case 4:
             taskCnt ++;
             break;
-        /* 125 - 150ms */
+		/* 125 - 150ms */
         case 5:
-            P44 = 1;
+            taskCnt ++;
+            break;
+		/* 150 - 175ms */
+        case 6:
+            taskCnt ++;
+            break;
+        /* 175 - 200ms */
+        case 7:
+            //P44 = 1;
             network50msUpdate();
-            P44 = 0;
+            //P44 = 0;
             taskCnt = 0;
         default:
             /* unknown error */

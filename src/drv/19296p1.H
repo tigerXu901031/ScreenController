@@ -32,7 +32,7 @@ extern void display_8x1(uchar column, uchar page,uchar text);
 extern void CHAR_Display_16x8(uchar Column, uchar Page,uchar *dp, uchar Disp_Para);
 extern void Hanzi_Disp_16x16(uchar Column, uchar Page, uchar *dp, uchar Disp_Para);
 extern void disp_24x24(int x,int y,uchar *dp);
-
+extern void disp_24x12(int x,int y,uchar *dp);
 
 
 

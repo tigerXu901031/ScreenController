@@ -4,27 +4,57 @@
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
 F:\My Work\10_Products\DoorScreen\0706\ScreenController\prj\Screen Controller.uvproj
-Project File Date:  07/06/2019
+Project File Date:  07/09/2019
 
 <h2>Output:</h2>
-Driver version   : V1.08
-Firmware version : V3.1
 Build target 'Target 1'
 compiling HMI.c...
+..\SRC\APP\HMI.C(714): warning C280: 'Func': unreferenced local variable
+..\SRC\APP\HMI.C(714): warning C280: 'F_Para': unreferenced local variable
 compiling application.c...
 compiling crc.c...
 compiling fifo.c...
 compiling uartNetwork.c...
-..\SRC\SRV\UARTNETWORK.C(514): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(823): warning C260: '=': pointer truncation
-..\SRC\SRV\UARTNETWORK.C(899): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(928): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(985): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1054): warning C280: 'cmd': unreferenced local variable
-..\SRC\SRV\UARTNETWORK.C(1066): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1067): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1091): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1060): warning C280: 'agingCnt': unreferenced local variable
+..\SRC\SRV\UARTNETWORK.C(515): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(836): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(842): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(913): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(942): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(999): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1068): warning C280: 'cmd': unreferenced local variable
+..\SRC\SRV\UARTNETWORK.C(1080): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1081): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1105): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1074): warning C280: 'agingCnt': unreferenced local variable
+compiling parMap.c...
+compiling isr.c...
+assembling STARTUP.A51...
+compiling timer.c...
+compiling uartDrv.c...
+compiling 19296p1.C...
+compiling main.c...
+compiling task.c...
+..\SRC\MAIN\TASK.C(147): error C202: 'KEY_Down': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling HMI.c...
+..\SRC\APP\HMI.C(714): warning C280: 'Func': unreferenced local variable
+..\SRC\APP\HMI.C(714): warning C280: 'F_Para': unreferenced local variable
+compiling application.c...
+compiling crc.c...
+compiling fifo.c...
+compiling uartNetwork.c...
+..\SRC\SRV\UARTNETWORK.C(515): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(836): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(842): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(913): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(942): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(999): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1068): warning C280: 'cmd': unreferenced local variable
+..\SRC\SRV\UARTNETWORK.C(1080): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1081): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1105): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1074): warning C280: 'agingCnt': unreferenced local variable
 compiling parMap.c...
 compiling isr.c...
 assembling STARTUP.A51...
@@ -37,6 +67,8 @@ compiling task.c...
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?DISPLAY_PAGE00_03_ZDKJ?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DISP_USR_PG?HMI
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_LCD_DIAPLAY_PAGE?HMI
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
@@ -103,39 +135,19 @@ linking...
     SEGMENT: ?PR?_CLEARDATABLOCK?FIFO
     CALLER1: ?PR?TIMER25MSISR?ISR
     CALLER2: ?C_C51STARTUP
-Program Size: data=17.0 xdata=3065 code=21951
+Program Size: data=17.0 xdata=3073 code=22600
 creating hex file from "..\bin\Screen Controller"...
-"..\bin\Screen Controller" - 0 Error(s), 35 Warning(s).
+"..\bin\Screen Controller" - 0 Error(s), 39 Warning(s).
 Driver version   : V1.08
 Firmware version : V3.1
 Build target 'Target 1'
-compiling HMI.c...
-compiling application.c...
-compiling crc.c...
-compiling fifo.c...
-compiling uartNetwork.c...
-..\SRC\SRV\UARTNETWORK.C(514): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(823): warning C260: '=': pointer truncation
-..\SRC\SRV\UARTNETWORK.C(899): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(928): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(985): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1054): warning C280: 'cmd': unreferenced local variable
-..\SRC\SRV\UARTNETWORK.C(1066): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1067): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1091): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1060): warning C280: 'agingCnt': unreferenced local variable
-compiling parMap.c...
-compiling isr.c...
-assembling STARTUP.A51...
-compiling timer.c...
-compiling uartDrv.c...
-compiling 19296p1.C...
-compiling main.c...
 compiling task.c...
 ..\SRC\MAIN\TASK.C(63): warning C280: 'dummyCnt': unreferenced local variable
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?DISPLAY_PAGE00_03_ZDKJ?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DISP_USR_PG?HMI
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_LCD_DIAPLAY_PAGE?HMI
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
@@ -202,27 +214,28 @@ linking...
     SEGMENT: ?PR?_CLEARDATABLOCK?FIFO
     CALLER1: ?PR?TIMER25MSISR?ISR
     CALLER2: ?C_C51STARTUP
-Program Size: data=17.0 xdata=3065 code=21967
+Program Size: data=17.0 xdata=3073 code=22601
 creating hex file from "..\bin\Screen Controller"...
-"..\bin\Screen Controller" - 0 Error(s), 35 Warning(s).
-Driver version   : V1.08
-Firmware version : V3.1
+"..\bin\Screen Controller" - 0 Error(s), 26 Warning(s).
 Build target 'Target 1'
 compiling HMI.c...
+..\SRC\APP\HMI.C(714): warning C280: 'Func': unreferenced local variable
+..\SRC\APP\HMI.C(714): warning C280: 'F_Para': unreferenced local variable
 compiling application.c...
 compiling crc.c...
 compiling fifo.c...
 compiling uartNetwork.c...
-..\SRC\SRV\UARTNETWORK.C(514): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(823): warning C260: '=': pointer truncation
-..\SRC\SRV\UARTNETWORK.C(899): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(928): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(985): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1054): warning C280: 'cmd': unreferenced local variable
-..\SRC\SRV\UARTNETWORK.C(1066): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1067): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1091): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1060): warning C280: 'agingCnt': unreferenced local variable
+..\SRC\SRV\UARTNETWORK.C(515): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(836): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(842): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(913): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(942): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(999): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1068): warning C280: 'cmd': unreferenced local variable
+..\SRC\SRV\UARTNETWORK.C(1080): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1081): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1105): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1074): warning C280: 'agingCnt': unreferenced local variable
 compiling parMap.c...
 compiling isr.c...
 assembling STARTUP.A51...
@@ -235,6 +248,8 @@ compiling task.c...
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?DISPLAY_PAGE00_03_ZDKJ?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DISP_USR_PG?HMI
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_LCD_DIAPLAY_PAGE?HMI
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
@@ -301,25 +316,30 @@ linking...
     SEGMENT: ?PR?_CLEARDATABLOCK?FIFO
     CALLER1: ?PR?TIMER25MSISR?ISR
     CALLER2: ?C_C51STARTUP
-Program Size: data=17.0 xdata=3065 code=21967
+Program Size: data=17.0 xdata=3073 code=22601
 creating hex file from "..\bin\Screen Controller"...
-"..\bin\Screen Controller" - 0 Error(s), 35 Warning(s).
+"..\bin\Screen Controller" - 0 Error(s), 39 Warning(s).
+Driver version   : V1.08
+Firmware version : V3.1
 Build target 'Target 1'
 compiling HMI.c...
+..\SRC\APP\HMI.C(714): warning C280: 'Func': unreferenced local variable
+..\SRC\APP\HMI.C(714): warning C280: 'F_Para': unreferenced local variable
 compiling application.c...
 compiling crc.c...
 compiling fifo.c...
 compiling uartNetwork.c...
-..\SRC\SRV\UARTNETWORK.C(514): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(823): warning C260: '=': pointer truncation
-..\SRC\SRV\UARTNETWORK.C(899): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(928): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(985): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1054): warning C280: 'cmd': unreferenced local variable
-..\SRC\SRV\UARTNETWORK.C(1066): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1067): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1091): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1060): warning C280: 'agingCnt': unreferenced local variable
+..\SRC\SRV\UARTNETWORK.C(515): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(836): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(842): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(913): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(942): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(999): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1068): warning C280: 'cmd': unreferenced local variable
+..\SRC\SRV\UARTNETWORK.C(1080): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1081): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1105): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1074): warning C280: 'agingCnt': unreferenced local variable
 compiling parMap.c...
 compiling isr.c...
 assembling STARTUP.A51...
@@ -332,6 +352,8 @@ compiling task.c...
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?DISPLAY_PAGE00_03_ZDKJ?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DISP_USR_PG?HMI
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_LCD_DIAPLAY_PAGE?HMI
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
@@ -398,27 +420,28 @@ linking...
     SEGMENT: ?PR?_CLEARDATABLOCK?FIFO
     CALLER1: ?PR?TIMER25MSISR?ISR
     CALLER2: ?C_C51STARTUP
-Program Size: data=17.0 xdata=3065 code=21951
+Program Size: data=17.0 xdata=3073 code=22518
 creating hex file from "..\bin\Screen Controller"...
-"..\bin\Screen Controller" - 0 Error(s), 35 Warning(s).
-Driver version   : V1.08
-Firmware version : V3.1
+"..\bin\Screen Controller" - 0 Error(s), 39 Warning(s).
 Build target 'Target 1'
 compiling HMI.c...
+..\SRC\APP\HMI.C(714): warning C280: 'Func': unreferenced local variable
+..\SRC\APP\HMI.C(714): warning C280: 'F_Para': unreferenced local variable
 compiling application.c...
 compiling crc.c...
 compiling fifo.c...
 compiling uartNetwork.c...
-..\SRC\SRV\UARTNETWORK.C(514): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(823): warning C260: '=': pointer truncation
-..\SRC\SRV\UARTNETWORK.C(899): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(928): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(985): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1054): warning C280: 'cmd': unreferenced local variable
-..\SRC\SRV\UARTNETWORK.C(1066): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1067): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1091): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1060): warning C280: 'agingCnt': unreferenced local variable
+..\SRC\SRV\UARTNETWORK.C(515): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(836): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(842): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(913): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(942): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(999): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1068): warning C280: 'cmd': unreferenced local variable
+..\SRC\SRV\UARTNETWORK.C(1080): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1081): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1105): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1074): warning C280: 'agingCnt': unreferenced local variable
 compiling parMap.c...
 compiling isr.c...
 assembling STARTUP.A51...
@@ -431,6 +454,8 @@ compiling task.c...
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?DISPLAY_PAGE00_03_ZDKJ?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DISP_USR_PG?HMI
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_LCD_DIAPLAY_PAGE?HMI
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
@@ -497,27 +522,30 @@ linking...
     SEGMENT: ?PR?_CLEARDATABLOCK?FIFO
     CALLER1: ?PR?TIMER25MSISR?ISR
     CALLER2: ?C_C51STARTUP
-Program Size: data=17.0 xdata=3065 code=21909
+Program Size: data=17.0 xdata=3073 code=22518
 creating hex file from "..\bin\Screen Controller"...
-"..\bin\Screen Controller" - 0 Error(s), 35 Warning(s).
+"..\bin\Screen Controller" - 0 Error(s), 39 Warning(s).
 Driver version   : V1.08
 Firmware version : V3.1
 Build target 'Target 1'
 compiling HMI.c...
+..\SRC\APP\HMI.C(714): warning C280: 'Func': unreferenced local variable
+..\SRC\APP\HMI.C(714): warning C280: 'F_Para': unreferenced local variable
 compiling application.c...
 compiling crc.c...
 compiling fifo.c...
 compiling uartNetwork.c...
-..\SRC\SRV\UARTNETWORK.C(514): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(823): warning C260: '=': pointer truncation
-..\SRC\SRV\UARTNETWORK.C(899): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(928): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(985): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1054): warning C280: 'cmd': unreferenced local variable
-..\SRC\SRV\UARTNETWORK.C(1066): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1067): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1091): warning C182: pointer to different objects
-..\SRC\SRV\UARTNETWORK.C(1060): warning C280: 'agingCnt': unreferenced local variable
+..\SRC\SRV\UARTNETWORK.C(515): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(836): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(842): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(913): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(942): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(999): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1068): warning C280: 'cmd': unreferenced local variable
+..\SRC\SRV\UARTNETWORK.C(1080): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1081): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1105): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1074): warning C280: 'agingCnt': unreferenced local variable
 compiling parMap.c...
 compiling isr.c...
 assembling STARTUP.A51...
@@ -529,9 +557,9 @@ compiling task.c...
 ..\SRC\MAIN\TASK.C(63): warning C280: 'dummyCnt': unreferenced local variable
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?DISPLAY_ATMT?HMI
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?DISPLAY_PAGE00_03_ZDKJ?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DISP_USR_PG?HMI
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_LCD_DIAPLAY_PAGE?HMI
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
@@ -598,8 +626,426 @@ linking...
     SEGMENT: ?PR?_CLEARDATABLOCK?FIFO
     CALLER1: ?PR?TIMER25MSISR?ISR
     CALLER2: ?C_C51STARTUP
-Program Size: data=17.0 xdata=3069 code=21796
+Program Size: data=17.0 xdata=3073 code=22524
 creating hex file from "..\bin\Screen Controller"...
-"..\bin\Screen Controller" - 0 Error(s), 36 Warning(s).
+"..\bin\Screen Controller" - 0 Error(s), 39 Warning(s).
 Driver version   : V1.08
 Firmware version : V3.1
+Build target 'Target 1'
+compiling HMI.c...
+..\SRC\APP\HMI.C(714): warning C280: 'Func': unreferenced local variable
+..\SRC\APP\HMI.C(714): warning C280: 'F_Para': unreferenced local variable
+compiling application.c...
+compiling crc.c...
+compiling fifo.c...
+compiling uartNetwork.c...
+..\SRC\SRV\UARTNETWORK.C(515): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(836): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(842): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(913): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(942): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(999): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1068): warning C280: 'cmd': unreferenced local variable
+..\SRC\SRV\UARTNETWORK.C(1080): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1081): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1105): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1074): warning C280: 'agingCnt': unreferenced local variable
+compiling parMap.c...
+compiling isr.c...
+assembling STARTUP.A51...
+compiling timer.c...
+compiling uartDrv.c...
+compiling 19296p1.C...
+compiling main.c...
+compiling task.c...
+..\SRC\MAIN\TASK.C(63): warning C280: 'dummyCnt': unreferenced local variable
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?DISPLAY_PAGE00_03_ZDKJ?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DISP_USR_PG?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_LCD_DIAPLAY_PAGE?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?KEYSTATUSINIT?APPLICATION
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DUMMYSINGLEFRAMETESTDATAGENERATE?APPLICATION
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SYSMODE_SET?APPLICATION
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_GETDATAFROMMASTER?APPLICATION
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_CRC16BITBYBIT?CRC
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_CRC16TABLE?CRC
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_CRC16TABLEFAST?CRC
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SENDTESTMSG?UARTNETWORK
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?TIMER25MS_DISABLE?TIMER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?TIMER2MS_DISABLE?TIMER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_GETUARTRECEIVEBUF?UARTDRV
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ISUARTNEWDATAAVAILABLE?UARTDRV
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_CLEARDATABLOCK?FIFO
+    CALLER1: ?PR?TIMER2MSISR?ISR
+    CALLER2: ?PR?TIMER25MSISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_MEMCPYCUS?FIFO
+    CALLER1: ?PR?TIMER2MSISR?ISR
+    CALLER2: ?PR?TIMER25MSISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_GETFIFODATA?FIFO
+    CALLER1: ?PR?TIMER2MSISR?ISR
+    CALLER2: ?PR?TIMER25MSISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SETFIFODATA?FIFO
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?PR?UART3ISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_MEMCPYCUS?FIFO
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?PR?UART3ISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SETFIFODATA?FIFO
+    CALLER1: ?PR?UART3ISR?ISR
+    CALLER2: ?PR?UART4ISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_MEMCPYCUS?FIFO
+    CALLER1: ?PR?UART3ISR?ISR
+    CALLER2: ?PR?UART4ISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?CLEAR_SCREEN?19296P1
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_LCD_ADDRESS?19296P1
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_CLEARDATABLOCK?FIFO
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?C_C51STARTUP
+Program Size: data=17.0 xdata=3073 code=22524
+creating hex file from "..\bin\Screen Controller"...
+"..\bin\Screen Controller" - 0 Error(s), 39 Warning(s).
+Driver version   : V1.08
+Firmware version : V3.1
+Build target 'Target 1'
+compiling HMI.c...
+..\SRC\APP\HMI.C(714): warning C280: 'Func': unreferenced local variable
+..\SRC\APP\HMI.C(714): warning C280: 'F_Para': unreferenced local variable
+compiling application.c...
+compiling crc.c...
+compiling fifo.c...
+compiling uartNetwork.c...
+..\SRC\SRV\UARTNETWORK.C(515): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(836): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(842): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(913): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(942): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(999): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1068): warning C280: 'cmd': unreferenced local variable
+..\SRC\SRV\UARTNETWORK.C(1080): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1081): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1105): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1074): warning C280: 'agingCnt': unreferenced local variable
+compiling parMap.c...
+compiling isr.c...
+assembling STARTUP.A51...
+compiling timer.c...
+compiling uartDrv.c...
+compiling 19296p1.C...
+compiling main.c...
+compiling task.c...
+..\SRC\MAIN\TASK.C(63): warning C280: 'dummyCnt': unreferenced local variable
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?DISPLAY_PAGE00_03_ZDKJ?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DISP_USR_PG?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_LCD_DIAPLAY_PAGE?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?KEYSTATUSINIT?APPLICATION
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DUMMYSINGLEFRAMETESTDATAGENERATE?APPLICATION
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SYSMODE_SET?APPLICATION
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_GETDATAFROMMASTER?APPLICATION
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_CRC16BITBYBIT?CRC
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_CRC16TABLE?CRC
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_CRC16TABLEFAST?CRC
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SENDTESTMSG?UARTNETWORK
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?TIMER25MS_DISABLE?TIMER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?TIMER2MS_DISABLE?TIMER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_GETUARTRECEIVEBUF?UARTDRV
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ISUARTNEWDATAAVAILABLE?UARTDRV
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_CLEARDATABLOCK?FIFO
+    CALLER1: ?PR?TIMER2MSISR?ISR
+    CALLER2: ?PR?TIMER25MSISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_MEMCPYCUS?FIFO
+    CALLER1: ?PR?TIMER2MSISR?ISR
+    CALLER2: ?PR?TIMER25MSISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_GETFIFODATA?FIFO
+    CALLER1: ?PR?TIMER2MSISR?ISR
+    CALLER2: ?PR?TIMER25MSISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SETFIFODATA?FIFO
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?PR?UART3ISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_MEMCPYCUS?FIFO
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?PR?UART3ISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SETFIFODATA?FIFO
+    CALLER1: ?PR?UART3ISR?ISR
+    CALLER2: ?PR?UART4ISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_MEMCPYCUS?FIFO
+    CALLER1: ?PR?UART3ISR?ISR
+    CALLER2: ?PR?UART4ISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?CLEAR_SCREEN?19296P1
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_LCD_ADDRESS?19296P1
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_CLEARDATABLOCK?FIFO
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?C_C51STARTUP
+Program Size: data=17.0 xdata=3073 code=22524
+creating hex file from "..\bin\Screen Controller"...
+"..\bin\Screen Controller" - 0 Error(s), 39 Warning(s).
+Driver version   : V1.08
+Firmware version : V3.1
+Build target 'Target 1'
+compiling HMI.c...
+..\SRC\APP\HMI.C(719): warning C280: 'Func': unreferenced local variable
+..\SRC\APP\HMI.C(719): warning C280: 'F_Para': unreferenced local variable
+compiling application.c...
+compiling crc.c...
+compiling fifo.c...
+compiling uartNetwork.c...
+..\SRC\SRV\UARTNETWORK.C(515): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(836): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(842): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(913): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(942): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(999): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1068): warning C280: 'cmd': unreferenced local variable
+..\SRC\SRV\UARTNETWORK.C(1080): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1081): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1105): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1074): warning C280: 'agingCnt': unreferenced local variable
+compiling parMap.c...
+compiling isr.c...
+assembling STARTUP.A51...
+compiling timer.c...
+compiling uartDrv.c...
+compiling 19296p1.C...
+compiling main.c...
+compiling task.c...
+..\SRC\MAIN\TASK.C(63): warning C280: 'dummyCnt': unreferenced local variable
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?DISPLAY_PAGE00_03_ZDKJ?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DISP_USR_PG?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_LCD_DIAPLAY_PAGE?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?KEYSTATUSINIT?APPLICATION
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DUMMYSINGLEFRAMETESTDATAGENERATE?APPLICATION
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SYSMODE_SET?APPLICATION
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_GETDATAFROMMASTER?APPLICATION
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_CRC16BITBYBIT?CRC
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_CRC16TABLE?CRC
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_CRC16TABLEFAST?CRC
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SENDTESTMSG?UARTNETWORK
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?TIMER25MS_DISABLE?TIMER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?TIMER2MS_DISABLE?TIMER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_GETUARTRECEIVEBUF?UARTDRV
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ISUARTNEWDATAAVAILABLE?UARTDRV
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DISP_24X12?19296P1
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_CLEARDATABLOCK?FIFO
+    CALLER1: ?PR?TIMER2MSISR?ISR
+    CALLER2: ?PR?TIMER25MSISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_MEMCPYCUS?FIFO
+    CALLER1: ?PR?TIMER2MSISR?ISR
+    CALLER2: ?PR?TIMER25MSISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_GETFIFODATA?FIFO
+    CALLER1: ?PR?TIMER2MSISR?ISR
+    CALLER2: ?PR?TIMER25MSISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SETFIFODATA?FIFO
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?PR?UART3ISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_MEMCPYCUS?FIFO
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?PR?UART3ISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SETFIFODATA?FIFO
+    CALLER1: ?PR?UART3ISR?ISR
+    CALLER2: ?PR?UART4ISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_MEMCPYCUS?FIFO
+    CALLER1: ?PR?UART3ISR?ISR
+    CALLER2: ?PR?UART4ISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?CLEAR_SCREEN?19296P1
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_LCD_ADDRESS?19296P1
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_CLEARDATABLOCK?FIFO
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?C_C51STARTUP
+Program Size: data=17.0 xdata=3077 code=22669
+creating hex file from "..\bin\Screen Controller"...
+"..\bin\Screen Controller" - 0 Error(s), 40 Warning(s).
+Driver version   : V1.08
+Firmware version : V3.1
+Build target 'Target 1'
+compiling HMI.c...
+..\SRC\APP\HMI.C(719): warning C280: 'Func': unreferenced local variable
+..\SRC\APP\HMI.C(719): warning C280: 'F_Para': unreferenced local variable
+compiling application.c...
+compiling crc.c...
+compiling fifo.c...
+compiling uartNetwork.c...
+..\SRC\SRV\UARTNETWORK.C(515): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(836): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(842): warning C260: '=': pointer truncation
+..\SRC\SRV\UARTNETWORK.C(913): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(942): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(999): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1068): warning C280: 'cmd': unreferenced local variable
+..\SRC\SRV\UARTNETWORK.C(1080): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1081): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1105): warning C182: pointer to different objects
+..\SRC\SRV\UARTNETWORK.C(1074): warning C280: 'agingCnt': unreferenced local variable
+compiling parMap.c...
+compiling isr.c...
+assembling STARTUP.A51...
+compiling timer.c...
+compiling uartDrv.c...
+compiling 19296p1.C...
+compiling main.c...
+compiling task.c...
+..\SRC\MAIN\TASK.C(63): warning C280: 'dummyCnt': unreferenced local variable
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?DISPLAY_PAGE00_03_ZDKJ?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DISP_USR_PG?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_LCD_DIAPLAY_PAGE?HMI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?KEYSTATUSINIT?APPLICATION
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DUMMYSINGLEFRAMETESTDATAGENERATE?APPLICATION
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SYSMODE_SET?APPLICATION
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_GETDATAFROMMASTER?APPLICATION
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_CRC16BITBYBIT?CRC
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_CRC16TABLE?CRC
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_CRC16TABLEFAST?CRC
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SENDTESTMSG?UARTNETWORK
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?TIMER25MS_DISABLE?TIMER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?TIMER2MS_DISABLE?TIMER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_GETUARTRECEIVEBUF?UARTDRV
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ISUARTNEWDATAAVAILABLE?UARTDRV
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DISP_24X12?19296P1
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_CLEARDATABLOCK?FIFO
+    CALLER1: ?PR?TIMER2MSISR?ISR
+    CALLER2: ?PR?TIMER25MSISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_MEMCPYCUS?FIFO
+    CALLER1: ?PR?TIMER2MSISR?ISR
+    CALLER2: ?PR?TIMER25MSISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_GETFIFODATA?FIFO
+    CALLER1: ?PR?TIMER2MSISR?ISR
+    CALLER2: ?PR?TIMER25MSISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SETFIFODATA?FIFO
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?PR?UART3ISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_MEMCPYCUS?FIFO
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?PR?UART3ISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SETFIFODATA?FIFO
+    CALLER1: ?PR?UART3ISR?ISR
+    CALLER2: ?PR?UART4ISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_MEMCPYCUS?FIFO
+    CALLER1: ?PR?UART3ISR?ISR
+    CALLER2: ?PR?UART4ISR?ISR
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?CLEAR_SCREEN?19296P1
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_LCD_ADDRESS?19296P1
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_CLEARDATABLOCK?FIFO
+    CALLER1: ?PR?TIMER25MSISR?ISR
+    CALLER2: ?C_C51STARTUP
+Program Size: data=17.0 xdata=3077 code=22715
+creating hex file from "..\bin\Screen Controller"...
+"..\bin\Screen Controller" - 0 Error(s), 40 Warning(s).

@@ -88,19 +88,24 @@ extern void Display_F_frequency(void);
 extern void Display_RunTimeL(void);
 extern void Display_RunTimeH(void);
 extern void Display_ATMT(void);
+extern void Disp_PWD_Nbr(void);
+
+extern void Disp_Usr_PWD_Input(void);
+extern void Disp_Usr_Pg(uchar Func, uchar F_Para);
 
 void Display_Page00_00_MotorDirt(void);
 void Display_Page00_01_LLStudy(void);
 void Display_Page00_03_ZDKJ(void);
 
 void Motor_Direction_Update(void);
+void Display_InputCodeText(void);
 
 void Number_Lookup_Table(uchar number);
 void Display_Full_Vertical_Line(uchar line);
 void BUTTON1_Display(uchar HanziButton);
 
 
-//ºº×ÖÈ¡Ä£ÉèÖÃ£ºÒõÂë£¬ÁÐÐÐÊ½£¬Ë³Ïò
+//ï¿½ï¿½ï¿½ï¿½È¡Ä£ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ë£¬ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½Ë³ï¿½ï¿½
 extern uchar code Hanzi_1616_ST_Dian[],Hanzi_1616_ST_Ji[],Hanzi_1616_HWXH_Dian[],Hanzi_1616_HWXH_Ji[],Hanzi_1616_XST_Fan[],Hanzi_1616_XST_Hui[];
 extern uchar code Hanzi_1616_XST_Que[],Hanzi_1616_XST_Ding[],Hanzi_1616_XST_Ren[],Hanzi_1616_XST_Fan1[];
 extern uchar code Hanzi_1616_XST_Zheng[],Hanzi_1616_XST_Xiang[],Hanzi_1616_XST_Bian[],Hanzi_1616_XST_Ma[],Hanzi_1616_XST_Qi[];
@@ -112,8 +117,8 @@ extern uchar code Hanzi_2424_HWZS_Ji1[],Hanzi_2424_HWZS_Null[],Hanzi_2424_HWZS_G
 extern uchar code Hanzi_2424_HWZS_Hei[],Hanzi_2424_HWZS_Ma[],Hanzi_2424_HWZS_Seng[],Hanzi_2424_HWZS_Tian[];
 extern uchar code Hanzi_1616_XST_Xue[], Hanzi_1616_XST_Xi[],Hanzi_1616_XST_Zi[],Hanzi_1616_XST_Dong[],Hanzi_1616_XST_Kai[],Hanzi_1616_XST_Guan[],Hanzi_1616_XST_Dian1[];
 extern uchar code Hanzi_1616_XST_Ting[],Hanzi_1616_XST_Zhi[],Hanzi_1616_XST_Men[];
-
-
+extern uchar code Hanzi_1616_XST_Qing[],Hanzi_1616_XST_Shu1[],Hanzi_1616_XST_Ru[],Hanzi_1616_XST_Yong[],Hanzi_1616_XST_Hu[],Hanzi_1616_XST_Mi[];
+extern uchar code char_star[];
 
 /////////////////////////////////////////////////
 

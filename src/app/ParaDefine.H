@@ -32,8 +32,8 @@
 #define	MonitorPara_RunTimeL_AddrH						0x30
 #define	MonitorPara_RunTimeL_AddrL						0x07
 
-#define	MonitorPara_OutputVoltage_AddrH				0x30
-#define	MonitorPara_OutputVoltage_AddrL				0x08
+#define	MonitorPara_OutputVoltage_AddrH					0x30
+#define	MonitorPara_OutputVoltage_AddrL					0x08
 
 #define	MonitorPara_Position_AddrH						0x30
 #define	MonitorPara_Position_AddrL						0x09
@@ -74,14 +74,14 @@
 #define	MonitorPara_FltClrStatus_AddrH					0xF0
 #define	MonitorPara_FltClrStatus_AddrL					0x02
 
-#define	MonitorPara_RSV6_AddrH								0xF0
-#define	MonitorPara_RSV6_AddrL								0x03
+#define	MonitorPara_RSV6_AddrH							0xF0
+#define	MonitorPara_RSV6_AddrL							0x03
 
 #define	MonitorPara_TotalPOTime_AddrH					0xF0
 #define	MonitorPara_TotalPOTime_AddrL					0x04
 
-#define	MonitorPara_FltClrStatus_Invalid			0
-#define	MonitorPara_FltClrStatus_Cleared			1
+#define	MonitorPara_FltClrStatus_Invalid				0
+#define	MonitorPara_FltClrStatus_Cleared				1
 
 /***********Digital Input Definition************/
 #define	GPIO_DI_X1_FunctionSel_AddrH					0x01
@@ -157,96 +157,96 @@
 #define	GPIO_DI_X12_StatusSel_AddrL						0x17
 
 /***********Digital Input Selections************/
-#define	GPIO_DI_FuncSel_None									0x00
-#define	GPIO_DI_FuncSel_AB										0x01
-#define	GPIO_DI_FuncSel_DL_POS								0x02
-#define	GPIO_DI_FuncSel_MaxDL_POS							0x03
-#define	GPIO_DI_FuncSel_UL_POS								0x04
-#define	GPIO_DI_FuncSel_MaxUL_POS							0x05
-#define	GPIO_DI_FuncSel_PreL_SW								0x06
-#define	GPIO_DI_FuncSel_INC_A									0x07
-#define	GPIO_DI_FuncSel_INC_B									0x08
-#define	GPIO_DI_FuncSel_Rader_EM							0x09
-#define	GPIO_DI_FuncSel_OpticalSW							0x0A
-#define	GPIO_DI_FuncSel_OpenDoor							0x0B
-#define	GPIO_DI_FuncSel_CloseDoor							0x0C
-#define	GPIO_DI_FuncSel_Stop									0x0D
-#define	GPIO_DI_FuncSel_Emergency							0x0E
-#define	GPIO_DI_FuncSel_RSV										0x0F
-#define	GPIO_DI_FuncSel_Service								0x10
+#define	GPIO_DI_FuncSel_None							0x00
+#define	GPIO_DI_FuncSel_AB								0x01
+#define	GPIO_DI_FuncSel_DL_POS							0x02
+#define	GPIO_DI_FuncSel_MaxDL_POS						0x03
+#define	GPIO_DI_FuncSel_UL_POS							0x04
+#define	GPIO_DI_FuncSel_MaxUL_POS						0x05
+#define	GPIO_DI_FuncSel_PreL_SW							0x06
+#define	GPIO_DI_FuncSel_INC_A							0x07
+#define	GPIO_DI_FuncSel_INC_B							0x08
+#define	GPIO_DI_FuncSel_Rader_EM						0x09
+#define	GPIO_DI_FuncSel_OpticalSW						0x0A
+#define	GPIO_DI_FuncSel_OpenDoor						0x0B
+#define	GPIO_DI_FuncSel_CloseDoor						0x0C
+#define	GPIO_DI_FuncSel_Stop							0x0D
+#define	GPIO_DI_FuncSel_Emergency						0x0E
+#define	GPIO_DI_FuncSel_RSV								0x0F
+#define	GPIO_DI_FuncSel_Service							0x10
 #define	GPIO_DI_FuncSel_Auto_Close						0x11
-#define	GPIO_DI_FuncSel_AutoCycleTest_EN			0x12
-#define	GPIO_DI_FuncSel_SDoorOpen							0x18
-#define	GPIO_DI_FuncSel_ML										0x19
-#define	GPIO_DI_FuncSel_InterLockStatusIN			0x1A
-#define	GPIO_DI_FuncSel_InterLockOpenIN				0x1B
-#define	GPIO_DI_FuncSel_LineSW								0x1C
+#define	GPIO_DI_FuncSel_AutoCycleTest_EN				0x12
+#define	GPIO_DI_FuncSel_SDoorOpen						0x18
+#define	GPIO_DI_FuncSel_ML								0x19
+#define	GPIO_DI_FuncSel_InterLockStatusIN				0x1A
+#define	GPIO_DI_FuncSel_InterLockOpenIN					0x1B
+#define	GPIO_DI_FuncSel_LineSW							0x1C
 
-#define	GPIO_DI_StatusSel_NO									0
-#define	GPIO_DI_StatusSel_NC									1
+#define	GPIO_DI_StatusSel_NO							0
+#define	GPIO_DI_StatusSel_NC							1
 
 /***********Digital Outputs ************/
 
-#define	GPIO_DO_Relay1_AddrH									0x01
-#define	GPIO_DO_Relay1_AddrL									0x1E
+#define	GPIO_DO_Relay1_AddrH							0x01
+#define	GPIO_DO_Relay1_AddrL							0x1E
 
-#define	GPIO_DO_Relay2_AddrH									0x01
-#define	GPIO_DO_Relay2_AddrL									0x1F
+#define	GPIO_DO_Relay2_AddrH							0x01
+#define	GPIO_DO_Relay2_AddrL							0x1F
 
-#define	GPIO_DO_Relay3_AddrH									0x01
-#define	GPIO_DO_Relay3_AddrL									0x20
+#define	GPIO_DO_Relay3_AddrH							0x01
+#define	GPIO_DO_Relay3_AddrL							0x20
 
-#define	GPIO_DO_Relay4_AddrH									0x01
-#define	GPIO_DO_Relay4_AddrL									0x21
+#define	GPIO_DO_Relay4_AddrH							0x01
+#define	GPIO_DO_Relay4_AddrL							0x21
 
-#define	GPIO_DO_Relay5_AddrH									0x01
-#define	GPIO_DO_Relay5_AddrL									0x22
+#define	GPIO_DO_Relay5_AddrH							0x01
+#define	GPIO_DO_Relay5_AddrL							0x22
 
-#define	GPIO_DO_Relay6_AddrH									0x01
-#define	GPIO_DO_Relay6_AddrL									0x23
+#define	GPIO_DO_Relay6_AddrH							0x01
+#define	GPIO_DO_Relay6_AddrL							0x23
 
-#define	GPIO_DO_Relay7_AddrH									0x01
-#define	GPIO_DO_Relay7_AddrL									0x24
+#define	GPIO_DO_Relay7_AddrH							0x01
+#define	GPIO_DO_Relay7_AddrL							0x24
 
-#define	GPIO_DO_Relay8_AddrH									0x01
-#define	GPIO_DO_Relay8_AddrL									0x25
+#define	GPIO_DO_Relay8_AddrH							0x01
+#define	GPIO_DO_Relay8_AddrL							0x25
 
-#define	GPIO_DO_Relay9_AddrH									0x01
-#define	GPIO_DO_Relay9_AddrL									0x26
+#define	GPIO_DO_Relay9_AddrH							0x01
+#define	GPIO_DO_Relay9_AddrL							0x26
 
 /***********Digital Outputs Selections************/
-#define	GPIO_DO_RLY_Sel_None									0x00
-#define	GPIO_DO_RLY_Sel_Uplimit								0x01
-#define	GPIO_DO_RLY_Sel_DoorOpenOutput				0x02
-#define	GPIO_DO_RLY_Sel_DoorCloseOutput				0x03
-#define	GPIO_DO_RLY_Sel_Rsv1									0x04
-#define	GPIO_DO_RLY_Sel_Rsv2									0x05
-#define	GPIO_DO_RLY_Sel_Downlimit							0x06
+#define	GPIO_DO_RLY_Sel_None							0x00
+#define	GPIO_DO_RLY_Sel_Uplimit							0x01
+#define	GPIO_DO_RLY_Sel_DoorOpenOutput					0x02
+#define	GPIO_DO_RLY_Sel_DoorCloseOutput					0x03
+#define	GPIO_DO_RLY_Sel_Rsv1							0x04
+#define	GPIO_DO_RLY_Sel_Rsv2							0x05
+#define	GPIO_DO_RLY_Sel_Downlimit						0x06
 #define	GPIO_DO_RLY_Sel_TrafficLight1					0x07
 #define	GPIO_DO_RLY_Sel_TrafficLight2					0x08
 #define	GPIO_DO_RLY_Sel_ServiceLight					0x09
 #define	GPIO_DO_RLY_Sel_RunningOutput					0x0A
-#define	GPIO_DO_RLY_Sel_Rsv3									0x0B
-#define	GPIO_DO_RLY_Sel_Rsv4									0x0C
-#define	GPIO_DO_RLY_Sel_Rsv5									0x0D
-#define	GPIO_DO_RLY_Sel_Rsv6									0x0E
-#define	GPIO_DO_RLY_Sel_Rsv7									0x0F
+#define	GPIO_DO_RLY_Sel_Rsv3							0x0B
+#define	GPIO_DO_RLY_Sel_Rsv4							0x0C
+#define	GPIO_DO_RLY_Sel_Rsv5							0x0D
+#define	GPIO_DO_RLY_Sel_Rsv6							0x0E
+#define	GPIO_DO_RLY_Sel_Rsv7							0x0F
 #define	GPIO_DO_RLY_Sel_InterLockOut					0x10
 #define	GPIO_DO_RLY_Sel_InterLockOut1					0x11
-#define	GPIO_DO_RLY_Sel_FaultOut							0x12
+#define	GPIO_DO_RLY_Sel_FaultOut						0x12
 
 /*********** Function Parameters ************/
-#define	FuncPara_PARA_Prog_AddrH							0x02
-#define	FuncPara_PARA_Prog_AddrL							0x00
+#define	FuncPara_PARA_Prog_AddrH						0x02
+#define	FuncPara_PARA_Prog_AddrL						0x00
 
 #define	FuncPara_POSLMT_Type_AddrH						0x02
 #define	FuncPara_POSLMT_Type_AddrL						0x01
 
-#define	FuncPara_LMT_STUDY_AddrH							0x02
-#define	FuncPara_LMT_STUDY_AddrL							0x02
+#define	FuncPara_LMT_STUDY_AddrH						0x02
+#define	FuncPara_LMT_STUDY_AddrL						0x02
 
-#define	FuncPara_Motor_DIRT_AddrH							0x02
-#define	FuncPara_Motor_DIRT_AddrL							0x03
+#define	FuncPara_Motor_DIRT_AddrH						0x02
+#define	FuncPara_Motor_DIRT_AddrL						0x03
 
 #define	FuncPara_Encoder_DIRT_AddrH						0x02
 #define	FuncPara_Encoder_DIRT_AddrL						0x04
@@ -278,20 +278,18 @@
 #define	FuncPara_ABS_ENC_REV_AddrH						0x02
 #define	FuncPara_ABS_ENC_REV_AddrL						0x0D
 
-#define	FuncPara_POSLOS_ERR_AddrH							0x02
-#define	FuncPara_POSLOS_ERR_AddrL							0x0E
+#define	FuncPara_POSLOS_ERR_AddrH						0x02
+#define	FuncPara_POSLOS_ERR_AddrL						0x0E
+#define	FuncPara_POSLOS_TMT_AddrH						0x02
+#define	FuncPara_POSLOS_TMT_AddrL						0x0F
+#define	FuncPara_IO_MDFY_EN_AddrH						0x02
+#define	FuncPara_IO_MDFY_EN_AddrL						0x10
 
-#define	FuncPara_POSLOS_TMT_AddrH							0x02
-#define	FuncPara_POSLOS_TMT_AddrL							0x0F
+#define	FuncPara_AutoCloseDoor_EN_AddrH					0x02
+#define	FuncPara_AutoCloseDoor_EN_AddrL					0x11
 
-#define	FuncPara_IO_MDFY_EN_AddrH							0x02
-#define	FuncPara_IO_MDFY_EN_AddrL							0x10
-
-#define	FuncPara_AutoCloseDoor_EN_AddrH				0x02
-#define	FuncPara_AutoCloseDoor_EN_AddrL				0x11
-
-#define	FuncPara_AutoCloseDoor_DelayT_AddrH		0x02
-#define	FuncPara_AutoCloseDoor_DelayT_AddrL		0x12
+#define	FuncPara_AutoCloseDoor_DelayT_AddrH				0x02
+#define	FuncPara_AutoCloseDoor_DelayT_AddrL				0x12
 
 #define	FuncPara_UpLimit_Val_AddrH						0x02
 #define	FuncPara_UpLimit_Val_AddrL						0x13
@@ -311,23 +309,23 @@
 #define	FuncPara_DownLimit_BUF_AddrH					0x02
 #define	FuncPara_DownLimit_BUF_AddrL					0x18
 
-#define	FuncPara_AutoTest_AddrH								0x02
-#define	FuncPara_AutoTest_AddrL								0x19
+#define	FuncPara_AutoTest_AddrH							0x02
+#define	FuncPara_AutoTest_AddrL							0x19
 
-#define	FuncPara_AT_DoorCloseDelay_AddrH			0x02
-#define	FuncPara_AT_DoorCloseDelay_AddrL			0x1A
+#define	FuncPara_AT_DoorCloseDelay_AddrH				0x02
+#define	FuncPara_AT_DoorCloseDelay_AddrL				0x1A
 
-#define	FuncPara_AT_DoorOpenDelay_AddrH				0x02
-#define	FuncPara_AT_DoorOpenDelay_AddrL				0x1B
+#define	FuncPara_AT_DoorOpenDelay_AddrH					0x02
+#define	FuncPara_AT_DoorOpenDelay_AddrL					0x1B
 
-#define	FuncPara_ResetAll_AddrH								0x02
-#define	FuncPara_ResetAll_AddrL								0x1C
+#define	FuncPara_ResetAll_AddrH							0x02
+#define	FuncPara_ResetAll_AddrL							0x1C
 
-#define	FuncPara_AB_Mode_AddrH								0x02
-#define	FuncPara_AB_Mode_AddrL								0x1D
+#define	FuncPara_AB_Mode_AddrH							0x02
+#define	FuncPara_AB_Mode_AddrL							0x1D
 
-#define	FuncPara_PON_WaitRunTime_AddrH				0x02
-#define	FuncPara_PON_WaitRunTime_AddrL				0x1E
+#define	FuncPara_PON_WaitRunTime_AddrH					0x02
+#define	FuncPara_PON_WaitRunTime_AddrL					0x1E
 
 #define	FuncPara_TL1_AddrH										0x02
 #define	FuncPara_TL1_AddrL										0x1F
@@ -374,8 +372,8 @@
 #define	POSLmtType_MEC												0x00
 #define	POSLmtType_INC												0x01
 #define	POSLmtType_ABS												0x02
-#define	LMT_Invalid														0x00
-#define	LMT_Reset															0x01
+#define	LMT_Invalid													0x00
+#define	LMT_Set													0x01
 #define	Motor_Dirt_FWD												0x00
 #define	Motor_Dirt_RVS												0x01
 #define	Encoder_Dirt_FWD											0x00
@@ -486,13 +484,13 @@
 #define	LearnModeOperation_AddrH							0x20
 #define	LearnModeOperation_AddrL							0x01
 
-#define	LMO_Null															0x00
-#define	LMO_Single_Up													0x01
-#define	LMO_Single_Stop												0x02
-#define	LMO_Single_Down												0x03
-#define	LMO_UpLMT_Confirmed										0x04
-#define	LMO_DownLMT_Confirmed									0x05
-#define	LMO_POS_Learning_Finished							0x06
+#define	LMO_Null										0x00
+#define	LMO_Single_Stop									0x01
+#define	LMO_Single_Up									0x02
+#define	LMO_Single_Down									0x03
+#define	LMO_UpLMT_Confirmed								0x05
+#define	LMO_DownLMT_Confirmed							0x04
+#define	LMO_POS_Learning_Finished						0x06
 
 #define	System_Status_Init	0x00
 #define	System_Status_Learn	0x01

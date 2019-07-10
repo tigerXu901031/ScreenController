@@ -1,4 +1,4 @@
-C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 1   
+C51 COMPILER V9.00   19296P1                                                               07/11/2019 00:50:50 PAGE 1   
 
 
 C51 COMPILER V9.00, COMPILATION OF MODULE 19296P1
@@ -8,10 +8,10 @@ COMPILER INVOKED BY: d:\Keil\C51\BIN\C51.EXE ..\src\drv\19296p1.C LARGE BROWSE D
 
 line level    source
 
-   1          /* Òº¾§Ä£¿éÐÍºÅ£ºJLX19296-380
-   2          ²¢ÐÐ½Ó¿Ú
-   3          Çý¶¯IC ÊÇ:ST75256
-   4          ¸Ä±à£ºBruce Dong
+   1          /* Òºï¿½ï¿½Ä£ï¿½ï¿½ï¿½ÍºÅ£ï¿½JLX19296-380
+   2          ï¿½ï¿½ï¿½Ð½Ó¿ï¿½
+   3          ï¿½ï¿½ï¿½ï¿½IC ï¿½ï¿½:ST75256
+   4          ï¿½Ä±à£ºBruce Dong
    5          2019.5.15
    6          */
    7          #include "../drv/STC8.H"
@@ -39,8 +39,8 @@ line level    source
   29          //sbit LCD19296_RS = P3^7; 
   30          //sbit LCD19296_RD = P3^6; 
   31          //sbit LCD19296_WR = P5^1; 
-  32          //ÁíÍâP2.0~2.7 ¶ÔÓ¦DB0~DB7*/
-  33          //sbit key=P2^0; /*°´¼ü½Ó¿Ú£¬P2.0 ¿ÚÓëGND Ö®¼ä½ÓÒ»¸ö°´¼ü*/
+  32          //ï¿½ï¿½ï¿½ï¿½P2.0~2.7 ï¿½ï¿½Ó¦DB0~DB7*/
+  33          //sbit key=P2^0; /*ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿Ú£ï¿½P2.0 ï¿½ï¿½ï¿½ï¿½GND Ö®ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
   34          
   35          //extern uchar code Char1608_Up[], Char1608_Down[], Char1608_Left[], Char1608_Right[];
   36          //extern uchar code Hanzi1616_Up[], Hanzi1616_Down[], Hanzi1616_Left[], Hanzi1616_Right[];
@@ -48,21 +48,21 @@ line level    source
   38          //extern uchar code Hanzi_2424_XST_Dian[], Hanzi_2424_XST_Ji[],Hanzi_2424_XST_Fang[], Hanzi_2424_XST_Xiang
              -[];
   39          
-  40          /*ÑÓÊ±£º1 ºÁÃëµÄi ±¶*/
+  40          /*ï¿½ï¿½Ê±ï¿½ï¿½1 ï¿½ï¿½ï¿½ï¿½ï¿½i ï¿½ï¿½*/
   41          void delay(int i)
   42          {
   43   1              int j,k;
   44   1              for(j=0;j<i;j++)
   45   1              for(k=0;k<110;k++);
   46   1      }
-  47          /*ÑÓÊ±£º1us µÄi ±¶*/
+  47          /*ï¿½ï¿½Ê±ï¿½ï¿½1us ï¿½ï¿½i ï¿½ï¿½*/
   48          void delay_us(int i)
   49          {
   50   1              int j,k;
   51   1              for(j=0;j<i;j++)
   52   1              for(k=0;k<1;k++);
   53   1      }
-C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 2   
+C51 COMPILER V9.00   19296P1                                                               07/11/2019 00:50:50 PAGE 2   
 
   54          
   55          //temporary send data function
@@ -126,7 +126,7 @@ line level    source
  113   1      }
  114          
  115          //-----------transfer data to LCM---------------
-C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 3   
+C51 COMPILER V9.00   19296P1                                                               07/11/2019 00:50:50 PAGE 3   
 
  116          void SEND_DATA_LCD(uchar data1)
  117          {
@@ -190,7 +190,7 @@ line level    source
  175   1              SEND_DATA_LCD(0xA6);
  176   1              SEND_CMD_LCD(0xCA); //Display Control
  177   1              SEND_DATA_LCD(0X00); //
-C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 4   
+C51 COMPILER V9.00   19296P1                                                               07/11/2019 00:50:50 PAGE 4   
 
  178   1              SEND_DATA_LCD(0X9F); //Duty=160
  179   1              SEND_DATA_LCD(0X20); //Nline=off
@@ -200,15 +200,15 @@ line level    source
  183   1              SEND_CMD_LCD(0x81); //EV control
  184   1      //      SEND_DATA_LCD(0x3a); //VPR[5-0]
  185   1              SEND_DATA_LCD(0x30); //VPR[5-0]
- 186   1              SEND_DATA_LCD(0x03); //´Öµ÷¶Ô±È¶È
+ 186   1              SEND_DATA_LCD(0x03); //ï¿½Öµï¿½ï¿½Ô±È¶ï¿½
  187   1              SEND_CMD_LCD(0x20); //Power control
  188   1              SEND_DATA_LCD(0x0B); //D0=regulator ; D1=follower ; D3=booste, on:1 off:0
  189   1              delay_us(100);
  190   1              SEND_CMD_LCD(0xAF); //Display on
  191   1      }
  192          
- 193          /*Ð´LCD ÐÐÁÐµØÖ·£ºX ÎªÆðÊ¼µÄÁÐµØÖ·£¬Y ÎªÆðÊ¼µÄÐÐµØÖ·£¬x_total,y_total ·Ö±ðÎªÁÐµØÖ·¼°ÐÐµØÖ·µÄÆðµãµ½ÖÕµãµÄ²î
-             -Öµ */
+ 193          /*Ð´LCD ï¿½ï¿½ï¿½Ðµï¿½Ö·ï¿½ï¿½X Îªï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ðµï¿½Ö·ï¿½ï¿½Y Îªï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ðµï¿½Ö·ï¿½ï¿½x_total,
+             -y_total ï¿½Ö±ï¿½Îªï¿½Ðµï¿½Ö·ï¿½ï¿½ï¿½Ðµï¿½Ö·ï¿½ï¿½ï¿½ï¿½ãµ½ï¿½Õµï¿½Ä²ï¿½Öµ */
  194          void lcd_address(uchar x,uchar y,x_total,y_total)
  195          {
  196   1              x=x-1;
@@ -223,342 +223,369 @@ line level    source
  205   1              SEND_CMD_LCD(0x5c);
  206   1      }
  207          
- 208          /*Ð´LCD ÐÐÁÐµØÖ·£ºX ÎªÆðÊ¼µÄÁÐµØÖ·£¬Y ÎªÆðÊ¼µÄÐÐµØÖ·£¬x_total,y_total ·Ö±ðÎªÁÐµØÖ·¼°ÐÐµØÖ·µÄÆðµãµ½ÖÕµãµÄ²î
-             -Öµ */
- 209          void SET_LCD_DISP_AREA(uchar Column, uchar Page, Column_Total,Page_Total)
- 210          {
- 211   1              Column = Column - 1;
- 212   1              Page = Page + 7;
- 213   1              SEND_CMD_LCD(0x15); //Set Column Address
- 214   1              SEND_DATA_LCD(Column);
- 215   1              Column += Column_Total;
- 216   1              Column -= 1;
- 217   1              SEND_DATA_LCD(Column);
- 218   1              SEND_CMD_LCD(0x75); //Set Page Address
- 219   1              SEND_DATA_LCD(Page);
- 220   1              Page += Page_Total;
- 221   1              Page -= 1;
- 222   1              SEND_DATA_LCD(Page);
- 223   1              SEND_CMD_LCD(0x30);
- 224   1              SEND_CMD_LCD(0x5c);
- 225   1      }
- 226          
- 227          /*ÇåÆÁ*/
- 228          void clear_screen(void)
- 229          {
- 230   1              uchar i,j;
- 231   1              lcd_address(0,0,193,13);
- 232   1              for(i=0;i<13;i++)
- 233   1              {
- 234   2                      for(j=0;j<193;j++)
- 235   2                      {
- 236   3                              SEND_DATA_LCD(0x00);
- 237   3                      }
-C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 5   
+ 208          /* void lcd_address1(uchar x,uchar y,x_total,y_total)
+ 209          {
+ 210                  x=x-1;
+ 211                  y=y+7;
+ 212                  SEND_CMD_LCD(0x15); //Set Column Address
+ 213                  SEND_DATA_LCD(x);
+ 214                  SEND_DATA_LCD(x+x_total-1);
+ 215                  SEND_CMD_LCD(0x75); //Set Page Address
+ 216                  SEND_DATA_LCD(y);
+ 217                  SEND_DATA_LCD(y+y_total-1);
+ 218                  SEND_CMD_LCD(0x30);
+ 219                  SEND_CMD_LCD(0x5c);
+ 220          } */
+ 221          
+ 222          /*Ð´LCD ï¿½ï¿½ï¿½Ðµï¿½Ö·ï¿½ï¿½X Îªï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ðµï¿½Ö·ï¿½ï¿½Y Îªï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ðµï¿½Ö·ï¿½ï¿½x_total,
+             -y_total ï¿½Ö±ï¿½Îªï¿½Ðµï¿½Ö·ï¿½ï¿½ï¿½Ðµï¿½Ö·ï¿½ï¿½ï¿½ï¿½ãµ½ï¿½Õµï¿½Ä²ï¿½Öµ */
+ 223          void SET_LCD_DISP_AREA(uchar Column, uchar Page, Column_Total,Page_Total)
+ 224          {
+ 225   1              Column = Column - 1;
+ 226   1              Page = Page + 7;
+ 227   1              SEND_CMD_LCD(0x15); //Set Column Address
+ 228   1              SEND_DATA_LCD(Column);
+ 229   1              Column += Column_Total;
+ 230   1              Column -= 1;
+ 231   1              SEND_DATA_LCD(Column);
+ 232   1              SEND_CMD_LCD(0x75); //Set Page Address
+ 233   1              SEND_DATA_LCD(Page);
+ 234   1              Page += Page_Total;
+ 235   1              Page -= 1;
+ 236   1              SEND_DATA_LCD(Page);
+ 237   1              SEND_CMD_LCD(0x30);
+C51 COMPILER V9.00   19296P1                                                               07/11/2019 00:50:50 PAGE 5   
 
- 238   2              }
+ 238   1              SEND_CMD_LCD(0x5c);
  239   1      }
  240          
- 241          void display_8x8(uchar column, uchar page,uchar *text) 
- 242          { 
- 243   1        uchar i; 
- 244   1        lcd_address(column,page,8,1); 
- 245   1          for(i=0;i<8;i++) 
- 246   1          {
- 247   2              SEND_DATA_LCD(*text);
- 248   2              text++; 
- 249   2          } 
- 250   1      }
- 251          
- 252          void display_8x1(uchar column, uchar page,uchar text) 
- 253          { 
- 254   1        lcd_address(column,page,1,1); 
- 255   1        SEND_DATA_LCD(text);
- 256   1      }
- 257          
- 258          //void display_16x8(uchar column, uchar page,uchar *text) 
- 259          //{ 
- 260          //  uchar i; 
- 261          //  lcd_address(column,page,8,2); 
- 262          //    for(i=0;i<16;i++) 
- 263          //    {
- 264          //      SEND_DATA_LCD(*text);
- 265          //      text++; 
- 266          //    } 
- 267          //}
- 268          
- 269          void CHAR_Display_16x8(uchar Column, uchar Page,uchar *dp, uchar Disp_Para) 
- 270          { 
- 271   1        uchar i, Char1608[16], *p1, *p2;
- 272   1              SET_LCD_DISP_AREA(Column, Page, 8, 2); 
- 273   1              
- 274   1              p1 = Char1608;
- 275   1              for(i=0;i<16;i++)
- 276   1                      {*(p1+i) = *(dp+i);}
- 277   1              
- 278   1      //ÅÐ¶ÏÉÏºá
- 279   1              if((Disp_Para & Disp_UP)>0)
- 280   1                      {
- 281   2                                      p2 = Char1608_Up;
- 282   2                                      for(i=0;i<16;i++)
- 283   2                                      {*(p1+i)|=*(p2+i);}
- 284   2                      }
- 285   1                      else
- 286   1                              {;}
- 287   1      
- 288   1      //ÅÐ¶ÏÏÂºá
- 289   1              if((Disp_Para & Disp_Down)>0)
- 290   1                      {
- 291   2                                      p2 = Char1608_Down;
- 292   2                                      for(i=0;i<16;i++)
- 293   2                                      {*(p1+i)|=*(p2+i);}
- 294   2                      }
- 295   1                      else
- 296   1                              {;}
- 297   1      
- 298   1      //ÅÐ¶Ï×óÊú
- 299   1              if((Disp_Para & Disp_Left)>0)
-C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 6   
+ 241          /*ï¿½ï¿½ï¿½ï¿½*/
+ 242          void clear_screen(void)
+ 243          {
+ 244   1              uchar i,j;
+ 245   1              lcd_address(0,0,193,13);
+ 246   1              for(i=0;i<13;i++)
+ 247   1              {
+ 248   2                      for(j=0;j<193;j++)
+ 249   2                      {
+ 250   3                              SEND_DATA_LCD(0x00);
+ 251   3                      }
+ 252   2              }
+ 253   1      }
+ 254          
+ 255          void display_8x8(uchar column, uchar page,uchar *text) 
+ 256          { 
+ 257   1        uchar i; 
+ 258   1        lcd_address(column,page,8,1); 
+ 259   1          for(i=0;i<8;i++) 
+ 260   1          {
+ 261   2              SEND_DATA_LCD(*text);
+ 262   2              text++; 
+ 263   2          } 
+ 264   1      }
+ 265          
+ 266          void display_8x1(uchar column, uchar page,uchar text) 
+ 267          { 
+ 268   1        lcd_address(column,page,1,1); 
+ 269   1        SEND_DATA_LCD(text);
+ 270   1      }
+ 271          
+ 272          //void display_16x8(uchar column, uchar page,uchar *text) 
+ 273          //{ 
+ 274          //  uchar i; 
+ 275          //  lcd_address(column,page,8,2); 
+ 276          //    for(i=0;i<16;i++) 
+ 277          //    {
+ 278          //      SEND_DATA_LCD(*text);
+ 279          //      text++; 
+ 280          //    } 
+ 281          //}
+ 282          
+ 283          void CHAR_Display_16x8(uchar Column, uchar Page,uchar *dp, uchar Disp_Para) 
+ 284          { 
+ 285   1        uchar i, Char1608[16], *p1, *p2;
+ 286   1              SET_LCD_DISP_AREA(Column, Page, 8, 2); 
+ 287   1              
+ 288   1              p1 = Char1608;
+ 289   1              for(i=0;i<16;i++)
+ 290   1                      {*(p1+i) = *(dp+i);}
+ 291   1              
+ 292   1      //ï¿½Ð¶ï¿½ï¿½Ïºï¿½
+ 293   1              if((Disp_Para & Disp_UP)>0)
+ 294   1                      {
+ 295   2                                      p2 = Char1608_Up;
+ 296   2                                      for(i=0;i<16;i++)
+ 297   2                                      {*(p1+i)|=*(p2+i);}
+ 298   2                      }
+ 299   1                      else
+C51 COMPILER V9.00   19296P1                                                               07/11/2019 00:50:50 PAGE 6   
 
- 300   1                      {
- 301   2                                      p2 = Char1608_Left;
- 302   2                                      for(i=0;i<16;i++)
- 303   2                                      {*(p1+i)|=*(p2+i);}
- 304   2                      }
- 305   1                      else
- 306   1                              {;}
- 307   1      
- 308   1      //ÅÐ¶ÏÓÒÊú
- 309   1              if((Disp_Para & Disp_Right)>0)
- 310   1                      {
- 311   2                                      p2 = Char1608_Right;
- 312   2                                      for(i=0;i<16;i++)
- 313   2                                      {*(p1+i)|=*(p2+i);}
- 314   2                      }
- 315   1                      else
- 316   1                              {;}
- 317   1      
- 318   1          for(i=0;i<16;i++) 
- 319   1          {
- 320   2              SEND_DATA_LCD(*(p1+i));
- 321   2          } 
- 322   1      }
- 323          
- 324          ///*ÏÔÊ¾16*16 µãÕóµÄºº×Ö»òµÈÍ¬ÓÚ16*16 µãÕóµÄÍ¼Ïñ*/
- 325          //void disp_16x16(uchar x,uchar y,uchar *dp)
- 326          //{
- 327          //      uchar i,j;
- 328          //      lcd_address(x,y,16,2);
- 329          //      for(i=0;i<2;i++)
- 330          //      {
- 331          //              for(j=0;j<16;j++)
- 332          //              {
- 333          //                      SEND_DATA_LCD(*dp);
- 334          //                      dp++;
- 335          //              }
- 336          //      }
- 337          //}
- 338          
- 339          /*ÏÔÊ¾16*16 µãÕóµÄºº×Ö*/
- 340          /*ÐÎ²ÎËµÃ÷£ºbit0£ºÉÏºáÏß£¬bit1£ºÏÂºáÏß£¬bit2£º×óÊúÏß£¬bit3£ºÓÒÊúÏß£¬bit4£º¹â±ê£¬bit5£º·´ÏÔ*/
- 341          /*      bit  7 6 5 4 3 2 1 0    */
- 342          /*      Para x x x x x x x x    */
- 343          
- 344          void Hanzi_Disp_16x16(uchar Column, uchar Page, uchar *dp, uchar Disp_Para)
- 345          {
- 346   1              uchar i, Hanzi1616[32], *p1, *p2;
- 347   1              SET_LCD_DISP_AREA(Column, Page, 16, 2);
- 348   1      
- 349   1              p1 = Hanzi1616;
- 350   1              for(i=0;i<32;i++)
- 351   1                      {*(p1+i) = *(dp+i);}
- 352   1              
- 353   1      //ÅÐ¶ÏÉÏºá
- 354   1              if((Disp_Para & Disp_UP)>0)
- 355   1                      {
- 356   2                                      p2 = Hanzi1616_Up;
- 357   2                                      for(i=0;i<32;i++)
- 358   2                                      {*(p1+i)|=*(p2+i);}
- 359   2                      }
- 360   1                      else
- 361   1                              {;}
-C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 7   
+ 300   1                              {;}
+ 301   1      
+ 302   1      //ï¿½Ð¶ï¿½ï¿½Âºï¿½
+ 303   1              if((Disp_Para & Disp_Down)>0)
+ 304   1                      {
+ 305   2                                      p2 = Char1608_Down;
+ 306   2                                      for(i=0;i<16;i++)
+ 307   2                                      {*(p1+i)|=*(p2+i);}
+ 308   2                      }
+ 309   1                      else
+ 310   1                              {;}
+ 311   1      
+ 312   1      //ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½
+ 313   1              if((Disp_Para & Disp_Left)>0)
+ 314   1                      {
+ 315   2                                      p2 = Char1608_Left;
+ 316   2                                      for(i=0;i<16;i++)
+ 317   2                                      {*(p1+i)|=*(p2+i);}
+ 318   2                      }
+ 319   1                      else
+ 320   1                              {;}
+ 321   1      
+ 322   1      //ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½
+ 323   1              if((Disp_Para & Disp_Right)>0)
+ 324   1                      {
+ 325   2                                      p2 = Char1608_Right;
+ 326   2                                      for(i=0;i<16;i++)
+ 327   2                                      {*(p1+i)|=*(p2+i);}
+ 328   2                      }
+ 329   1                      else
+ 330   1                              {;}
+ 331   1      
+ 332   1          for(i=0;i<16;i++) 
+ 333   1          {
+ 334   2              SEND_DATA_LCD(*(p1+i));
+ 335   2          } 
+ 336   1      }
+ 337          
+ 338          ///*ï¿½ï¿½Ê¾16*16 ï¿½ï¿½ï¿½ï¿½Äºï¿½ï¿½Ö»ï¿½ï¿½Í¬ï¿½ï¿½16*16 ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½*/
+ 339          //void disp_16x16(uchar x,uchar y,uchar *dp)
+ 340          //{
+ 341          //      uchar i,j;
+ 342          //      lcd_address(x,y,16,2);
+ 343          //      for(i=0;i<2;i++)
+ 344          //      {
+ 345          //              for(j=0;j<16;j++)
+ 346          //              {
+ 347          //                      SEND_DATA_LCD(*dp);
+ 348          //                      dp++;
+ 349          //              }
+ 350          //      }
+ 351          //}
+ 352          
+ 353          /*ï¿½ï¿½Ê¾16*16 ï¿½ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½*/
+ 354          /*ï¿½Î²ï¿½Ëµï¿½ï¿½ï¿½ï¿½bit0ï¿½ï¿½ï¿½Ïºï¿½ï¿½ß£ï¿½bit1ï¿½ï¿½ï¿½Âºï¿½ï¿½ß£ï¿½bit2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½
+             -bit3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½bit4ï¿½ï¿½ï¿½ï¿½ê£¬bit5ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
+ 355          /*      bit  7 6 5 4 3 2 1 0    */
+ 356          /*      Para x x x x x x x x    */
+ 357          
+ 358          void Hanzi_Disp_16x16(uchar Column, uchar Page, uchar *dp, uchar Disp_Para)
+ 359          {
+ 360   1              uchar i, Hanzi1616[32], *p1, *p2;
+C51 COMPILER V9.00   19296P1                                                               07/11/2019 00:50:50 PAGE 7   
 
+ 361   1              SET_LCD_DISP_AREA(Column, Page, 16, 2);
  362   1      
- 363   1      //ÅÐ¶ÏÏÂºá
- 364   1              if((Disp_Para & Disp_Down)>0)
- 365   1                      {
- 366   2                                      p2 = Hanzi1616_Down;
- 367   2                                      for(i=0;i<32;i++)
- 368   2                                      {*(p1+i)|=*(p2+i);}
- 369   2                      }
- 370   1                      else
- 371   1                              {;}
- 372   1      
- 373   1      //ÅÐ¶Ï×óÊú
- 374   1              if((Disp_Para & Disp_Left)>0)
- 375   1                      {
- 376   2                                      p2 = Hanzi1616_Left;
- 377   2                                      for(i=0;i<32;i++)
- 378   2                                      {*(p1+i)|=*(p2+i);}
- 379   2                      }
- 380   1                      else
- 381   1                              {;}
- 382   1      
- 383   1      //ÅÐ¶ÏÓÒÊú
- 384   1              if((Disp_Para & Disp_Right)>0)
- 385   1                      {
- 386   2                                      p2 = Hanzi1616_Right;
- 387   2                                      for(i=0;i<32;i++)
- 388   2                                      {*(p1+i)|=*(p2+i);}
- 389   2                      }
- 390   1                      else
- 391   1                              {;}
- 392   1      
- 393   1      //×îÖÕÏÔÊ¾
- 394   1              for(i=0;i<32;i++)
- 395   1              {
- 396   2                      SEND_DATA_LCD(*(p1+i));
- 397   2              }
- 398   1      }
- 399          
- 400          /*ÏÔÊ¾24*24 µãÕóµÄºº×Ö»òµÈÍ¬ÓÚ24*24 µãÕóµÄÍ¼Ïñ*/
- 401          void disp_24x24(int x,int y,uchar *dp)
- 402          {
- 403   1              uchar i;
- 404   1              lcd_address(x,y,24,3);
- 405   1              for(i=0;i<72;i++)
- 406   1              {
- 407   2                      SEND_DATA_LCD(*(dp+i));
- 408   2              }
- 409   1      }
- 410          
- 411          /////*ÏÔÊ¾32*32 µãÕóµÄºº×Ö»òµÈÍ¬ÓÚ32*32 µãÕóµÄÍ¼Ïñ*/
- 412          ////void disp_32x32(int x,int y,uchar *dp)
- 413          ////{
- 414          ////    uchar i,j;
- 415          ////    lcd_address(x,y,32,4);
- 416          ////    for(i=0;i<4;i++)
- 417          ////    {
- 418          ////            for(j=0;j<32;j++)
- 419          ////            {
- 420          ////                    SEND_DATA_LCD(*dp);
- 421          ////                    dp++;
- 422          ////            }
- 423          ////    }
-C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 8   
+ 363   1              p1 = Hanzi1616;
+ 364   1              for(i=0;i<32;i++)
+ 365   1                      {*(p1+i) = *(dp+i);}
+ 366   1              
+ 367   1      //ï¿½Ð¶ï¿½ï¿½Ïºï¿½
+ 368   1              if((Disp_Para & Disp_UP)>0)
+ 369   1                      {
+ 370   2                                      p2 = Hanzi1616_Up;
+ 371   2                                      for(i=0;i<32;i++)
+ 372   2                                      {*(p1+i)|=*(p2+i);}
+ 373   2                      }
+ 374   1                      else
+ 375   1                              {;}
+ 376   1      
+ 377   1      //ï¿½Ð¶ï¿½ï¿½Âºï¿½
+ 378   1              if((Disp_Para & Disp_Down)>0)
+ 379   1                      {
+ 380   2                                      p2 = Hanzi1616_Down;
+ 381   2                                      for(i=0;i<32;i++)
+ 382   2                                      {*(p1+i)|=*(p2+i);}
+ 383   2                      }
+ 384   1                      else
+ 385   1                              {;}
+ 386   1      
+ 387   1      //ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½
+ 388   1              if((Disp_Para & Disp_Left)>0)
+ 389   1                      {
+ 390   2                                      p2 = Hanzi1616_Left;
+ 391   2                                      for(i=0;i<32;i++)
+ 392   2                                      {*(p1+i)|=*(p2+i);}
+ 393   2                      }
+ 394   1                      else
+ 395   1                              {;}
+ 396   1      
+ 397   1      //ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½
+ 398   1              if((Disp_Para & Disp_Right)>0)
+ 399   1                      {
+ 400   2                                      p2 = Hanzi1616_Right;
+ 401   2                                      for(i=0;i<32;i++)
+ 402   2                                      {*(p1+i)|=*(p2+i);}
+ 403   2                      }
+ 404   1                      else
+ 405   1                              {;}
+ 406   1      
+ 407   1      //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
+ 408   1              for(i=0;i<32;i++)
+ 409   1              {
+ 410   2                      SEND_DATA_LCD(*(p1+i));
+ 411   2              }
+ 412   1      }
+ 413          
+ 414          /*ï¿½ï¿½Ê¾24*24 ï¿½ï¿½ï¿½ï¿½Äºï¿½ï¿½Ö»ï¿½ï¿½Í¬ï¿½ï¿½24*24 ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½*/
+ 415          void disp_24x24(int x,int y,uchar *dp)
+ 416          {
+ 417   1              uchar i;
+ 418   1              lcd_address(x,y,24,3);
+ 419   1              for(i=0;i<72;i++)
+ 420   1              {
+ 421   2                      SEND_DATA_LCD(*(dp+i));
+ 422   2              }
+C51 COMPILER V9.00   19296P1                                                               07/11/2019 00:50:50 PAGE 8   
 
- 424          ////}
- 425          ////
- 426          /////*ÏÔÊ¾48*48 µãÕóµÄºº×Ö»òÍ¼Ïñ*/
- 427          ////void disp_48x48(uchar x,uchar y,char *dp)
- 428          ////{
- 429          ////    uchar i,j;
- 430          ////    lcd_address(x,y,48,6);
- 431          ////    for(i=0;i<6;i++)
- 432          ////    {
- 433          ////            for(j=0;j<48;j++)
- 434          ////            {
- 435          ////                    SEND_DATA_LCD(*dp);
- 436          ////                    dp++;
- 437          ////            }
- 438          ////    }
- 439          ////}
- 440          ////
- 441          /////*ÏÔÊ¾64*48 µãÕóµÄºº×Ö»òÍ¼Ïñ*/
- 442          ////void disp_64x48(uchar x,uchar y,char *dp)
- 443          ////{
- 444          ////    uchar i,j;
- 445          ////    lcd_address(x,y,55,6);
- 446          ////    for(i=0;i<6;i++)
- 447          ////    {
- 448          ////            for(j=0;j<55;j++)
- 449          ////            {
- 450          ////                    SEND_DATA_LCD(*dp);
- 451          ////                    dp++;
- 452          ////            }
- 453          ////    }
- 454          ////}
- 455          ////
- 456          /////*ÏÔÊ¾96*24 µãÕóµÄÍ¼Ïñ*/
- 457          ////void disp_96x24(uchar x,uchar y,char *dp)
- 458          ////{
- 459          ////    uchar i,j; 
- 460          ////    lcd_address(x,y,96,3);
- 461          ////    for(i=0;i<3;i++)
- 462          ////    {
- 463          ////            for(j=0;j<96;j++)
- 464          ////            {
- 465          ////                    SEND_DATA_LCD(*dp);
- 466          ////                    dp++;
- 467          ////            }
- 468          ////    }
- 469          ////}
- 470          ////
- 471          /////*ÏÔÊ¾196*96 µãÕóµÄÍ¼Ïñ*/
- 472          ////void disp_192x96(uchar x,uchar y,char *dp)
- 473          ////{
- 474          ////    uchar i,j; 
- 475          ////    lcd_address(x,y,192,12);
- 476          ////    for(i=0;i<12;i++)
- 477          ////    {
- 478          ////            for(j=0;j<192;j++)
- 479          ////            {
- 480          ////                    SEND_DATA_LCD(*dp);
- 481          ////                    dp++;
- 482          ////            }
- 483          ////    }
- 484          ////}
- 485          
-C51 COMPILER V9.00   19296P1                                                               07/07/2019 16:29:04 PAGE 9   
+ 423   1      }
+ 424          
+ 425          void disp_24x12(int x,int y,uchar *dp)
+ 426          {
+ 427   1              uchar i;
+ 428   1              lcd_address(x,y,12,3);
+ 429   1              for(i=0;i<36;i++)
+ 430   1              {
+ 431   2                      SEND_DATA_LCD(*(dp+i));
+ 432   2              }
+ 433   1      }
+ 434          
+ 435          /////*ï¿½ï¿½Ê¾32*32 ï¿½ï¿½ï¿½ï¿½Äºï¿½ï¿½Ö»ï¿½ï¿½Í¬ï¿½ï¿½32*32 ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½*/
+ 436          ////void disp_32x32(int x,int y,uchar *dp)
+ 437          ////{
+ 438          ////    uchar i,j;
+ 439          ////    lcd_address(x,y,32,4);
+ 440          ////    for(i=0;i<4;i++)
+ 441          ////    {
+ 442          ////            for(j=0;j<32;j++)
+ 443          ////            {
+ 444          ////                    SEND_DATA_LCD(*dp);
+ 445          ////                    dp++;
+ 446          ////            }
+ 447          ////    }
+ 448          ////}
+ 449          ////
+ 450          /////*ï¿½ï¿½Ê¾48*48 ï¿½ï¿½ï¿½ï¿½Äºï¿½ï¿½Ö»ï¿½Í¼ï¿½ï¿½*/
+ 451          ////void disp_48x48(uchar x,uchar y,char *dp)
+ 452          ////{
+ 453          ////    uchar i,j;
+ 454          ////    lcd_address(x,y,48,6);
+ 455          ////    for(i=0;i<6;i++)
+ 456          ////    {
+ 457          ////            for(j=0;j<48;j++)
+ 458          ////            {
+ 459          ////                    SEND_DATA_LCD(*dp);
+ 460          ////                    dp++;
+ 461          ////            }
+ 462          ////    }
+ 463          ////}
+ 464          ////
+ 465          /////*ï¿½ï¿½Ê¾64*48 ï¿½ï¿½ï¿½ï¿½Äºï¿½ï¿½Ö»ï¿½Í¼ï¿½ï¿½*/
+ 466          ////void disp_64x48(uchar x,uchar y,char *dp)
+ 467          ////{
+ 468          ////    uchar i,j;
+ 469          ////    lcd_address(x,y,55,6);
+ 470          ////    for(i=0;i<6;i++)
+ 471          ////    {
+ 472          ////            for(j=0;j<55;j++)
+ 473          ////            {
+ 474          ////                    SEND_DATA_LCD(*dp);
+ 475          ////                    dp++;
+ 476          ////            }
+ 477          ////    }
+ 478          ////}
+ 479          ////
+ 480          /////*ï¿½ï¿½Ê¾96*24 ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½*/
+ 481          ////void disp_96x24(uchar x,uchar y,char *dp)
+ 482          ////{
+ 483          ////    uchar i,j; 
+ 484          ////    lcd_address(x,y,96,3);
+C51 COMPILER V9.00   19296P1                                                               07/11/2019 00:50:50 PAGE 9   
 
- 486          //ÌØÊâ·ûºÅ£¨È¡×ÖÄ£·½Ê½£ºÒõÂë£¬ÁÐÐÐÊ½£¬Ë³Ïò
- 487          
- 488          uchar code Char0808_Up[]={0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80};/*"ÉÏºá"*/
- 489          
- 490          uchar code Char0808_Down[]={0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"ÏÂºá"*/
- 491          
- 492          uchar code Char0808_Left[]={0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"×óÊú"*/
- 493          
- 494          uchar code Char0808_Right[]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"ÓÒÊú"*/
- 495          
- 496          uchar code Char0808_UpDown[]={0x81,0x81,0x81,0x81,0x81,0x81,0x81,0x81};/*"ÉÏºá+ÏÂºá"*/
- 497          
- 498          uchar code Char1608_Up[]={
- 499          0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"ÉÏºá"*/
- 500          
- 501          uchar code Char1608_Down[]={
- 502          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"ÏÂºá"*/
- 503          
- 504          uchar code Char1608_Left[]={
- 505          0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"×óÊú"*/
- 506          
- 507          uchar code Char1608_Right[]={
- 508          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"ÓÒÊú"*/
+ 485          ////    for(i=0;i<3;i++)
+ 486          ////    {
+ 487          ////            for(j=0;j<96;j++)
+ 488          ////            {
+ 489          ////                    SEND_DATA_LCD(*dp);
+ 490          ////                    dp++;
+ 491          ////            }
+ 492          ////    }
+ 493          ////}
+ 494          ////
+ 495          /////*ï¿½ï¿½Ê¾196*96 ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½*/
+ 496          ////void disp_192x96(uchar x,uchar y,char *dp)
+ 497          ////{
+ 498          ////    uchar i,j; 
+ 499          ////    lcd_address(x,y,192,12);
+ 500          ////    for(i=0;i<12;i++)
+ 501          ////    {
+ 502          ////            for(j=0;j<192;j++)
+ 503          ////            {
+ 504          ////                    SEND_DATA_LCD(*dp);
+ 505          ////                    dp++;
+ 506          ////            }
+ 507          ////    }
+ 508          ////}
  509          
- 510          uchar code Hanzi1616_Up[]={
- 511          0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,
- 512          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"ÉÏºá"*/
+ 510          //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å£ï¿½È¡ï¿½ï¿½Ä£ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ë£¬ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½Ë³ï¿½ï¿½
+ 511          
+ 512          uchar code Char0808_Up[]={0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80};/*"ï¿½Ïºï¿½"*/
  513          
- 514          uchar code Hanzi1616_Down[]={
- 515          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
- 516          0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"ÏÂºá"*/
+ 514          uchar code Char0808_Down[]={0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"ï¿½Âºï¿½"*/
+ 515          
+ 516          uchar code Char0808_Left[]={0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"ï¿½ï¿½ï¿½ï¿½"*/
  517          
- 518          uchar code Hanzi1616_Left[]={
- 519          0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
- 520          0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"×óÊú"*/
+ 518          uchar code Char0808_Right[]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"ï¿½ï¿½ï¿½ï¿½"*/
+ 519          
+ 520          uchar code Char0808_UpDown[]={0x81,0x81,0x81,0x81,0x81,0x81,0x81,0x81};/*"ï¿½Ïºï¿½+ï¿½Âºï¿½"*/
  521          
- 522          uchar code Hanzi1616_Right[]={
- 523          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,
- 524          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"ÓÒÊú"*/
- 525          
- 526          
+ 522          uchar code Char1608_Up[]={
+ 523          0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"ï¿½Ïºï¿½"*/
+ 524          
+ 525          uchar code Char1608_Down[]={
+ 526          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"ï¿½Âºï¿½"*/
+ 527          
+ 528          uchar code Char1608_Left[]={
+ 529          0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"ï¿½ï¿½ï¿½ï¿½"*/
+ 530          
+ 531          uchar code Char1608_Right[]={
+ 532          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"ï¿½ï¿½ï¿½ï¿½"*/
+ 533          
+ 534          uchar code Hanzi1616_Up[]={
+ 535          0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,
+ 536          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"ï¿½Ïºï¿½"*/
+ 537          
+ 538          uchar code Hanzi1616_Down[]={
+ 539          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+ 540          0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"ï¿½Âºï¿½"*/
+ 541          
+ 542          uchar code Hanzi1616_Left[]={
+ 543          0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+ 544          0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"ï¿½ï¿½ï¿½ï¿½"*/
+ 545          
+ 546          uchar code Hanzi1616_Right[]={
+C51 COMPILER V9.00   19296P1                                                               07/11/2019 00:50:50 PAGE 10  
+
+ 547          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,
+ 548          0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"ï¿½ï¿½ï¿½ï¿½"*/
+ 549          
+ 550          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1948    ----
+   CODE SIZE        =   2005    ----
    CONSTANT SIZE    =    232    ----
-   XDATA SIZE       =   ----      97
+   XDATA SIZE       =   ----     101
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----

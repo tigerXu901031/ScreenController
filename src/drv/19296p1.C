@@ -1,7 +1,7 @@
-/* Òº¾§Ä£¿éÐÍºÅ£ºJLX19296-380
-²¢ÐÐ½Ó¿Ú
-Çý¶¯IC ÊÇ:ST75256
-¸Ä±à£ºBruce Dong
+/* Òºï¿½ï¿½Ä£ï¿½ï¿½ï¿½ÍºÅ£ï¿½JLX19296-380
+ï¿½ï¿½ï¿½Ð½Ó¿ï¿½
+ï¿½ï¿½ï¿½ï¿½IC ï¿½ï¿½:ST75256
+ï¿½Ä±à£ºBruce Dong
 2019.5.15
 */
 #include "../drv/STC8.H"
@@ -29,22 +29,22 @@ sbit LCD19296_WR = P5^0;
 //sbit LCD19296_RS = P3^7; 
 //sbit LCD19296_RD = P3^6; 
 //sbit LCD19296_WR = P5^1; 
-//ÁíÍâP2.0~2.7 ¶ÔÓ¦DB0~DB7*/
-//sbit key=P2^0; /*°´¼ü½Ó¿Ú£¬P2.0 ¿ÚÓëGND Ö®¼ä½ÓÒ»¸ö°´¼ü*/
+//ï¿½ï¿½ï¿½ï¿½P2.0~2.7 ï¿½ï¿½Ó¦DB0~DB7*/
+//sbit key=P2^0; /*ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿Ú£ï¿½P2.0 ï¿½ï¿½ï¿½ï¿½GND Ö®ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 
 //extern uchar code Char1608_Up[], Char1608_Down[], Char1608_Left[], Char1608_Right[];
 //extern uchar code Hanzi1616_Up[], Hanzi1616_Down[], Hanzi1616_Left[], Hanzi1616_Right[];
 //
 //extern uchar code Hanzi_2424_XST_Dian[], Hanzi_2424_XST_Ji[],Hanzi_2424_XST_Fang[], Hanzi_2424_XST_Xiang[];
 
-/*ÑÓÊ±£º1 ºÁÃëµÄi ±¶*/
+/*ï¿½ï¿½Ê±ï¿½ï¿½1 ï¿½ï¿½ï¿½ï¿½ï¿½i ï¿½ï¿½*/
 void delay(int i)
 {
 	int j,k;
 	for(j=0;j<i;j++)
 	for(k=0;k<110;k++);
 }
-/*ÑÓÊ±£º1us µÄi ±¶*/
+/*ï¿½ï¿½Ê±ï¿½ï¿½1us ï¿½ï¿½i ï¿½ï¿½*/
 void delay_us(int i)
 {
 	int j,k;
@@ -183,14 +183,14 @@ void INIT_LCD()
 	SEND_CMD_LCD(0x81); //EV control
 //	SEND_DATA_LCD(0x3a); //VPR[5-0]
 	SEND_DATA_LCD(0x30); //VPR[5-0]
-	SEND_DATA_LCD(0x03); //´Öµ÷¶Ô±È¶È
+	SEND_DATA_LCD(0x03); //ï¿½Öµï¿½ï¿½Ô±È¶ï¿½
 	SEND_CMD_LCD(0x20); //Power control
 	SEND_DATA_LCD(0x0B); //D0=regulator ; D1=follower ; D3=booste, on:1 off:0
 	delay_us(100);
 	SEND_CMD_LCD(0xAF); //Display on
 }
 
-/*Ð´LCD ÐÐÁÐµØÖ·£ºX ÎªÆðÊ¼µÄÁÐµØÖ·£¬Y ÎªÆðÊ¼µÄÐÐµØÖ·£¬x_total,y_total ·Ö±ðÎªÁÐµØÖ·¼°ÐÐµØÖ·µÄÆðµãµ½ÖÕµãµÄ²îÖµ */
+/*Ð´LCD ï¿½ï¿½ï¿½Ðµï¿½Ö·ï¿½ï¿½X Îªï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ðµï¿½Ö·ï¿½ï¿½Y Îªï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ðµï¿½Ö·ï¿½ï¿½x_total,y_total ï¿½Ö±ï¿½Îªï¿½Ðµï¿½Ö·ï¿½ï¿½ï¿½Ðµï¿½Ö·ï¿½ï¿½ï¿½ï¿½ãµ½ï¿½Õµï¿½Ä²ï¿½Öµ */
 void lcd_address(uchar x,uchar y,x_total,y_total)
 {
 	x=x-1;
@@ -205,7 +205,21 @@ void lcd_address(uchar x,uchar y,x_total,y_total)
 	SEND_CMD_LCD(0x5c);
 }
 
-/*Ð´LCD ÐÐÁÐµØÖ·£ºX ÎªÆðÊ¼µÄÁÐµØÖ·£¬Y ÎªÆðÊ¼µÄÐÐµØÖ·£¬x_total,y_total ·Ö±ðÎªÁÐµØÖ·¼°ÐÐµØÖ·µÄÆðµãµ½ÖÕµãµÄ²îÖµ */
+/* void lcd_address1(uchar x,uchar y,x_total,y_total)
+{
+	x=x-1;
+	y=y+7;
+	SEND_CMD_LCD(0x15); //Set Column Address
+	SEND_DATA_LCD(x);
+	SEND_DATA_LCD(x+x_total-1);
+	SEND_CMD_LCD(0x75); //Set Page Address
+	SEND_DATA_LCD(y);
+	SEND_DATA_LCD(y+y_total-1);
+	SEND_CMD_LCD(0x30);
+	SEND_CMD_LCD(0x5c);
+} */
+
+/*Ð´LCD ï¿½ï¿½ï¿½Ðµï¿½Ö·ï¿½ï¿½X Îªï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ðµï¿½Ö·ï¿½ï¿½Y Îªï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ðµï¿½Ö·ï¿½ï¿½x_total,y_total ï¿½Ö±ï¿½Îªï¿½Ðµï¿½Ö·ï¿½ï¿½ï¿½Ðµï¿½Ö·ï¿½ï¿½ï¿½ï¿½ãµ½ï¿½Õµï¿½Ä²ï¿½Öµ */
 void SET_LCD_DISP_AREA(uchar Column, uchar Page, Column_Total,Page_Total)
 {
 	Column = Column - 1;
@@ -224,7 +238,7 @@ void SET_LCD_DISP_AREA(uchar Column, uchar Page, Column_Total,Page_Total)
 	SEND_CMD_LCD(0x5c);
 }
 
-/*ÇåÆÁ*/
+/*ï¿½ï¿½ï¿½ï¿½*/
 void clear_screen(void)
 {
 	uchar i,j;
@@ -275,7 +289,7 @@ void CHAR_Display_16x8(uchar Column, uchar Page,uchar *dp, uchar Disp_Para)
 	for(i=0;i<16;i++)
 		{*(p1+i) = *(dp+i);}
 	
-//ÅÐ¶ÏÉÏºá
+//ï¿½Ð¶ï¿½ï¿½Ïºï¿½
 	if((Disp_Para &	Disp_UP)>0)
 		{
 				p2 = Char1608_Up;
@@ -285,7 +299,7 @@ void CHAR_Display_16x8(uchar Column, uchar Page,uchar *dp, uchar Disp_Para)
 		else
 			{;}
 
-//ÅÐ¶ÏÏÂºá
+//ï¿½Ð¶ï¿½ï¿½Âºï¿½
 	if((Disp_Para &	Disp_Down)>0)
 		{
 				p2 = Char1608_Down;
@@ -295,7 +309,7 @@ void CHAR_Display_16x8(uchar Column, uchar Page,uchar *dp, uchar Disp_Para)
 		else
 			{;}
 
-//ÅÐ¶Ï×óÊú
+//ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½
 	if((Disp_Para &	Disp_Left)>0)
 		{
 				p2 = Char1608_Left;
@@ -305,7 +319,7 @@ void CHAR_Display_16x8(uchar Column, uchar Page,uchar *dp, uchar Disp_Para)
 		else
 			{;}
 
-//ÅÐ¶ÏÓÒÊú
+//ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½
 	if((Disp_Para &	Disp_Right)>0)
 		{
 				p2 = Char1608_Right;
@@ -321,7 +335,7 @@ void CHAR_Display_16x8(uchar Column, uchar Page,uchar *dp, uchar Disp_Para)
     } 
 }
 
-///*ÏÔÊ¾16*16 µãÕóµÄºº×Ö»òµÈÍ¬ÓÚ16*16 µãÕóµÄÍ¼Ïñ*/
+///*ï¿½ï¿½Ê¾16*16 ï¿½ï¿½ï¿½ï¿½Äºï¿½ï¿½Ö»ï¿½ï¿½Í¬ï¿½ï¿½16*16 ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½*/
 //void disp_16x16(uchar x,uchar y,uchar *dp)
 //{
 //	uchar i,j;
@@ -336,8 +350,8 @@ void CHAR_Display_16x8(uchar Column, uchar Page,uchar *dp, uchar Disp_Para)
 //	}
 //}
 
-/*ÏÔÊ¾16*16 µãÕóµÄºº×Ö*/
-/*ÐÎ²ÎËµÃ÷£ºbit0£ºÉÏºáÏß£¬bit1£ºÏÂºáÏß£¬bit2£º×óÊúÏß£¬bit3£ºÓÒÊúÏß£¬bit4£º¹â±ê£¬bit5£º·´ÏÔ*/
+/*ï¿½ï¿½Ê¾16*16 ï¿½ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½*/
+/*ï¿½Î²ï¿½Ëµï¿½ï¿½ï¿½ï¿½bit0ï¿½ï¿½ï¿½Ïºï¿½ï¿½ß£ï¿½bit1ï¿½ï¿½ï¿½Âºï¿½ï¿½ß£ï¿½bit2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½bit3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½bit4ï¿½ï¿½ï¿½ï¿½ê£¬bit5ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 /*	bit  7 6 5 4 3 2 1 0	*/
 /*	Para x x x x x x x x	*/
 
@@ -350,7 +364,7 @@ void Hanzi_Disp_16x16(uchar Column, uchar Page, uchar *dp, uchar Disp_Para)
 	for(i=0;i<32;i++)
 		{*(p1+i) = *(dp+i);}
 	
-//ÅÐ¶ÏÉÏºá
+//ï¿½Ð¶ï¿½ï¿½Ïºï¿½
 	if((Disp_Para &	Disp_UP)>0)
 		{
 				p2 = Hanzi1616_Up;
@@ -360,7 +374,7 @@ void Hanzi_Disp_16x16(uchar Column, uchar Page, uchar *dp, uchar Disp_Para)
 		else
 			{;}
 
-//ÅÐ¶ÏÏÂºá
+//ï¿½Ð¶ï¿½ï¿½Âºï¿½
 	if((Disp_Para &	Disp_Down)>0)
 		{
 				p2 = Hanzi1616_Down;
@@ -370,7 +384,7 @@ void Hanzi_Disp_16x16(uchar Column, uchar Page, uchar *dp, uchar Disp_Para)
 		else
 			{;}
 
-//ÅÐ¶Ï×óÊú
+//ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½
 	if((Disp_Para &	Disp_Left)>0)
 		{
 				p2 = Hanzi1616_Left;
@@ -380,7 +394,7 @@ void Hanzi_Disp_16x16(uchar Column, uchar Page, uchar *dp, uchar Disp_Para)
 		else
 			{;}
 
-//ÅÐ¶ÏÓÒÊú
+//ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½
 	if((Disp_Para &	Disp_Right)>0)
 		{
 				p2 = Hanzi1616_Right;
@@ -390,14 +404,14 @@ void Hanzi_Disp_16x16(uchar Column, uchar Page, uchar *dp, uchar Disp_Para)
 		else
 			{;}
 
-//×îÖÕÏÔÊ¾
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
 	for(i=0;i<32;i++)
 	{
 		SEND_DATA_LCD(*(p1+i));
 	}
 }
 
-/*ÏÔÊ¾24*24 µãÕóµÄºº×Ö»òµÈÍ¬ÓÚ24*24 µãÕóµÄÍ¼Ïñ*/
+/*ï¿½ï¿½Ê¾24*24 ï¿½ï¿½ï¿½ï¿½Äºï¿½ï¿½Ö»ï¿½ï¿½Í¬ï¿½ï¿½24*24 ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½*/
 void disp_24x24(int x,int y,uchar *dp)
 {
 	uchar i;
@@ -408,7 +422,17 @@ void disp_24x24(int x,int y,uchar *dp)
 	}
 }
 
-/////*ÏÔÊ¾32*32 µãÕóµÄºº×Ö»òµÈÍ¬ÓÚ32*32 µãÕóµÄÍ¼Ïñ*/
+void disp_24x12(int x,int y,uchar *dp)
+{
+	uchar i;
+	lcd_address(x,y,12,3);
+	for(i=0;i<36;i++)
+	{
+		SEND_DATA_LCD(*(dp+i));
+	}
+}
+
+/////*ï¿½ï¿½Ê¾32*32 ï¿½ï¿½ï¿½ï¿½Äºï¿½ï¿½Ö»ï¿½ï¿½Í¬ï¿½ï¿½32*32 ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½*/
 ////void disp_32x32(int x,int y,uchar *dp)
 ////{
 ////	uchar i,j;
@@ -423,7 +447,7 @@ void disp_24x24(int x,int y,uchar *dp)
 ////	}
 ////}
 ////
-/////*ÏÔÊ¾48*48 µãÕóµÄºº×Ö»òÍ¼Ïñ*/
+/////*ï¿½ï¿½Ê¾48*48 ï¿½ï¿½ï¿½ï¿½Äºï¿½ï¿½Ö»ï¿½Í¼ï¿½ï¿½*/
 ////void disp_48x48(uchar x,uchar y,char *dp)
 ////{
 ////	uchar i,j;
@@ -438,7 +462,7 @@ void disp_24x24(int x,int y,uchar *dp)
 ////	}
 ////}
 ////
-/////*ÏÔÊ¾64*48 µãÕóµÄºº×Ö»òÍ¼Ïñ*/
+/////*ï¿½ï¿½Ê¾64*48 ï¿½ï¿½ï¿½ï¿½Äºï¿½ï¿½Ö»ï¿½Í¼ï¿½ï¿½*/
 ////void disp_64x48(uchar x,uchar y,char *dp)
 ////{
 ////	uchar i,j;
@@ -453,7 +477,7 @@ void disp_24x24(int x,int y,uchar *dp)
 ////	}
 ////}
 ////
-/////*ÏÔÊ¾96*24 µãÕóµÄÍ¼Ïñ*/
+/////*ï¿½ï¿½Ê¾96*24 ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½*/
 ////void disp_96x24(uchar x,uchar y,char *dp)
 ////{
 ////	uchar i,j; 
@@ -468,7 +492,7 @@ void disp_24x24(int x,int y,uchar *dp)
 ////	}
 ////}
 ////
-/////*ÏÔÊ¾196*96 µãÕóµÄÍ¼Ïñ*/
+/////*ï¿½ï¿½Ê¾196*96 ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½*/
 ////void disp_192x96(uchar x,uchar y,char *dp)
 ////{
 ////	uchar i,j; 
@@ -483,44 +507,44 @@ void disp_24x24(int x,int y,uchar *dp)
 ////	}
 ////}
 
-//ÌØÊâ·ûºÅ£¨È¡×ÖÄ£·½Ê½£ºÒõÂë£¬ÁÐÐÐÊ½£¬Ë³Ïò
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å£ï¿½È¡ï¿½ï¿½Ä£ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ë£¬ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½Ë³ï¿½ï¿½
 
-uchar code Char0808_Up[]={0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80};/*"ÉÏºá"*/
+uchar code Char0808_Up[]={0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80};/*"ï¿½Ïºï¿½"*/
 
-uchar code Char0808_Down[]={0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"ÏÂºá"*/
+uchar code Char0808_Down[]={0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"ï¿½Âºï¿½"*/
 
-uchar code Char0808_Left[]={0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"×óÊú"*/
+uchar code Char0808_Left[]={0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"ï¿½ï¿½ï¿½ï¿½"*/
 
-uchar code Char0808_Right[]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"ÓÒÊú"*/
+uchar code Char0808_Right[]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"ï¿½ï¿½ï¿½ï¿½"*/
 
-uchar code Char0808_UpDown[]={0x81,0x81,0x81,0x81,0x81,0x81,0x81,0x81};/*"ÉÏºá+ÏÂºá"*/
+uchar code Char0808_UpDown[]={0x81,0x81,0x81,0x81,0x81,0x81,0x81,0x81};/*"ï¿½Ïºï¿½+ï¿½Âºï¿½"*/
 
 uchar code Char1608_Up[]={
-0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"ÉÏºá"*/
+0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"ï¿½Ïºï¿½"*/
 
 uchar code Char1608_Down[]={
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"ÏÂºá"*/
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"ï¿½Âºï¿½"*/
 
 uchar code Char1608_Left[]={
-0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"×óÊú"*/
+0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"ï¿½ï¿½ï¿½ï¿½"*/
 
 uchar code Char1608_Right[]={
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"ÓÒÊú"*/
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"ï¿½ï¿½ï¿½ï¿½"*/
 
 uchar code Hanzi1616_Up[]={
 0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80,
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"ÉÏºá"*/
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"ï¿½Ïºï¿½"*/
 
 uchar code Hanzi1616_Down[]={
 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"ÏÂºá"*/
+0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};/*"ï¿½Âºï¿½"*/
 
 uchar code Hanzi1616_Left[]={
 0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"×óÊú"*/
+0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};/*"ï¿½ï¿½ï¿½ï¿½"*/
 
 uchar code Hanzi1616_Right[]={
 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"ÓÒÊú"*/
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF};/*"ï¿½ï¿½ï¿½ï¿½"*/
 
 
